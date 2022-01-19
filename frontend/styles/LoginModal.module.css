@@ -1,0 +1,9 @@
+.buttonContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px;
+  height: 200px;
+}

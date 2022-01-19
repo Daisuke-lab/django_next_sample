@@ -1,0 +1,15 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-medicinerobo-staging-03531-authRole",
+      "UnauthRoleArn": "arn:aws:iam::381623038275:role/amplify-medicinerobo-staging-03531-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::381623038275:role/amplify-medicinerobo-staging-03531-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-medicinerobo-staging-03531-deployment",
+      "UnauthRoleName": "amplify-medicinerobo-staging-03531-unauthRole",
+      "StackName": "amplify-medicinerobo-staging-03531",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:381623038275:stack/amplify-medicinerobo-staging-03531/38f61a10-6cf6-11ec-ba03-0e9b27623919",
+      "AmplifyAppId": "d3ewrariygq14z"
+    }
+  }
+}

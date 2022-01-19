@@ -1,0 +1,10 @@
+.contentContainer {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.content {
+  flex: 1;
+  overflow: scroll;
+}

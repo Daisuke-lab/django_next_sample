@@ -1,0 +1,10 @@
+.inputContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.essentialChip {
+  color: #fff !important;
+  background-color: #d32f2f !important;
+}

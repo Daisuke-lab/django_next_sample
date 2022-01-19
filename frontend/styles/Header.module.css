@@ -1,0 +1,17 @@
+.headerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 90px;
+}
+
+.headerContainer svg {
+  font-size: 31px;
+  margin-left: 60px;
+}
+
+.headerContainer h1 {
+  font-size: 27px;
+  margin-left: 20px;
+  margin-bottom: 0;
+}
