@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.options import Options
 import os
 import random
 import requests
-import module.config as config
+import backend_module.config as config
 import datetime
 
 class Common:

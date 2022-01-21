@@ -13,8 +13,7 @@ import urllib.parse
 from googleapiclient.discovery import build
 from django.utils import timezone
 
-from domains.models import Domain, Trademark
-from urls.models import Url
+from domains.models import Domain, Trademark, Url
 
 class UpdateTargetUrl(Common):
     def insert_target_urls(self, target_urls, domain):

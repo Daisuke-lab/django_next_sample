@@ -2,8 +2,7 @@
 from backend_module.common import Common
 import time
 import re
-from urls.models import Url
-from domains.models import Domain, Trademark
+from domains.models import Domain, Trademark, Url
 from conditions.models import NG_Keyword_Condition
 from products.models import Product
 from results.models import Check_Result
