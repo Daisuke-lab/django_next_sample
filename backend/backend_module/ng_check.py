@@ -1,7 +1,7 @@
 
-from backend_module.common import Common
 import time
 import re
+from backend_module.common import Common
 from domains.models import Domain, Trademark, Url
 from conditions.models import NG_Keyword_Condition
 from products.models import Product
@@ -25,9 +25,13 @@ class NgCheck(Common):
                     for ng_kw in ng_kw_check_list:
                         ng_kw_start_index = ng_kw.start()
                         ng_kw_end_index = ng_kw.end()
-                        front_result = source.text.find(composite_kw, ng_kw_start_index - front_word_count - 1, ng_kw_start_index - 1)
-                        back_result = source.text.find(composite_kw, ng_kw_end_index + 1, ng_kw_end_index + back_word_count + 1)
-                        if not front_result and not back_result:
+                        front_start_index = max(0, ng_kw_start_index - front_word_count - 1)
+                        front_end_index = max(0, ng_kw_start_index - 1)
+                        back_start_index = min(len(source.text), ng_kw_end_index + 1)
+                        back_end_index = min(len(source.text), ng_kw_end_index + back_word_count + 1)
+                        front_result = source.text.find(composite_kw, front_start_index, front_end_index)
+                        back_result = source.text.find(composite_kw, back_start_index, back_end_index)
+                        if  front_result != -1 and back_result != -1:
                             priority = 3
                             break
                     Check_Result.objects.create(url=target_url.url, priority=priority, confirmed=False)
@@ -40,7 +44,8 @@ class NgCheck(Common):
         trademark = Trademark.objects.get(id=trademark_kw_id)
         client_target_domains = Domain.objects.fileter(trademark=trademark)
 
+
         for domain in client_target_domains:
             client_target_urls = Url.objects.fileter(domain=domain)
-            middle_kws = NG_Keyword_Condition.objects.filter(product_condition=Product.objects.get(id=product_id).product_condition)
+            middle_kws = NG_Keyword_Condition.objects.filter(product_condition=Product.objects.get(id=product_id).product_condition).exclude(status=0)
             self.ng_check(middle_kws=middle_kws, target_urls=client_target_urls)
