@@ -9,12 +9,14 @@ import {RowType, ColumnType} from '../src/components/CustomTable'
 import {productColumns} from '../src/helpers/formColumns'
 import FormModal, {FormColumnType, FormType} from '../src/components/FormModal'
 import ProductForm from '../src/components/ProductForm';
+import backendAxios from '../src/helpers/axios'
+import {GenreType} from '../src/GlobalType'
+
 const columns = [
   {id: 1, name: "id"},
-  {id: 2, name: "lastName"},
-  {id: 3, name: "firstName"},
-  {id: 4, name: "age"},
-  {id: 5, name: "button", display:false},
+  {id: 2, name: "title"},
+  {id: 3, name: "ng_keywords"},
+  {id: 4, name: "button", display:false},
 ] as ColumnType[]
 
 const rows = [
@@ -30,12 +32,16 @@ const rows = [
 ] as RowType[]
 
 
+interface Props {
+  genres: GenreType[],
+  productConditions : any[]
+}
 
 
-
-const Main: NextPage = () => {
+const Main: NextPage = (props) => {
   const [open, setOpen] = useState<string>("")
   const [mode, setMode] = useState<"edit" | "create" | "">("")
+  const {genres, productConditions} = props as Props
   const onEdit = (row:RowType) => {
     productColumns.map((column) => {
       column.defaultValue = row[column.name]
@@ -65,9 +71,41 @@ const Main: NextPage = () => {
         <ColorButton color={blue} label="商品登録" onClick={onCreate} className='margin-button'/>
         <ColorButton color={red} label="一括削除" onClick={() => {console.log('clicked')}} className='margin-button'/>
         <Table columns={columns} rows={rows}/>
-        <ProductForm open={open==="ProductForm"} setOpen={setOpen} mode={mode}/>
+        <ProductForm open={open==="ProductForm"} setOpen={setOpen} mode={mode}
+        genres={genres}
+        productConditions={productConditions}/>
       </Container>
     )
+  }
+
+  export async function getStaticProps() {
+    // Call an external API endpoint to get posts.
+    // You can use any data fetching library
+    let productConditions:any[] = []
+    let genres:any[] = []
+    try {
+      const res = await backendAxios.get('api/v1/condition/')
+      console.log(res.data)
+      productConditions = res.data
+    } catch(err) {
+      console.log(err)
+    }
+
+    try {
+      const res = await backendAxios.get('api/v1/product/genre/')
+      genres = res.data
+    } catch(err) {
+      console.log(err)
+    }
+  
+    // By returning { props: { posts } }, the Blog component
+    // will receive `posts` as a prop at build time
+    return {
+      props: {
+        productConditions,
+        genres: genres
+      },
+    }
   }
   export default Main
   

@@ -4,16 +4,28 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
 from rest_framework.permissions import AllowAny
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, GenreSerializer
+from .models import Product, Genre
 
-from .models import Product
-class ListCreateOffer(generics.ListCreateAPIView):
+
+class ListCreateProduct(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     permission_classes = [AllowAny]
     serializer_class = ProductSerializer
 
 
-class RetrieveUpdateDestroyOffer(generics.RetrieveUpdateDestroyAPIView):
+class RetrieveUpdateDestroyProduct(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     permission_classes = [AllowAny]
     serializer_class = ProductSerializer
+
+class ListCreateGenre(generics.ListCreateAPIView):
+    queryset = Genre.objects.all()
+    permission_classes = [AllowAny]
+    serializer_class = GenreSerializer
+
+
+class RetrieveUpdateDestroyGenre(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Genre.objects.all()
+    permission_classes = [AllowAny]
+    serializer_class = GenreSerializer

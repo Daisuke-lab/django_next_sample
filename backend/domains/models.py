@@ -1,5 +1,5 @@
 from django.db import models
-
+from products.models import Product
 class Trademark(models.Model):
     name = models.CharField(max_length=200)
     status = models.IntegerField()

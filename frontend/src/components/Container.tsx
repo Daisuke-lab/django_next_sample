@@ -18,7 +18,7 @@ function Container({children}:any) {
         "/products": "調査対象商品一覧／登録",
         "/conditions": "チェック条件設定",
         "/results": "チェック結果一覧",
-        "/domains": "除外ドメイン設定"
+        "/domains": "ドメイン設定"
     } as PagesName
     const [currentTitle, setCurrentTitle] = useState<string>("")
     useEffect(() => {

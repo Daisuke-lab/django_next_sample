@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import type { NextPage } from 'next'
 import Container from '../src/components/Container'
 import Table from '../src/components/CustomTable'
@@ -8,39 +8,46 @@ import { red, blue, teal } from '@mui/material/colors';
 import {RowType, ColumnType} from '../src/components/CustomTable'
 import {productColumns} from '../src/helpers/formColumns'
 import FormModal, {FormColumnType, FormType} from '../src/components/FormModal'
-import ConditionForm from "../src/components/ConditionForm"
+import ConditionForm, {ProductConditionType} from "../src/components/ConditionForm"
+import backendAxios from '../src/helpers/axios'
+import DeleteForm from '../src/components/DeleteForm';
 const columns = [
-  {id: 1, name: "id"},
-  {id: 2, name: "lastName"},
-  {id: 3, name: "firstName"},
-  {id: 4, name: "age"},
-  {id: 5, name: "button", display:false},
+  {id: 2, name: "title", label: "タイトル"},
+  {id: 3, name: "ng_keywords", label: "NGキーワード"},
+  {id: 4, name: "button", display:false, label:""},
 ] as ColumnType[]
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35},
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65},
-] as RowType[]
 
 
+interface Props {
+  productConditions : any[]
+}
 
 
-
-const Condition: NextPage = () => {
+const Condition: NextPage = (props) => {
+  const {productConditions} = props as Props 
   const [open, setOpen] = useState<string>("")
+  const [currentRow, setCurrentRow] = useState<ProductConditionType | null>(null)
   const [mode, setMode] = useState<"edit" | "create" | "">("")
-  const onEdit = (row:RowType) => {
-    productColumns.map((column) => {
-      column.defaultValue = row[column.name]
-      return column
+
+  useEffect(() => {
+    productConditions.map((row) => {
+      row.button = (
+        <div className='table-button-container'>
+        <ColorButton color={teal} label="編集"
+         onClick={() => onEdit(row)}/>
+         <ColorButton color={blue} label="複製"
+         onClick={() => onEdit(row)}/>
+         <ColorButton color={red} label="削除"
+         onClick={() => onDelete(row)}/>
+        </div>
+      )
+      return row
     })
+  }, [])
+
+  const onEdit = (row:ProductConditionType) => {
+    setCurrentRow(row)
     setMode("edit")
     setOpen("ProductForm")
   }
@@ -49,26 +56,51 @@ const Condition: NextPage = () => {
     setMode("create")
     setOpen("ProductForm")
   }
-  rows.map((row) => {
-    row.button = (
-      <div className='table-button-container'>
-      <ColorButton color={teal} label="編集"
-       onClick={() => onEdit(row)}/>
-       <ColorButton color={blue} label="複製"
-       onClick={() => onEdit(row)}/>
-       <ColorButton color={red} label="削除"
-       onClick={() => {console.log('clicked')}}/>
-      </div>
-    )
-    return row
-  })
+
+  const onDelete = (row:ProductConditionType) => {
+    setOpen("DeleteForm")
+    setCurrentRow(row)
+  }
     return (
       <Container>
         <ColorButton color={blue} label="追加登録" onClick={onCreate} className='margin-button'/>
-        <Table columns={columns} rows={rows}/>
-        <ConditionForm open={open==="ProductForm"} setOpen={setOpen} mode={mode}/>
+        <Table columns={columns} rows={productConditions}/>
+        <ConditionForm open={open==="ProductForm"} setOpen={setOpen} mode={mode} row={currentRow}/>
+        <DeleteForm open={open==="DeleteForm"} setOpen={setOpen} title={currentRow?.title} 
+        endpoint={`api/v1/condition/${currentRow?.id}/`}/>
       </Container>
     )
   }
+
+  export async function getStaticProps() {
+    // Call an external API endpoint to get posts.
+    // You can use any data fetching library
+    let productConditions:any[] = []
+    try {
+      const res = await backendAxios.get('api/v1/condition/')
+      console.log(res.data)
+      productConditions = res.data
+      for (let i = 0; i < productConditions.length; i++) {
+        const ngKeywords = []
+        const ngKeywordConditions = productConditions[i].ng_keyword_conditions
+        for (let j = 0; j < ngKeywordConditions.length; j++) {
+          const ngKeywordCondition = ngKeywordConditions[j]
+          ngKeywords.push(ngKeywordCondition["ng_keyword"])
+        }
+        productConditions[i].ng_keywords = ngKeywords
+      }
+    } catch(err) {
+      console.log(err)
+    }
+  
+    // By returning { props: { posts } }, the Blog component
+    // will receive `posts` as a prop at build time
+    return {
+      props: {
+        productConditions,
+      },
+    }
+  }
+
   export default Condition
   

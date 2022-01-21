@@ -1,20 +1,19 @@
 import React from 'react'
 import type { NextPage } from 'next'
-import Container from '../src/components/Container'
-import Table from '../src/components/CustomTable'
+import Container from '../../src/components/Container'
+import Table from '../../src/components/CustomTable'
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
-import ColorButton from '../src/components/ColorButton';
+import ColorButton from '../../src/components/ColorButton';
 import { red, blue } from '@mui/material/colors';
 
 
 
 const columns = [
   {id: 1, name: "id"},
-  {id: 2, name: "lastName"},
-  {id: 3, name: "firstName"},
-  {id: 4, name: "age"},
-]
-
+  {id: 2, name: "title"},
+  {id: 3, name: "ng_keywords"},
+  {id: 4, name: "button", display:false},
+] as ColumnType[]
 const rows = [
   { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
   { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
@@ -29,11 +28,21 @@ const rows = [
 
 
 
+
+
 const Result: NextPage = () => {
+  rows.map((row) => {
+    row.button = (
+      <div className='table-button-container'>
+       <ColorButton color={blue} label="詳細"
+       onClick={() => {console.log('clicked')}}/>
+      </div>
+    )
+    return row
+  })
     return (
       <Container>
-        <ColorButton color={blue} label="商品登録" onClick={() => {console.log('clicked')}} className='margin-button'/>
-        <ColorButton color={red} label="一括削除" onClick={() => {console.log('clicked')}} className='margin-button'/>
+        <ColorButton color={blue} label="絞り込む" onClick={() => {console.log('clicked')}} className='margin-button'/>
           <Table columns={columns} rows={rows}/>
       </Container>
     )

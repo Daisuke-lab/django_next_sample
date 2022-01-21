@@ -2,6 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # path('', views.ListCreateEntrant.as_view()),
-    # path('<int:pk>/', views.RetrieveUpdateDestroyEntrant.as_view())
+    path('', views.ListCreateProductCondition.as_view()),
+    path('<int:pk>/', views.RetrieveUpdateDestroyProductCondition.as_view())
 ]

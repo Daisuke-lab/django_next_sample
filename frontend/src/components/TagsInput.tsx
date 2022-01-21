@@ -37,7 +37,6 @@ function TagsInput(props:Props) {
     }
 
     const handleChange = (event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        console.log('this is working')
         setInput(event.target.value);
     }
 
@@ -72,9 +71,9 @@ function TagsInput(props:Props) {
                 }}
             />
                 )}
-                name="ngKeywords"
+                name="ng_keywords"
             />
-            <FormHelperText>{errors.ngKeywords?"この項目は必須です。":""}</FormHelperText>
+            <FormHelperText>{errors.ng_keywords?"この項目は必須です。":""}</FormHelperText>
         </FormControl>
     )
 }

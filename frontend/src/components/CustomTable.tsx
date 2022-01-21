@@ -22,7 +22,8 @@ export interface RowType {
 export interface ColumnType {
   id: number,
   name: string,
-  display?: boolean
+  display?: boolean,
+  label: string
 
 }
  interface Props {

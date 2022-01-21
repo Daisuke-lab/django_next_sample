@@ -78,7 +78,7 @@ function CustomTableHeader(props:Props) {
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                 </Box>
               ) : null}
-              {column.display === false?"":column.name}
+              {column.display === false?"":column.label}
             </TableSortLabel>
               </TableCell>
             ))}

@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import {FormProps as Props} from '../GlobalType'
+import {FormProps} from '../GlobalType'
 import FormModal from './FormModal'
 import { useForm, Controller } from "react-hook-form";
 import Input from '@mui/material/Input';
@@ -9,31 +9,74 @@ import IconButton from '@mui/material/IconButton';
 import CustomField from './CustomField'
 import Button from '@mui/material/Button';
 import TagsInput from './TagsInput'
-import NgWordConditionsField from './NgWordConditionsField'
+import NgWordConditionsField from './NgKeywordConditionsField'
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
+//import axios from 'axios'
+import backendAxios from '../helpers/axios'
+import { accordionSummaryClasses } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 export interface NgKeywordConditionType {
-    ngKeyword: string,
-    compositeKeyword: string,
-    frontCheckWordCount: number,
-    backCheckWordCount: number,
-    checkTargetPeirod: number,
-    periodUnit: "days" | "months" | "years"
+    ng_keyword: string,
+    composite_keyword: string,
+    front_check_word_count: number,
+    back_check_word_count: number,
+    check_target_period: number,
+    period_unit: "days" | "months" | "years"
 }
 
+export interface ProductConditionType {
+    title : string,
+    id: number,
+    ng_keywords: string[]
+    ng_keyword_conditions: {
+        ng_keyword: string,
+        composite_keyword: string,
+        front_check_word_count: number,
+        back_check_word_count: number
+    }[]
+}
+
+interface Props extends FormProps {
+    row: ProductConditionType | null
+}
 function ConditionForm(props:Props) {
-    const title = props.mode==="edit"?"チェック条件編集":"チェック条件登録"
+    const {mode, row} = props
+    const modeJapanese = mode==="edit"?"編集":"作成"
+    const title = `チェック条件${modeJapanese}`
     const formModalProps = {open: props.open, setOpen: props.setOpen, title}
-    const { register, handleSubmit, control, formState:{ errors } } = useForm();
+    const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
     const [ngKeywords, setNgKeywords] = useState<string[]>([])
-    const [ngKewwordsError, setNgKeywordError] = useState<string>("")
-    const onSubmit = (data:any) => {
-        if (ngKeywords.length > 0) {
-            console.log(data)
-        } else {
-            setNgKeywordError('この項目は必須です。')
+    const [generalError, setGeneralError] = useState<string>("")
+    useEffect(() => {
+        if (row !== null) {
+            setNgKeywords(row.ng_keywords)
+            setValue('title', row.title, { shouldValidate: true })
+            setValue('ng_keyword_conditions', row.ng_keyword_conditions, { shouldValidate: true })
         }
+    }, [row])
+    const onSubmit = async (data:any) => {
+        data["ng_keywords"] = ngKeywords
+        console.log(data)
+        try {
+            if (mode === "create") {
+                const res = await backendAxios.post(`api/v1/condition/`, data)
+                console.log(res)
+            } else {
+                const res = await backendAxios.put(`api/v1/condition/${row?.id}/`, data)
+                console.log(res)
+            }
+            props.setOpen('')
+        } catch (err:Error) {
+            const errorMessages = err?.response?.data
+            if(errorMessages.title !== undefined) {
+                setGeneralError('同じタイトルのチェック条件が既に存在しています。')
+            }
+            
+        }
+
     }
 
     const checkKeyDown = (e:React.KeyboardEvent<HTMLInputElement>) => {
@@ -47,7 +90,8 @@ function ConditionForm(props:Props) {
             <FormControl error={errors.title?true:false}>
                 <Input {...register('title',{
                     required: true
-                  })} className="form-modal-field"/>
+                  })}
+                  className="form-modal-field"/>
                 <FormHelperText>{errors.title?"この項目は必須です。":""}</FormHelperText>
             </FormControl>
             </CustomField>
@@ -73,8 +117,14 @@ function ConditionForm(props:Props) {
             <Button variant="outlined" onClick={() => props.setOpen('')}>キャンセル</Button>
             <Button variant="contained" type="submit">保存する</Button>
             </div>
-
             </form>
+            {generalError.length > 0?
+            <Alert severity="error" style={{margin: "10px"}}>
+                <AlertTitle>チェック条件の{modeJapanese}に失敗しました。</AlertTitle>
+                <strong>{generalError}</strong>
+            </Alert>:
+            <></>
+            }
         </FormModal>
     )
 }

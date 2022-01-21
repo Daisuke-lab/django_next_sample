@@ -26,18 +26,18 @@ function NgWordConditionsField(props:Props) {
     const {ngKeywords, control, register, errors} = props
     const { fields, append,  remove } = useFieldArray({
         control,
-        name: "ngKeywordConditions"
+        name: "ng_keyword_conditions"
       });
 
 
     const onAdd = () => {
         const newNgKeywordCondition = {
-            ngKeyword: "全体",
-            compositeKeyword: "",
-            frontCheckWordCount: 0,
-            backCheckWordCount: 0,
-            checkTargetPeirod: 0,
-            periodUnit: "days"
+            ng_keyword: "全体",
+            composite_keyword: "",
+            front_check_word_count: 0,
+            back_check_word_count: 0,
+            check_target_period: 0,
+            period_unit: "days"
         } as NgKeywordConditionType
         append(newNgKeywordCondition)
     }
@@ -49,31 +49,31 @@ function NgWordConditionsField(props:Props) {
         <div style={{width: "350px"}}>
         {fields.map((ngKeywordCondition, index) => (
             <div key={ngKeywordCondition.id} className={styles.fieldsContainer}>
-            <FormControl error={errors.ngKeywordConditions?.[index]?.ngKeyword?true:false}>
+            <FormControl error={errors.ng_keyword_conditions?.[index]?.ng_keyword?true:false}>
             <Autocomplete
                 className="form-modal-field"
                 options={["全体", ...ngKeywords]}
                 defaultValue="全体"
                 renderInput={(params) => <TextField {...params} label="NGキーワード"
-                {...register(`ngKeywordConditions.${index}.ngKeyword`,{
+                {...register(`ng_keyword_conditions.${index}.ng_keyword`,{
                     required: true
                   })}
                 variant="standard"/>}
                 />
-            <FormHelperText>{errors.ngKeywordConditions?.[index]?.ngKeyword?"この項目は必須です。":""}</FormHelperText>
+            <FormHelperText>{errors.ng_keyword_conditions?.[index]?.ng_keyword?"この項目は必須です。":""}</FormHelperText>
             </FormControl>
-            <FormControl error={errors.ngKeywordConditions?.[index]?.compositeKeyword?true:false}>
+            <FormControl error={errors.ng_keyword_conditions?.[index]?.composite_keyword?true:false}>
             <TextField
                 label="複合キーワード"
                 variant="standard"
                 className="form-modal-field"
-                {...register(`ngKeywordConditions.${index}.compositeKeyword`, {
+                {...register(`ng_keyword_conditions.${index}.composite_keyword`, {
                     required: true
                   })}
                 />
-            <FormHelperText>{errors.ngKeywordConditions?.[index]?.compositeKeyword?"この項目は必須です。":""}</FormHelperText>
+            <FormHelperText>{errors.ng_keyword_conditions?.[index]?.composite_keyword?"この項目は必須です。":""}</FormHelperText>
             </FormControl>
-            <FormControl error={errors.ngKeywordConditions?.[index]?.frontCheckWordCount?true:false}>
+            <FormControl error={errors.ng_keyword_conditions?.[index]?.front_check_word_count?true:false}>
             <TextField
                 label="チェック文字数（前）"
                 className="form-modal-field"
@@ -82,14 +82,14 @@ function NgWordConditionsField(props:Props) {
                 }}
                 type="number"
                 variant="standard"
-                {...register(`ngKeywordConditions.${index}.frontCheckWordCount`, {
+                {...register(`ng_keyword_conditions.${index}.front_check_word_count`, {
                     min: 1,
                     required: true
                   })}
                 />
-                <FormHelperText>{errors.ngKeywordConditions?.[index]?.frontCheckWordCount?"1以上を入力して下さい。":""}</FormHelperText>
+                <FormHelperText>{errors.ng_keyword_conditions?.[index]?.front_check_word_count?"1以上を入力して下さい。":""}</FormHelperText>
             </FormControl>
-            <FormControl error={errors.ngKeywordConditions?.[index]?.backCheckWordCount?true:false}>
+            <FormControl error={errors.ng_keyword_conditions?.[index]?.back_check_word_count?true:false}>
                 <TextField
                 className="form-modal-field"
                 label="チェック文字数（後）"
@@ -98,20 +98,20 @@ function NgWordConditionsField(props:Props) {
                 }}
                 type="number"
                 variant="standard"
-                {...register(`ngKeywordConditions.${index}.backCheckWordCount`, {
+                {...register(`ng_keyword_conditions.${index}.back_check_word_count`, {
                     min: 1,
                     required: true
                   })}
                 />
-                <FormHelperText>{errors.ngKeywordConditions?.[index]?.backCheckWordCount?"1以上を入力して下さい。":""}</FormHelperText>
+                <FormHelperText>{errors.ng_keyword_conditions?.[index]?.back_check_word_count?"1以上を入力して下さい。":""}</FormHelperText>
                 </FormControl>
-                <FormControl error={errors.ngKeywordConditions?.[index]?.checkTargetPeirod?true:false}>
+                <FormControl error={errors.ng_keyword_conditions?.[index]?.check_target_peirod?true:false}>
                 <TextField
                 className="form-modal-field"
                 label="チェック対象期間"
                 InputProps={{
                     endAdornment: (<Select
-                    {...register(`ngKeywordConditions.${index}.periodUnit`)}
+                    {...register(`ng_keyword_conditions.${index}.period_unit`)}
                     defaultValue="days">
                                         <MenuItem value="days">日以内</MenuItem>
                                         <MenuItem value="month">月以内</MenuItem>
@@ -120,12 +120,12 @@ function NgWordConditionsField(props:Props) {
                 }}
                 type="number"
                 variant="standard"
-                {...register(`ngKeywordConditions.${index}.checkTargetPeirod`, {
+                {...register(`ng_keyword_conditions.${index}.check_target_period`, {
                     min: 1,
                     required: true
                   })}
                 />
-                <FormHelperText>{errors.ngKeywordConditions?.[index]?.checkTargetPeirod?"1以上を入力して下さい。":""}</FormHelperText>
+                <FormHelperText>{errors.ng_keyword_conditions?.[index]?.check_target_period?"1以上を入力して下さい。":""}</FormHelperText>
                 </FormControl>
             <IconButton onClick={() => onDelete(index)}>
                 <CancelIcon/>
