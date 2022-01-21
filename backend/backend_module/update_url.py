@@ -1,6 +1,5 @@
 # 調査対象URLのリストをget
 import sys
-from telnetlib import STATUS
 
 sys.path.append("../")
 from backend_module.common import Common

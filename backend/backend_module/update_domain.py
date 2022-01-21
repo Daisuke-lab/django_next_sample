@@ -131,8 +131,8 @@ class UpdateDomain(Common):
                     result_domain_lists.append(link)
         return result_domain_lists
 
-    def update_domain_database(self, all_domains):
-        for domain in all_domains:
+    def update_domain_database(self, domains):
+        for domain in domains:
             if domain == "":
                 continue
             client_domain = Domain.objects.get(domain=domain, trademark=self.trademark_kw)
@@ -149,8 +149,9 @@ class UpdateDomain(Common):
         self.trademark_kw = Trademark.objects.get(id=trademark_kw_id)
         self.client_presco_id = kwargs["client_presco_id"]
 
+        specific_search_domains = self.get_specific_search_domains()
         dotai_domains = self.get_dotai_domains()
         referrer_domains = self.get_referrer_domain()
-        all_domains = dotai_domains + referrer_domains
+        all_domains = dotai_domains + referrer_domains + specific_search_domains
         all_domains = list(set(all_domains))
-        self.update_domain_database(all_domains=all_domains)
+        self.update_domain_database(domains=all_domains)
