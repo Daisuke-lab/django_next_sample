@@ -21,7 +21,7 @@ export interface RowType {
 
 export interface ColumnType {
   id: number,
-  name: string,
+  name: any,
   display?: boolean,
   label: string
 

@@ -1,34 +1,84 @@
 from wsgiref import validate
 from rest_framework import serializers
 from .models import Genre, Product, Product_Condition
-from django.shortcuts import get_object_or_404
+#from django.shortcuts import get_object_or_404
+from config.helper import get_object_or_404
 from django.utils import timezone
+from rest_framework.validators import UniqueValidator
+from users.models import User
+from domains.models import Trademark
 
 class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genre
         fields = ["name"]
+
+
+class TrademarkSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Trademark
+        fields = ["name"]
+
         
 class ProductSerializer(serializers.ModelSerializer):
-    #product_condition_title = serializers.CharField(max_length=200)
+    product_condition = serializers.CharField(max_length=200)
+    genre = serializers.CharField(max_length=200)
+    trademark_names = serializers.ListField(child=serializers.CharField(max_length=100), write_only=True)
+    trademarks = TrademarkSerializer(read_only=True, many=True)
     class Meta:
         model = Product
-        fields = ["user", "name", "memo", "genre", "product_condition"]
-        read_only_fields = ['created_at', 'updated_at']
+        fields = ["user", "name", "memo", "genre", "product_condition", "id", "created_at", "updated_at", "trademarks", "trademark_names"]
+        read_only_fields = ["id", 'created_at', 'updated_at', "trademarks"]
+        extra_kwargs = {'memo': {'required': False}}
 
     def create(self, validated_data):
-        return Product.objects.create(**validated_data)
+        print(validated_data)
+        product_condition = get_object_or_404(Product_Condition, "product_condition", title=validated_data["product_condition"])
+        genre = get_object_or_404(Genre, "genre", name=validated_data["genre"])
+        product_data = {
+            "user": validated_data["user"],
+            "name": validated_data["name"],
+            "memo": validated_data.get("memo"),
+            "product_condition": product_condition,
+            "genre": genre
+        }
+        product =  Product.objects.create(**product_data)
+        for trademark_name in validated_data["trademark_names"]:
+            Trademark.objects.create(name=trademark_name, product=product)
+
+        return product
+
 
     def update(self, instance, validated_data):
+        product_condition = get_object_or_404(Product_Condition,"product_condition", title=validated_data["product_condition"])
+        genre = get_object_or_404(Genre, "genre", name=validated_data["genre"])
         instance.name = validated_data.get('name', instance.name)
         instance.user = validated_data.get('user', instance.user)
         instance.memo = validated_data.get('memo', instance.memo)
-        instance.genre = validated_data.get('genre', instance.genre)
-        instance.product_condition = validated_data.get('product_condition', instance.product_condition)
+        instance.genre = genre
+        instance.product_condition = product_condition
+        self.update_trademarks(instance, validated_data["trademark_names"])
         instance.updated_at = timezone.now()
         instance.save()
 
         return instance
+
+    def update_trademarks(self, instance, trademarks):
+        if trademarks is not None:
+            trademark_instances = list(instance.trademarks.values_list('name', flat=True))
+            for trademark in trademarks:
+                if trademark in trademark_instances:
+                    pass
+                else:
+                    trademark = Trademark.objects.create(name=trademark, product=instance)
+            instance.save()
+            trademark_instances = list(instance.trademarks.values_list("id", 'name'))
+            for trademark in trademark_instances:
+                _id, name = trademark
+                if name not in trademarks:
+                    trademark = Trademark.objects.get(id=_id)
+                    trademark.delete()
 
         

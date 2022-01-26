@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import type { NextPage } from 'next'
 import Container from '../src/components/Container'
 import Table from '../src/components/CustomTable'
@@ -8,72 +8,80 @@ import { red, blue, teal } from '@mui/material/colors';
 import {RowType, ColumnType} from '../src/components/CustomTable'
 import {productColumns} from '../src/helpers/formColumns'
 import FormModal, {FormColumnType, FormType} from '../src/components/FormModal'
-import ProductForm from '../src/components/ProductForm';
+import ProductForm, {ProductType} from '../src/components/ProductForm';
 import backendAxios from '../src/helpers/axios'
 import {GenreType} from '../src/GlobalType'
+import dateFormatter from '../src/helpers/dateFormatter';
+import DeleteForm from '../src/components/DeleteForm';
 
 const columns = [
-  {id: 1, name: "id"},
-  {id: 2, name: "title"},
-  {id: 3, name: "ng_keywords"},
-  {id: 4, name: "button", display:false},
+  {id: 1, name: "name", label: "商品名"},
+  {id: 2, name: "product_condition", label: "チェック条件"},
+  {id: 3, name: "genre", label:"ジャンル"},
+  {id: 4, name: "created_at", label:"登録日"},
+  {id: 5, name: "updated_at", label:"最終チェック日"},
+  {id: 5, name: "button", display: false},
 ] as ColumnType[]
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35},
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65},
-] as RowType[]
+
 
 
 interface Props {
   genres: GenreType[],
-  productConditions : any[]
+  products : any[],
+  productConditions: any[]
 }
 
 
 const Main: NextPage = (props) => {
   const [open, setOpen] = useState<string>("")
   const [mode, setMode] = useState<"edit" | "create" | "">("")
-  const {genres, productConditions} = props as Props
-  const onEdit = (row:RowType) => {
-    productColumns.map((column) => {
-      column.defaultValue = row[column.name]
-      return column
-    })
+  const [currentRow, setCurrentRow] = useState<ProductType | null>(null)
+  const {genres, products, productConditions} = props as Props
+
+  const onEdit = (row:ProductType) => {
     setMode("edit")
+    setCurrentRow(row)
     setOpen("ProductForm")
   }
 
   const onCreate = () => {
     setMode("create")
+    setCurrentRow(null)
     setOpen("ProductForm")
   }
-  rows.map((row) => {
-    row.button = (
-      <div className='table-button-container'>
-      <ColorButton color={teal} label="編集"
-       onClick={() => onEdit(row)}/>
-       <ColorButton color={red} label="削除"
-       onClick={() => {console.log('clicked')}}/>
-      </div>
-    )
-    return row
-  })
+
+  const onDelete = (row:ProductType) => {
+    setOpen("DeleteForm")
+    setCurrentRow(row)
+  }
+
+  useEffect(() => {
+    products.map((row) => {
+      row.created_at = dateFormatter(row.created_at)
+      row.updated_at = dateFormatter(row.updated_at)
+      row.button = (
+        <div className='table-button-container'>
+        <ColorButton color={teal} label="編集"
+         onClick={() => onEdit(row)}/>
+         <ColorButton color={red} label="削除"
+         onClick={() => onDelete(row)}/>
+        </div>
+      )
+      return row
+    })
+  }, [])
     return (
       <Container>
         <ColorButton color={blue} label="商品登録" onClick={onCreate} className='margin-button'/>
         <ColorButton color={red} label="一括削除" onClick={() => {console.log('clicked')}} className='margin-button'/>
-        <Table columns={columns} rows={rows}/>
+        <Table columns={columns} rows={products}/>
         <ProductForm open={open==="ProductForm"} setOpen={setOpen} mode={mode}
         genres={genres}
+        row={currentRow}
         productConditions={productConditions}/>
+        <DeleteForm open={open==="DeleteForm"} setOpen={setOpen} title={currentRow?.name} 
+        endpoint={`api/v1/product/${currentRow?.id}/`}/>
       </Container>
     )
   }
@@ -83,6 +91,7 @@ const Main: NextPage = (props) => {
     // You can use any data fetching library
     let productConditions:any[] = []
     let genres:any[] = []
+    let products:any[] = []
     try {
       const res = await backendAxios.get('api/v1/condition/')
       console.log(res.data)
@@ -97,13 +106,30 @@ const Main: NextPage = (props) => {
     } catch(err) {
       console.log(err)
     }
+
+    try {
+      const res = await backendAxios.get('api/v1/product')
+      products = res.data
+      for (let i = 0; i < products.length; i++) {
+        const newTrademarks = []
+        const trademarks = products[i].trademarks
+        for (let j = 0; j < trademarks.length; j++) {
+          const trademark = trademarks[j]
+          newTrademarks.push(trademark["name"])
+        }
+        products[i].trademarks = newTrademarks
+      }
+    } catch(err) {
+      console.log(err)
+    }
   
     // By returning { props: { posts } }, the Blog component
     // will receive `posts` as a prop at build time
     return {
       props: {
-        productConditions,
-        genres: genres
+        products,
+        genres,
+        productConditions
       },
     }
   }

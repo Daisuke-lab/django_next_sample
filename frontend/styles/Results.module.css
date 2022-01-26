@@ -1,0 +1,16 @@
+.priorityBox {
+  height: 10px;
+  width: 10px;
+  margin-right: 3px;
+}
+
+.priorityContainer {
+  display: flex;
+  align-items: baseline;
+}
+
+.prioritiesContainer {
+  display: flex;
+  justify-content: space-around;
+  width: 153px;
+}
