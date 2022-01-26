@@ -100,7 +100,8 @@ function ConditionForm(props:Props) {
                 items={ngKeywords}
                 setItems={setNgKeywords}
                 register={register}
-                errors={errors}
+                error={errors.ng_keywords}
+                name="ng_keywords"
                 control={control}
                 />
             </CustomField>

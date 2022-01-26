@@ -11,13 +11,12 @@ interface Props {
     setItems: React.Dispatch<React.SetStateAction<string[]>>,
     register: any,
     control: any,
-    errors: {
-        [x: string]: any;
-    }
+    error: any,
+    name:string
 
 }
 function TagsInput(props:Props) {
-    const {items, setItems, register, errors, control} = props
+    const {items, setItems, register, error, control, name} = props
     const [input, setInput] = useState<string>("")
     const handleDelete = (item:string) => () => {
         const newItems = [...items];
@@ -29,9 +28,11 @@ function TagsInput(props:Props) {
         const target = e.target as HTMLInputElement
         if (e.keyCode === 13 && target.value !== "") {
             // エンターキー押下時の処理
-            console.log(target.value);
-            const newItem = target.value as string
-            setItems([...items, newItem])
+            if (!items.includes(target.value)) {
+                console.log(target.value);
+                const newItem = target.value as string
+                setItems([...items, newItem])
+            }
             setInput('')
             }
     }
@@ -42,7 +43,7 @@ function TagsInput(props:Props) {
 
 
     return (
-        <FormControl error={errors.ngKeywords?true:false}>
+        <FormControl error={error?true:false}>
             <Controller
                 control={control}
                 rules={{
@@ -71,9 +72,9 @@ function TagsInput(props:Props) {
                 }}
             />
                 )}
-                name="ng_keywords"
+                name={name}
             />
-            <FormHelperText>{errors.ng_keywords?"この項目は必須です。":""}</FormHelperText>
+            <FormHelperText>{error?"この項目は必須です。":""}</FormHelperText>
         </FormControl>
     )
 }
