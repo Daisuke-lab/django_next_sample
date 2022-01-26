@@ -149,8 +149,8 @@ class UpdateTargetUrl(Common):
         all_target_domain = Domain.objects.filter(trademark=self.trademark_kw).exclude(status=0)
         for target_domain in all_target_domain:
             all_url_list = self.get_domain_allurl(domain=target_domain.domain)
-            if len(all_url_list) > 2000:
-                print("サイトマップからのURL抽出数が上限の2000を超えました")
+            if len(all_url_list) > 1000:
+                print("サイトマップからのURL抽出数が上限の1000を超えました")
                 print("APIを利用します。")
                 all_url_list = self.get_search_result_api(domain=target_domain.domain)
                 filtered_url_list = all_url_list

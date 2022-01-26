@@ -150,8 +150,8 @@ class UpdateDomain(Common):
         self.client_presco_id = kwargs["client_presco_id"]
 
         specific_search_domains = self.get_specific_search_domains()
-        dotai_domains = self.get_dotai_domains()
-        referrer_domains = self.get_referrer_domain()
-        all_domains = dotai_domains + referrer_domains + specific_search_domains
-        all_domains = list(set(all_domains))
+        # プレスコのデータを取得できなくなってしまったためコメントアウト
+        # dotai_domains = self.get_dotai_domains()
+        # referrer_domains = self.get_referrer_domain()
+        all_domains = list(set(specific_search_domains))
         self.update_domain_database(domains=all_domains)
