@@ -2,6 +2,7 @@
 import imp
 import sys
 from turtle import update
+from backend.products.models import Product
 
 sys.path.append("../")
 from backend_module.common import Common
@@ -143,15 +144,13 @@ class UpdateDomain(Common):
                 client_domain.updated_at = timezone.now()
                 client_domain.save()
 
-    def job(self, **kwargs):
-        # kwargsにはtrademark_kw_idとclient_presco_idを引数として与える
-        trademark_kw_id = kwargs["trademark_kw_id"]
-        self.trademark_kw = Trademark.objects.get(id=trademark_kw_id)
-        self.client_presco_id = kwargs["client_presco_id"]
-
+    def job(self, product_id):
+        product = Product.objects.get(id=product_id)
+        self.trademark_kw = product.trademark
         specific_search_domains = self.get_specific_search_domains()
         # プレスコのデータを取得できなくなってしまったためコメントアウト
         # dotai_domains = self.get_dotai_domains()
         # referrer_domains = self.get_referrer_domain()
         all_domains = list(set(specific_search_domains))
         self.update_domain_database(domains=all_domains)
+        return all_domains

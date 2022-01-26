@@ -141,19 +141,14 @@ class UpdateTargetUrl(Common):
                     result_url_lists.append(link)
         return result_url_lists
 
-    def job(self, **kwargs):
-        # kwargsにはtrademark_kw_idを引数として与える
-        trademark_kw_id = kwargs["trademark_kw_id"]
-        self.trademark_kw = Trademark.objects.get(id=trademark_kw_id)
-
-        all_target_domain = Domain.objects.filter(trademark=self.trademark_kw).exclude(status=0)
-        for target_domain in all_target_domain:
-            all_url_list = self.get_domain_allurl(domain=target_domain.domain)
+    def job(self, domains):
+        for target_domain in domains:
+            all_url_list = self.get_domain_allurl(domain=target_domain)
             if len(all_url_list) > 1000:
                 print("サイトマップからのURL抽出数が上限の1000を超えました")
                 print("APIを利用します。")
-                all_url_list = self.get_search_result_api(domain=target_domain.domain)
+                all_url_list = self.get_search_result_api(domain=target_domain)
                 filtered_url_list = all_url_list
             else:
                 filtered_url_list = self.filter_all_urls(all_url_list=all_url_list)
-            self.insert_target_urls(target_urls=filtered_url_list, domain_id=target_domain)
+            self.insert_target_urls(target_urls=filtered_url_list, domain=target_domain)

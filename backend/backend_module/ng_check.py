@@ -36,16 +36,8 @@ class NgCheck(Common):
                             break
                     Check_Result.objects.create(url=target_url.url, priority=priority, confirmed=False)
 
-    def job(self, **kwargs):
-        # kwargsにはtrademark_kw_idとproduct_idを引数として与える
-        trademark_kw_id = kwargs["trademark_kw_id"]
-        product_id = kwargs["product_id"]
-
-        trademark = Trademark.objects.get(id=trademark_kw_id)
-        client_target_domains = Domain.objects.fileter(trademark=trademark)
-
-
-        for domain in client_target_domains:
+    def job(self, domains, product_id):
+        for domain in domains:
             client_target_urls = Url.objects.fileter(domain=domain)
             middle_kws = NG_Keyword_Condition.objects.filter(product_condition=Product.objects.get(id=product_id).product_condition).exclude(status=0)
             self.ng_check(middle_kws=middle_kws, target_urls=client_target_urls)

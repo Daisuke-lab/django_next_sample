@@ -1,5 +1,7 @@
+import imp
 from django.db import models
 from users.models import User
+from domains.models import Trademark
 from conditions.models import NG_Keyword, NG_Keyword_Condition
 import uuid
 
@@ -20,6 +22,7 @@ class Product(models.Model):
     memo = models.TextField()
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
     status = models.IntegerField()
+    trademark = models.ForeignKey(Trademark, on_delete=models.CASCADE)
     product_condition = models.ForeignKey(Product_Condition, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
