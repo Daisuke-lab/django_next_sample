@@ -6,22 +6,9 @@ from products.models import Product
 #from domains.serializers import TrademarkSerializer
 from django.db.models import Sum, Q, Count
 from products.serializers import GenreSerializer
-class CheckResultSerializer(serializers.ModelSerializer):
+from config.helper import get_object_or_404
 
-    class Meta:
-        model = Check_Result
-        fields = ["id", "url"]
-
-class TrademarkSerializer(serializers.ModelSerializer):
-
-    name = serializers.CharField(max_length=200)
-
-    class Meta:
-        model = Trademark
-        fields=["name"]
 class ProductSerializer(serializers.ModelSerializer):
-    #trademarks = TrademarkSerializer(read_only=True, many=True)
-    #rademarks = serializers.ListField(child=serializers.CharField(max_length=200))
     trademarks = serializers.SerializerMethodField()
     latest_check_date = serializers.SerializerMethodField()
     priorities = serializers.SerializerMethodField()
@@ -57,3 +44,24 @@ class ProductSerializer(serializers.ModelSerializer):
                 "unknown": result.unknown,
                 "sum": sum
             }
+
+
+class CheckResultSerializer(serializers.ModelSerializer):
+    url = serializers.CharField(source="url.url")
+    domain = serializers.CharField(source="url.domain.domain")
+    ng_keywords = serializers.SerializerMethodField()
+    priority_display = serializers.CharField(source='get__priority_display', read_only=True)
+    
+    class Meta:
+        model = Check_Result
+        fields = ["id", "domain", "url", "ng_keywords", "priority_display", "confirmed"]
+
+
+    def get_ng_keywords(self, obj):
+        check_result = get_object_or_404(Check_Result, "check_result", id=obj.pk)
+        product = check_result.url.domain.trademark.product
+        ng_keyword_conditions = product.product_condition.ng_keyword_conditions.all()
+        ng_keywords = []
+        for ng_keyword_condition in ng_keyword_conditions:
+            ng_keywords.append(ng_keyword_condition.ng_keyword.name)
+        return ng_keywords

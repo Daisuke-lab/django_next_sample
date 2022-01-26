@@ -12,6 +12,7 @@ import styles from '../../styles/Results.module.css'
 import { workerData } from 'worker_threads';
 import PercentageBar from '../../src/components/PercentageBar';
 import {highColor, middleColor, lowColor, unknownColor} from "../../src/helpers/colors"
+import { useRouter } from 'next/router'
 const priorities = [
   {color: highColor, label: "高"},
   {color: middleColor, label: "中"},
@@ -54,6 +55,7 @@ interface Props {
 const Result: NextPage = (props) => {
 
   const {results} = props as Props
+  const router = useRouter()
   results.map((row) => {
     row.latest_check_date = dateFormatter(row.latest_check_date)
     const sum = row.priorities.sum
@@ -77,7 +79,7 @@ const Result: NextPage = (props) => {
     row.button = (
       <div className='table-button-container'>
        <ColorButton color={blue} label="詳細"
-       onClick={() => {console.log('clicked')}}/>
+       onClick={() => {router.push(`/results/${row.id}`)}}/>
       </div>
     )
     return row
@@ -91,21 +93,14 @@ const Result: NextPage = (props) => {
   }
 
   export async function getStaticProps() {
-    // Call an external API endpoint to get posts.
-    // You can use any data fetching library
+
     let results:any[] = []
     try {
-      const res = await backendAxios.get('api/v1/result/')
-      console.log(res.data)
+      const res = await backendAxios.get('api/v1/result/product/')
       results = res.data
     } catch(err) {
       console.log(err)
     }
-
-  
-  
-    // By returning { props: { posts } }, the Blog component
-    // will receive `posts` as a prop at build time
     return {
       props: {
         results

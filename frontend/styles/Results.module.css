@@ -14,3 +14,9 @@
   justify-content: space-around;
   width: 153px;
 }
+
+.headerContainer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}

@@ -24,6 +24,10 @@ function Container({children}:any) {
     useEffect(() => {
         const pathname:string= window.location.pathname;
         setCurrentTitle(pages[pathname])
+
+        if (pathname.includes("results")) {
+            setCurrentTitle("チェック結果詳細")
+        }
     }, [])
 
     const getContainerHeight = () => {
