@@ -145,8 +145,7 @@ class UpdateDomain(Common):
                 client_domain.save()
 
     def job(self, product_id):
-        product = Product.objects.get(id=product_id)
-        self.trademark_kw = product.trademark
+        self.trademark = Trademark.objects.get(product=product_id)
         specific_search_domains = self.get_specific_search_domains()
         # プレスコのデータを取得できなくなってしまったためコメントアウト
         # dotai_domains = self.get_dotai_domains()

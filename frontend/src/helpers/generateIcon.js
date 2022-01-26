@@ -12,7 +12,7 @@ const generateIcon = (title) => {
             return <SettingsIcon/>
         case "チェック結果一覧":
             return <ListAltIcon/>
-        case "除外ドメイン設定":
+        case "ドメイン設定":
             return <AccountTreeIcon/>
         default:
             return <></>

@@ -5,33 +5,75 @@ import Table from '../../src/components/CustomTable'
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import ColorButton from '../../src/components/ColorButton';
 import { red, blue } from '@mui/material/colors';
+import {RowType, ColumnType} from '../../src/components/CustomTable'
+import backendAxios from '../../src/helpers/axios'
+import dateFormatter from '../../src/helpers/dateFormatter';
+import styles from '../../styles/Results.module.css'
+import { workerData } from 'worker_threads';
+import PercentageBar from '../../src/components/PercentageBar';
+import {highColor, middleColor, lowColor, unknownColor} from "../../src/helpers/colors"
+const priorities = [
+  {color: highColor, label: "高"},
+  {color: middleColor, label: "中"},
+  {color: lowColor, label: "低"},
+  {color: unknownColor, label: "判定中"},
+]
 
-
-
+const priority = () => (
+  <div>
+    <p>優先度割合</p>
+    <div className={styles.prioritiesContainer}>
+    {priorities.map((priority) =>  (
+        <div className={styles.priorityContainer}>
+        <div className={styles.priorityBox} style={{backgroundColor: priority.color}}></div>
+        <p>{priority.label}</p>
+        </div>
+      )
+    )}
+    </div>
+  </div>
+  )
 const columns = [
-  {id: 1, name: "id"},
-  {id: 2, name: "title"},
-  {id: 3, name: "ng_keywords"},
-  {id: 4, name: "button", display:false},
+  {id: 1, name: "product_name", label: "商品名"},
+  {id: 2, name: "trademarks", label: "商標キーワード"},
+  {id: 3, name: "genre", label:"ジャンル"},
+  {id: 4, name: "latest_check_date", label:"チェック日"},
+  {id: 5, name: "priority", label: priority()},
+  {id: 6, name: "button", display: false},
 ] as ColumnType[]
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65, test:<button>test</button> },
-];
 
 
 
 
+interface Props {
+  results: any[]
+}
 
-const Result: NextPage = () => {
-  rows.map((row) => {
+
+
+const Result: NextPage = (props) => {
+
+  const {results} = props as Props
+  results.map((row) => {
+    row.latest_check_date = dateFormatter(row.latest_check_date)
+    const sum = row.priorities.sum
+    const colors = {high: highColor, middle: middleColor, low: lowColor, unknown: unknownColor}
+    const priorities = {...row.priorities}
+    delete priorities.sum
+    row.priority = (
+      <div>
+      <div className={styles.prioritiesContainer}>
+        {Object.keys(priorities).map((key) => (
+          <div className={styles.priorityContainer}>
+          <div className={styles.priorityBox} style={{backgroundColor: colors[key]}}></div>
+          <p>{row.priorities[key]}</p>
+          </div>
+        ))}
+      </div>
+      <PercentageBar {...row.priorities}/>
+      </div>
+
+    )
     row.button = (
       <div className='table-button-container'>
        <ColorButton color={blue} label="詳細"
@@ -43,8 +85,33 @@ const Result: NextPage = () => {
     return (
       <Container>
         <ColorButton color={blue} label="絞り込む" onClick={() => {console.log('clicked')}} className='margin-button'/>
-          <Table columns={columns} rows={rows}/>
+          <Table columns={columns} rows={results}/>
       </Container>
     )
   }
+
+  export async function getStaticProps() {
+    // Call an external API endpoint to get posts.
+    // You can use any data fetching library
+    let results:any[] = []
+    try {
+      const res = await backendAxios.get('api/v1/result/')
+      console.log(res.data)
+      results = res.data
+    } catch(err) {
+      console.log(err)
+    }
+
+  
+  
+    // By returning { props: { posts } }, the Blog component
+    // will receive `posts` as a prop at build time
+    return {
+      props: {
+        results
+      },
+    }
+  }
+
+
   export default Result
