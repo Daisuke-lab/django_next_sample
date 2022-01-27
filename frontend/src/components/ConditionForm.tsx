@@ -12,9 +12,7 @@ import TagsInput from './TagsInput'
 import NgWordConditionsField from './NgKeywordConditionsField'
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
-//import axios from 'axios'
 import backendAxios from '../helpers/axios'
-import { accordionSummaryClasses } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import type { NextPage } from 'next'
 import Container from '../../src/components/Container'
 import Table from '../../src/components/CustomTable'
@@ -13,6 +13,7 @@ import { workerData } from 'worker_threads';
 import PercentageBar from '../../src/components/PercentageBar';
 import {highColor, middleColor, lowColor, unknownColor} from "../../src/helpers/colors"
 import { useRouter } from 'next/router'
+import ResultForm from '../../src/components/ResultForm';
 const priorities = [
   {color: highColor, label: "高"},
   {color: middleColor, label: "中"},
@@ -54,7 +55,9 @@ interface Props {
 
 const Result: NextPage = (props) => {
 
-  const {results} = props as Props
+  const {results:resultData} = props as Props
+  const [results, setResults] = useState<any[]>(resultData)
+  const [open, setOpen] = useState<string>("")
   const router = useRouter()
   results.map((row) => {
     row.latest_check_date = dateFormatter(row.latest_check_date)
@@ -84,10 +87,17 @@ const Result: NextPage = (props) => {
     )
     return row
   })
+
+  const onFilter = () => {
+    setOpen('ResultForm')
+  }
     return (
       <Container>
-        <ColorButton color={blue} label="絞り込む" onClick={() => {console.log('clicked')}} className='margin-button'/>
+        <ColorButton color={blue} label="絞り込む" onClick={onFilter} className='margin-button'/>
           <Table columns={columns} rows={results}/>
+          <ResultForm open={"ResultForm"===open} setOpen={setOpen}
+          results={results}
+          setResults={setResults} mode=""/>
       </Container>
     )
   }
@@ -96,7 +106,7 @@ const Result: NextPage = (props) => {
 
     let results:any[] = []
     try {
-      const res = await backendAxios.get('api/v1/result/product/')
+      const res = await backendAxios.get('api/v1/result/product')
       results = res.data
     } catch(err) {
       console.log(err)

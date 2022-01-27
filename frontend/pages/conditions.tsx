@@ -30,21 +30,19 @@ const Condition: NextPage = (props) => {
   const [currentRow, setCurrentRow] = useState<ProductConditionType | null>(null)
   const [mode, setMode] = useState<"edit" | "create" | "">("")
 
-  useEffect(() => {
-    productConditions.map((row) => {
-      row.button = (
-        <div className='table-button-container'>
-        <ColorButton color={teal} label="編集"
-         onClick={() => onEdit(row)}/>
-         <ColorButton color={blue} label="複製"
-         onClick={() => onEdit(row)}/>
-         <ColorButton color={red} label="削除"
-         onClick={() => onDelete(row)}/>
-        </div>
-      )
-      return row
-    })
-  }, [])
+  productConditions.map((row) => {
+    row.button = (
+      <div className='table-button-container'>
+      <ColorButton color={teal} label="編集"
+       onClick={() => onEdit(row)}/>
+       <ColorButton color={blue} label="複製"
+       onClick={() => onEdit(row)}/>
+       <ColorButton color={red} label="削除"
+       onClick={() => onDelete(row)}/>
+      </div>
+    )
+    return row
+  })
 
   const onEdit = (row:ProductConditionType) => {
     setCurrentRow(row)
@@ -78,7 +76,6 @@ const Condition: NextPage = (props) => {
     let productConditions:any[] = []
     try {
       const res = await backendAxios.get('api/v1/condition/')
-      console.log(res.data)
       productConditions = res.data
       for (let i = 0; i < productConditions.length; i++) {
         const ngKeywords = []

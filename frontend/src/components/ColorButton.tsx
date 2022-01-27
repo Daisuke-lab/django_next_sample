@@ -11,11 +11,12 @@ interface Props {
     href?: string,
     type?: "button" | "submit" | "reset" | undefined
     onClick?: any,
+    disabled: boolean
 }
 const ColorButton = (props:Props) => {
     const CustomButton = styled(Button)(({ theme }) => ({
         color: props.color[50],
-        backgroundColor: props.color[500],
+        backgroundColor: props.disabled?"lightgrey":props.color[500],
         '&:hover': {
           backgroundColor: props.color[700],
         },
@@ -27,9 +28,14 @@ const ColorButton = (props:Props) => {
         variant="outlined" onClick={() => props.onClick()} href={props.href}
         className={className} style={style}
         type={props.type}
+        disabled={props.disabled}
         >{props.label}
         </CustomButton>
     )
 }
+
+ColorButton  .defaultProps = {
+  disabled: false
+};
  
 export default ColorButton  

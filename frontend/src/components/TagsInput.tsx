@@ -29,7 +29,6 @@ function TagsInput(props:Props) {
         if (e.keyCode === 13 && target.value !== "") {
             // エンターキー押下時の処理
             if (!items.includes(target.value)) {
-                console.log(target.value);
                 const newItem = target.value as string
                 setItems([...items, newItem])
             }

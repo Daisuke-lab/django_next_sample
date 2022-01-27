@@ -30,7 +30,7 @@ function DeleteForm(props:Props) {
     }
     return (
         <FormModal {...formModalProps}>
-            <p>{title}を削除する場合は以下に「delete me」と入力して下さい。</p>
+            <p>{title}をする場合は以下に「delete me」と入力して下さい。</p>
             <div style={{textAlign: "center"}}>
             <Input placeholder="delete me" onChange={onChange}/>
             </div>

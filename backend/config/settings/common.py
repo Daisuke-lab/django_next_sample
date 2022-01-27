@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import environ
-
+import os
 env = environ.Env()
 env.read_env('.env')
 
@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     'products',
     'conditions',
     'domains',
-    'results'
+    'results',
+    'django_celery_results',
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [
@@ -154,3 +156,6 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+CELERY_BROKER_URL = os.environ.get('REDIS_URL','redis://localhost:6379/1')
+CELERY_RESULT_BACKEND = "django-db"

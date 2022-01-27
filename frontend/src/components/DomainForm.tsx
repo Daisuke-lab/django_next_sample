@@ -48,7 +48,6 @@ function DomainForm(props:Props) {
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
     const [type, setType] = useState<1 | 2>(1)
     const [trademark, setTrademark] = useState<number>(0)
-    console.log(row)
 
     useEffect(() => {
         if (row !== null) {
