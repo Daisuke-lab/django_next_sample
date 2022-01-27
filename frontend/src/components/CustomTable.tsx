@@ -32,10 +32,15 @@ export interface ColumnType {
  }
  
 export default function CustomTable(props:Props) {
+  console.log(props.rows)
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   const [rows, setRows] = useState<RowType[]>(props.rows)
   const [selected, setSelected] = useState<readonly number[]>([]);
+
+  useEffect(() => {
+    setRows(props.rows)
+  }, [props.rows])
 
 
   const handleChangePage = (e:React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage:number) => {

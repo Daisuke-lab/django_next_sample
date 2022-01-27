@@ -56,21 +56,19 @@ const Main: NextPage = (props) => {
     setCurrentRow(row)
   }
 
-  useEffect(() => {
-    products.map((row) => {
-      row.created_at = dateFormatter(row.created_at)
-      row.updated_at = dateFormatter(row.updated_at)
-      row.button = (
-        <div className='table-button-container'>
-        <ColorButton color={teal} label="編集"
-         onClick={() => onEdit(row)}/>
-         <ColorButton color={red} label="削除"
-         onClick={() => onDelete(row)}/>
-        </div>
-      )
-      return row
-    })
-  }, [])
+  products.map((row) => {
+    row.created_at = dateFormatter(row.created_at)
+    row.updated_at = dateFormatter(row.updated_at)
+    row.button = (
+      <div className='table-button-container'>
+      <ColorButton color={teal} label="編集"
+       onClick={() => onEdit(row)}/>
+       <ColorButton color={red} label="削除"
+       onClick={() => onDelete(row)}/>
+      </div>
+    )
+    return row
+  })
     return (
       <Container>
         <ColorButton color={blue} label="商品登録" onClick={onCreate} className='margin-button'/>

@@ -8,7 +8,7 @@ from django.db.models import Sum, Q, Count
 from products.serializers import GenreSerializer
 from config.helper import get_object_or_404
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductResultSerializer(serializers.ModelSerializer):
     trademarks = serializers.SerializerMethodField()
     latest_check_date = serializers.SerializerMethodField()
     priorities = serializers.SerializerMethodField()
@@ -47,14 +47,15 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class CheckResultSerializer(serializers.ModelSerializer):
-    url = serializers.CharField(source="url.url")
-    domain = serializers.CharField(source="url.domain.domain")
+    url = serializers.CharField(source="url.url", read_only=True)
+    domain = serializers.CharField(source="url.domain.domain", read_only=True)
     ng_keywords = serializers.SerializerMethodField()
-    priority_display = serializers.CharField(source='get__priority_display', read_only=True)
-    
+    priority_display = serializers.CharField(source='get_priority_display', read_only=True)
+
     class Meta:
         model = Check_Result
-        fields = ["id", "domain", "url", "ng_keywords", "priority_display", "confirmed"]
+        fields = ["id", "domain", "url", "ng_keywords", "priority_display", "confirmed", "priority"]
+        read_only_fields = ["id", "domain", "url", "ng_keywords", "priority_display","priority"]
 
 
     def get_ng_keywords(self, obj):

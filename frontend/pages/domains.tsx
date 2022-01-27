@@ -50,20 +50,18 @@ const DomainSetting: NextPage = (props) => {
       setCurrentRow(row)
     }
 
-    useEffect(() => {
-      domains.map((row) => {
-        row.created_at = dateFormatter(row.created_at)
-        row.button = (
-          <div className='table-button-container'>
-          <ColorButton color={teal} label="編集"
-           onClick={() => onEdit(row)}/>
-           <ColorButton color={red} label="削除"
-           onClick={() => onDelete(row)}/>
-          </div>
-        )
-        return row
-      })
-    }, [])
+    domains.map((row) => {
+      row.created_at = dateFormatter(row.created_at)
+      row.button = (
+        <div className='table-button-container'>
+        <ColorButton color={teal} label="編集"
+         onClick={() => onEdit(row)}/>
+         <ColorButton color={red} label="削除"
+         onClick={() => onDelete(row)}/>
+        </div>
+      )
+      return row
+    })
 
 
     return (
@@ -89,14 +87,12 @@ const DomainSetting: NextPage = (props) => {
     let domains:any[] = []
     try {
       const res = await backendAxios.get('api/v1/domain/trademark/')
-      console.log(res.data)
       trademarks = res.data
     } catch(err) {
       console.log(err)
     }
     try {
       const res = await backendAxios.get('api/v1/domain/')
-      console.log(res.data)
       domains = res.data
     } catch(err) {
       console.log(err)
