@@ -76,11 +76,13 @@ function DomainForm(props:Props) {
     }
 
     const handleChange = (event: SelectChangeEvent) => {
-        setType(event.target.value as 1 | 2);
+        let newValue:number = parseInt(event.target.value)
+        newValue = [1,2].includes(newValue)?newValue:1
+        setType(newValue as 1 | 2);
       };
 
-    const onTrademarkChange = (event:React.ChangeEvent, value:{id:number, name:string}) => {
-        setTrademark(value.id)
+    const onTrademarkChange = (event:React.SyntheticEvent<Element, Event>, value:TrademarkType | null) => {
+        setTrademark(value !== null?value.id:1)
     }
     return (
         <FormModal {...formModalProps}>
@@ -99,7 +101,7 @@ function DomainForm(props:Props) {
                     className="form-modal-field"
                     options={props.trademarks}
                     getOptionLabel={(option) => option.name}
-                    onChange={onTrademarkChange}
+                    onChange={(event, value) => onTrademarkChange(event, value)}
                     defaultValue={row!==null?row.trademark_data:null}
                     renderInput={(params) => <TextField {...params} label="選択してください"
                     variant="standard" {...register('trademark',{
@@ -114,7 +116,7 @@ function DomainForm(props:Props) {
                 <FormControl error={errors._type?true:false}>
                 <Select
                         className="form-modal-field"
-                        value={type}
+                        value={type.toString()}
                         label="登録種類"
                         onChange={handleChange}
                         >

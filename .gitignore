@@ -2,3 +2,7 @@ venv/
 .env
 node_modules/
 __pycache__/
+env.json
+.production_back_env
+.production_front_env
+.next/

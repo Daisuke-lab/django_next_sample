@@ -34,32 +34,32 @@ function ResultDetailForm(props:Props) {
     }, [results])
     const router = useRouter()
     const { id:productId } = router.query
-    const onPriorityChange = (event: React.ChangeEvent<HTMLInputElement>, priority:number) => {
+    const onPriorityChange = (checked: boolean, priority:number) => {
 
-        if (event.target.checked && !priorities.includes(priority)) {
+        if (checked && !priorities.includes(priority)) {
             setPriorities([...priorities, priority])
             setValue("priority", [...priorities, priority])
         }
-        if (!event.target.checked && priorities.includes(priority)) {
+        if (!checked && priorities.includes(priority)) {
             const newPriorities = priorities.filter((currentPriority) => currentPriority != priority)
             setPriorities(newPriorities)
             setValue("priority", newPriorities)
         }
       }
       
-    const onConfirmedChange = (event: React.ChangeEvent<HTMLInputElement>, confirmed:boolean) => {
+    const onConfirmedChange = (checked: boolean, confirmed:boolean) => {
 
-        if (event.target.checked && !confirmeds.includes(confirmed)) {
+        if (checked && !confirmeds.includes(confirmed)) {
             setConfirmeds([...confirmeds, confirmed])
             setValue("confirmed", [...confirmeds, confirmed])
         }
-        if (!event.target.checked && confirmeds.includes(confirmed)) {
+        if (!checked && confirmeds.includes(confirmed)) {
             const newConfirmeds = confirmeds.filter((currentConfirmed) => currentConfirmed != confirmed)
             setConfirmeds(newConfirmeds)
             setValue("priority", newConfirmeds)
         }
       }
-    const onSubmit = async (data) => {
+    const onSubmit = async (data:any) => {
         console.log(data)
         const query = convertObjectToQuery(data) + `&product_id=${productId}`
         console.log(query)
@@ -80,16 +80,16 @@ function ResultDetailForm(props:Props) {
                 <FormControl style={{flexDirection: "row"}}>
                 <FormControlLabel control={<Checkbox />} label="高"
                 checked={priorities.includes(1)}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => onPriorityChange(event, 1)}/>
+                onChange={(event:any, checked:boolean)  => onPriorityChange(checked, 1)}/>
                 <FormControlLabel control={<Checkbox />} label="中" 
                 checked={priorities.includes(2)}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => onPriorityChange(event, 2)}/>
+                onChange={(event:any, checked:boolean)  => onPriorityChange(checked, 2)}/>
                 <FormControlLabel control={<Checkbox />} label="低" 
                 checked={priorities.includes(3)}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => onPriorityChange(event, 3)}/>
+                onChange={(event:any, checked:boolean)  => onPriorityChange(checked, 3)}/>
                 <FormControlLabel control={<Checkbox />} label="判定中" 
                 checked={priorities.includes(4)}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => onPriorityChange(event, 4)}/>
+                onChange={(event:any, checked:boolean)  => onPriorityChange(checked, 4)}/>
                 </FormControl>
                 </CustomField>
 
@@ -98,10 +98,10 @@ function ResultDetailForm(props:Props) {
                 <FormControl style={{flexDirection: "row"}}>
                 <FormControlLabel control={<Checkbox />} label="確認済み" 
                 checked={confirmeds.includes(true)}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => onConfirmedChange(event, true)}/>
+                onChange={(event:any, checked:boolean) => onConfirmedChange(checked, true)}/>
                 <FormControlLabel control={<Checkbox />} label="未確認" 
                 checked={confirmeds.includes(false)}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => onConfirmedChange(event, false)}/>
+                onChange={(event:any, checked:boolean) => onConfirmedChange(checked, false)}/>
                 </FormControl>
                 </CustomField>
                 

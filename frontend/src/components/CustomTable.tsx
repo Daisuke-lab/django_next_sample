@@ -11,7 +11,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import CustomTablePaginationActions from './CustomTablePaginationActions';
 import CustomTableHeader from './CustomTableHeader';
-import axios from 'axios'
+import Footer from './Footer'
 import Checkbox from '@mui/material/Checkbox';
 
  
@@ -32,7 +32,6 @@ export interface ColumnType {
  }
  
 export default function CustomTable(props:Props) {
-  console.log(props.rows)
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   const [rows, setRows] = useState<RowType[]>(props.rows)
@@ -56,7 +55,7 @@ export default function CustomTable(props:Props) {
 
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly string[] = [];
+    let newSelected: readonly number[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -75,6 +74,7 @@ export default function CustomTable(props:Props) {
   };
  
   return (
+    <>
     <Paper sx={{ width: '90%', overflow: 'hidden', marginTop: '20px',
     marginLeft: "auto", marginRight: "auto", marginBottom: "20px" }}>
       <TableContainer sx={{ maxHeight: 700 }}>
@@ -130,6 +130,9 @@ export default function CustomTable(props:Props) {
               onRowsPerPageChange={handleChangeRowsPerPage}
               ActionsComponent={CustomTablePaginationActions}
             />
+            
     </Paper>
+    <Footer selected={selected}/>
+    </>
   );
 }

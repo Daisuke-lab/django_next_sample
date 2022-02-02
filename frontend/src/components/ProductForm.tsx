@@ -50,7 +50,7 @@ function ProductForm(props:Props) {
     }, [row])
     const onSubmit = async (data:any) => {
         data.trademark_names = trademarks
-        data.user = session?.user?.id
+        data.user = session?.id
         console.log(data)
         try {
             if (mode==="create") {

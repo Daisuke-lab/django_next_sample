@@ -5,7 +5,7 @@ import TableHead from '@mui/material/TableHead';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { visuallyHidden } from '@mui/utils';
-import useSort from '../helpers/userSort';
+import sort from '../helpers/sort';
 import Tooltip from '@mui/material/Tooltip';
 import {RowType, ColumnType} from './CustomTable'
 import Checkbox from '@mui/material/Checkbox';
@@ -31,7 +31,7 @@ function CustomTableHeader(props:Props) {
       };
  
     useEffect(() => {
-        const newOrderedRows = rows.slice().sort(useSort(order, orderBy))
+        const newOrderedRows = rows.slice().sort(sort(order, orderBy))
         setRows(newOrderedRows)
     }, [order, orderBy])
 

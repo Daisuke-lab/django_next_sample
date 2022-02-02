@@ -38,7 +38,9 @@ export default NextAuth({
 },
 callbacks: {
   async session({ session, user}:SessionProps) {
-    session.user.id = user.id
+    if (session !== undefined) {  
+      session.id = user.id
+    }
     return Promise.resolve(session)
   },
 }

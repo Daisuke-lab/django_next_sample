@@ -2,6 +2,7 @@
 module.exports = {
   reactStrictMode: true,
   env: {
-    HOGE: process.env.HOGE,
+    API_URL: process.env.HOGE,
   },
-}
+  swcMinify: false,
+};

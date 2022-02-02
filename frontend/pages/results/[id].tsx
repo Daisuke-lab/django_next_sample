@@ -33,13 +33,14 @@ const Result: NextPage = (props) => {
         "高": highColor,
         "中": middleColor,
         "低": lowColor,
-        "使用中": unknownColor
+        "判定中": unknownColor
   
       }
+      const priority_display = row.priority_display as "高" | "中" | "低" | "判定中"
 
       row.priority = (
         <Chip label={row.priority_display} size="small"
-         style={{backgroundColor: priorities[row.priority_display],
+         style={{backgroundColor: priorities[priority_display],
         color: "white"}}/>
       )
       row.button = (
@@ -72,7 +73,7 @@ const Result: NextPage = (props) => {
             <Link href="/results">
                     <a>チェック結果一覧</a>
             </Link>
-            　>　チェック結果詳細
+            {"　＞　"}チェック結果詳細
             </div>
             <ColorButton color={blue} label="絞り込む" onClick={onFilter} className='margin-button'/>
             </div>

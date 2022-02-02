@@ -1,0 +1,12 @@
+FROM python:3.8
+
+RUN mkdir /medicine_robo_backend
+WORKDIR /medicine_robo_backend
+COPY ./backend /medicine_robo_backend
+RUN pip install -r /medicine_robo_backend/requirements.txt
+
+EXPOSE 8000
+
+#CMD python3 manage.py runserver 0.0.0.0:8000
+
+CMD gunicorn config.wsgi:application --bind 0.0.0.0:8000

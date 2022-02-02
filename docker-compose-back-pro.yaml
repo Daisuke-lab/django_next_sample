@@ -1,0 +1,51 @@
+version: "3.7"
+
+services:
+  gunicorn:
+    container_name: yakuji-backend-gunicorn
+    env_file: .production_back_env
+    image: 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_backend:latest
+    build: 
+      context: .
+      dockerfile: Dockerfile.python
+    stdin_open: true
+    tty: true
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    networks:
+      - backend_network
+
+  backend-nginx:
+    container_name: yakuji-backend-nginx
+    image: 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_backend_nginx:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.backend_nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - gunicorn
+    networks:
+      - backend_network
+
+  redis:
+    container_name: yakuji-backend-redis
+    image: redis:latest
+    volumes:
+      - "./data/redis:/data"
+
+  celery:
+    container_name: yakuji-backend-celery
+    env_file: .production_back_env
+    image: 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_backend:latest
+    environment:
+      - REDIS_URL=redis://redis:6379/1
+    command: celery -A config worker -l info 
+    depends_on:
+      - redis
+
+
+networks:
+  backend_network:
+    driver: bridge

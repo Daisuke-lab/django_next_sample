@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, KeyboardEventHandler} from 'react'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import {FormProps} from '../GlobalType'
@@ -67,7 +67,7 @@ function ConditionForm(props:Props) {
                 console.log(res)
             }
             props.setOpen('')
-        } catch (err:Error) {
+        } catch (err:any) {
             const errorMessages = err?.response?.data
             if(errorMessages.title !== undefined) {
                 setGeneralError('同じタイトルのチェック条件が既に存在しています。')
@@ -77,13 +77,13 @@ function ConditionForm(props:Props) {
 
     }
 
-    const checkKeyDown = (e:React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.code === 'Enter') e.preventDefault();
-      };
+    const checkKeyDown = (event:React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.code === 'Enter') event.preventDefault();
+      }
 
     return (
         <FormModal {...formModalProps}>
-            <form onSubmit={handleSubmit(onSubmit)} onKeyDown={(e) => checkKeyDown(e)}>
+            <form onSubmit={handleSubmit(onSubmit)} onKeyDown={checkKeyDown as KeyboardEventHandler}>
             <CustomField label="タイトル" mandatory={true}>
             <FormControl error={errors.title?true:false}>
                 <Input {...register('title',{

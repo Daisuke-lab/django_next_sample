@@ -1,0 +1,78 @@
+version: "3.7"
+
+services:
+  gunicorn:
+    container_name: backend-gunicorn
+    env_file: .production_back_env
+    image: 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_backend:latest
+    build: 
+      context: .
+      dockerfile: Dockerfile.python
+    stdin_open: true
+    tty: true
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    networks:
+      - backend_network
+
+  backend-nginx:
+    container_name: backend-nginx
+    image: 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_backend_nginx:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.backend_nginx
+    ports:
+      - "8000:80"
+    depends_on:
+      - gunicorn
+    networks:
+      - backend_network
+
+  celery:
+    container_name: yakuji-backend-celery
+    env_file: .production_back_env
+    image: 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_backend:latest
+    environment:
+      - REDIS_URL=redis://redis:6379/1
+    command: celery -A config worker -l info 
+    depends_on:
+      - redis
+
+  redis:
+    container_name: backend-redis
+    image: redis:latest
+    volumes:
+      - "./data/redis:/data"
+
+
+  next:
+    container_name: frontend-next
+    image: 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_frontend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    command: sh -c "npm start"
+    ports:
+      - "3000:3000"
+    networks:
+      - frontend_network
+
+  frontend-nginx:
+    container_name: frontend-nginx
+    image: 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_frontend_nginx:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend_nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - next
+    networks:
+      - frontend_network
+
+networks:
+  backend_network:
+    driver: bridge
+  frontend_network:
+    driver: bridge
+volumes:
+  static_volume:

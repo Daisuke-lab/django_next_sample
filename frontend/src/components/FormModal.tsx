@@ -41,7 +41,7 @@ const style = {
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 4,
-  };
+  }  as const;
 function FormModal(props:Props) {
     return (
         <div>

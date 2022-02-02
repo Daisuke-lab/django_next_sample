@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  next:
+    container_name: yakuji-frontend-next
+    image: 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_frontend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    command: sh -c "npm start"
+    ports:
+      - "3000:3000"
+    networks:
+      - frontend_network
+
+  frontend-nginx:
+    container_name: yakuji-frontend-nginx
+    image: 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_frontend_nginx:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend_nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - next
+    networks:
+      - frontend_network
+networks:
+  frontend_network:
+    driver: bridge

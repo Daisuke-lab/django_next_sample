@@ -1,7 +1,14 @@
 import environ
+import os
 
-env = environ.Env()
-env.read_env('.env')
+environment = os.environ.get('ENVIRONMENT', 'development')
 
-GOOGLE_API_KEY = env("GOOGLE_API_KEY")
-CUSTOM_SEARCH_ENGINE_KEY = env("CUSTOM_SEARCH_ENGINE_KEY")
+if environment == "development":
+    env = environ.Env()
+    env.read_env('.env')
+
+    GOOGLE_API_KEY = env("GOOGLE_API_KEY")
+    CUSTOM_SEARCH_ENGINE_KEY = env("CUSTOM_SEARCH_ENGINE_KEY")
+elif environment == "production":
+    GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
+    CUSTOM_SEARCH_ENGINE_KEY = os.environ.get("CUSTOM_SEARCH_ENGINE_KEY")

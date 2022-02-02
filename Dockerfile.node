@@ -1,0 +1,19 @@
+FROM node:17-alpine
+
+EXPOSE 3000
+
+
+RUN mkdir /medicine_robo_frontend
+
+WORKDIR /medicine_robo_frontend
+
+COPY ./frontend /medicine_robo_frontend
+
+
+RUN npm cache verify
+
+RUN rm package-lock.json && npm install
+
+RUN npm run build
+
+CMD npm start

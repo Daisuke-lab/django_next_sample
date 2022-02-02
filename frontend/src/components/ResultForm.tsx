@@ -22,7 +22,7 @@ function ResultForm(props:Props) {
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
     const [startDate, setStartDate] = useState<Date | null>(null)
     const [endDate, setEndDate] = useState<Date | null>(null)
-    const onSubmit = async (data) => {
+    const onSubmit = async (data:any) => {
         const query = convertObjectToQuery(data)
         try {
             const res = await backendAxios.get(`api/v1/result/product${query}`)

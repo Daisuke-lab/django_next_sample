@@ -25,8 +25,8 @@ const priority = () => (
   <div>
     <p>優先度割合</p>
     <div className={styles.prioritiesContainer}>
-    {priorities.map((priority) =>  (
-        <div className={styles.priorityContainer}>
+    {priorities.map((priority, index) =>  (
+        <div className={styles.priorityContainer} key={`priority-column-${index}`}>
         <div className={styles.priorityBox} style={{backgroundColor: priority.color}}></div>
         <p>{priority.label}</p>
         </div>
@@ -68,9 +68,10 @@ const Result: NextPage = (props) => {
     row.priority = (
       <div>
       <div className={styles.prioritiesContainer}>
-        {Object.keys(priorities).map((key) => (
-          <div className={styles.priorityContainer}>
-          <div className={styles.priorityBox} style={{backgroundColor: colors[key]}}></div>
+        {Object.keys(priorities).map((key, index) => (
+          <div className={styles.priorityContainer} key={`priority-row-${index}`}>
+          <div className={styles.priorityBox} 
+          style={{backgroundColor: colors[key as "high" | "middle" | "low" | "unknown"]}}></div>
           <p>{row.priorities[key]}</p>
           </div>
         ))}

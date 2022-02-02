@@ -42,7 +42,7 @@ export default function App({
     const isNoAuth = noAuthPages.includes(window.location.pathname)
     setNoAuth(isNoAuth)
     if (status === "loading") return // Do nothing while loading
-    if (!isUser &&!isNoAuth) return signIn() // If not authenticated, force log in
+    if (!isUser &&!isNoAuth) {signIn()} // If not authenticated, force log in
     if (noAuth && isUser) {router.push('/products')}
   }, [isUser, status])
 

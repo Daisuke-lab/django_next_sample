@@ -29,7 +29,7 @@ SECRET_KEY = 'zn)ow1@usjg(+osbejym2+jmv_7g7y7r2n3o2^$l^j9nq&igif'
 # SECURITY WARNING: don't run with debug turned on in production!
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'domains',
     'results',
     'django_celery_results',
-    'django_celery_beat'
+    'django_celery_beat',
+    "backend_module"
 ]
 
 MIDDLEWARE = [
@@ -88,16 +89,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', # 変更
-        'NAME': env('DATABASE_NAME'), # プロジェクトで使用するデータベース名
-        'USER': env('DATABASE_USER'), # パソコンにインストールしたMySQLのユーザー名
-        'PASSWORD': env('DATABASE_PASSWORD'), # 同上。そのパスワード
-        'HOST': env('DATABASE_HOST'),
-        'PORT': '3306',
-    }
-}
+
 
 
 # Password validation
@@ -151,9 +143,6 @@ REST_FRAMEWORK = {
 }
 
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
-]
 
 CORS_ALLOW_CREDENTIALS = True
 

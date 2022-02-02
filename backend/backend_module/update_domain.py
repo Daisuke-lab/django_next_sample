@@ -2,7 +2,7 @@
 import imp
 import sys
 from turtle import update
-from backend.products.models import Product
+from products.models import Product
 
 sys.path.append("../")
 from backend_module.common import Common
