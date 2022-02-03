@@ -17,7 +17,8 @@ import { useSession} from "next-auth/react"
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { AnyRecord } from 'dns';
-
+import { useSelector, useDispatch } from 'react-redux'
+import {addRow, closeForm, insertRows} from '../../store/reducers/tableReducer'
 
 export interface  TrademarkType {
     id: number,
@@ -36,27 +37,30 @@ export interface DomainType {
 
 
 interface Props extends FormProps{
-    row: DomainType | null,
     trademarks: TrademarkType[]
 }
 
 
 function DomainForm(props:Props) {
-    const {row, open, setOpen, mode} = props
+    const {open} = props
+    const mode = useSelector(state => state.tables.mode)
+    const rows = useSelector(state => state.tables.rows)
+    const currentRow = useSelector(state => state.tables.currentRow)
+    const dispatch = useDispatch()
     const title = mode==="edit"?"ドメイン編集":"ドメイン登録"
-    const formModalProps = {open: props.open, setOpen: props.setOpen, title}
+    const formModalProps = {open: props.open, title}
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
     const [type, setType] = useState<1 | 2>(1)
     const [trademark, setTrademark] = useState<number>(0)
 
     useEffect(() => {
-        if (row !== null) {
-            setTrademark(row.trademark)
-            setType(row._type as 1 | 2)
-            setValue('domain', row.domain, { shouldValidate: true })
+        if (currentRow !== null) {
+            setTrademark(currentRow.trademark)
+            setType(currentRow._type as 1 | 2)
+            setValue('domain', currentRow.domain, { shouldValidate: true })
 
         }
-    }, [row])
+    }, [currentRow])
 
 
     const onSubmit = async (data:any) => {
@@ -64,12 +68,18 @@ function DomainForm(props:Props) {
         data._type = type
         data.trademark = trademark
         try {
-            if (mode === "create") {
+            if (mode === "new") {
                 const res = await backendAxios.post('/api/v1/domain/', data)
+                const newRow = res.data
+                dispatch(addRow(newRow))
             } else {
-                const res = await backendAxios.put(`/api/v1/domain/${row?.id}/`, data)
+                const res = await backendAxios.put(`/api/v1/domain/${currentRow?.id}/`, data)
+                const newRow = res.data
+                const filteredRows = rows.filter((row:any) => row !== currentRow)
+                const newRows = [...filteredRows, newRow]
+                dispatch(insertRows(newRows))
             }
-            setOpen('')
+            dispatch(closeForm())
         } catch (err) {
             console.log(err)
         }
@@ -102,7 +112,7 @@ function DomainForm(props:Props) {
                     options={props.trademarks}
                     getOptionLabel={(option) => option.name}
                     onChange={(event, value) => onTrademarkChange(event, value)}
-                    defaultValue={row!==null?row.trademark_data:null}
+                    defaultValue={currentRow!==null?currentRow.trademark_data:null}
                     renderInput={(params) => <TextField {...params} label="選択してください"
                     variant="standard" {...register('trademark',{
                         required: true
@@ -127,7 +137,7 @@ function DomainForm(props:Props) {
             </CustomField>
 
             <div className="form-modal-button-container">
-            <Button variant="outlined" onClick={() => props.setOpen('')}>キャンセル</Button>
+            <Button variant="outlined" onClick={() => dispatch(closeForm())}>キャンセル</Button>
             <Button variant="contained" type="submit">保存する</Button>
             </div>
 

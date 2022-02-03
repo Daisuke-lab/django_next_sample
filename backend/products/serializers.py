@@ -25,11 +25,10 @@ class TrademarkSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     product_condition = serializers.CharField(max_length=200)
     genre = serializers.CharField(max_length=200)
-    trademark_names = serializers.ListField(child=serializers.CharField(max_length=100), write_only=True)
-    trademarks = TrademarkSerializer(read_only=True, many=True)
+    trademarks = serializers.ListField(child=serializers.CharField(max_length=100), write_only=True)
     class Meta:
         model = Product
-        fields = ["user", "name", "memo", "genre", "product_condition", "id", "created_at", "updated_at", "trademarks", "trademark_names"]
+        fields = ["user", "name", "memo", "genre", "product_condition", "id", "created_at", "updated_at", "trademarks", "trademarks"]
         read_only_fields = ["id", 'created_at', 'updated_at', "trademarks"]
         extra_kwargs = {'memo': {'required': False}}
 
@@ -45,7 +44,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "genre": genre
         }
         product =  Product.objects.create(**product_data)
-        for trademark_name in validated_data["trademark_names"]:
+        for trademark_name in validated_data["trademarks"]:
             Trademark.objects.create(name=trademark_name, product=product)
 
         return product
@@ -59,11 +58,20 @@ class ProductSerializer(serializers.ModelSerializer):
         instance.memo = validated_data.get('memo', instance.memo)
         instance.genre = genre
         instance.product_condition = product_condition
-        self.update_trademarks(instance, validated_data["trademark_names"])
+        self.update_trademarks(instance, validated_data["trademarks"])
         instance.updated_at = timezone.now()
         instance.save()
 
         return instance
+
+    def to_representation(self, obj):
+        self.fields['trademarks'] = serializers.SerializerMethodField()
+        return super().to_representation(obj)
+
+    def get_trademarks(self, obj):
+        product = get_object_or_404(Product, "product", id=obj.id)
+        trademarks = Trademark.objects.filter(product=product).values_list('name', flat=True)
+        return trademarks
 
     def update_trademarks(self, instance, trademarks):
         if trademarks is not None:

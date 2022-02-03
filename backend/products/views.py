@@ -6,12 +6,13 @@ from django.http import JsonResponse
 from rest_framework.permissions import AllowAny
 from .serializers import ProductSerializer, GenreSerializer
 from .models import Product, Genre
-
+from rest_framework.pagination import PageNumberPagination
 
 class ListCreateProduct(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     permission_classes = [AllowAny]
     serializer_class = ProductSerializer
+    pagination_class = PageNumberPagination
 
 
 class RetrieveUpdateDestroyProduct(generics.RetrieveUpdateDestroyAPIView):

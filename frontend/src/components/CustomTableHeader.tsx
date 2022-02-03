@@ -9,21 +9,23 @@ import sort from '../helpers/sort';
 import Tooltip from '@mui/material/Tooltip';
 import {RowType, ColumnType} from './CustomTable'
 import Checkbox from '@mui/material/Checkbox';
- 
+import {addRow, closeForm, insertRows, insertCheckedRows} from '../../store/reducers/tableReducer'
+import { useSelector, useDispatch } from 'react-redux'
+
 interface Props {
   columns: ColumnType[],
   rows: RowType[],
   setRows: React.Dispatch<React.SetStateAction<RowType[]>>,
-  numSelected: number,
-  setSelected: React.Dispatch<React.SetStateAction<readonly number[]>>
+  numSelected: number
 }
 
 
 function CustomTableHeader(props:Props) {
     const [order, setOrder] = React.useState<"asc"|"desc"|undefined>('asc');
     const [orderBy, setOrderBy] = React.useState<string>('id');
-    const {columns, rows, setRows, numSelected, setSelected } = props;
+    const {columns, rows, setRows, numSelected } = props;
     const rowCount = rows.length;
+    const dispatch = useDispatch()
     const handleRequestSort = (columnName:string) => {
         const isAsc = orderBy === columnName && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -40,13 +42,13 @@ function CustomTableHeader(props:Props) {
       if (event.target.checked) {
         const newSelecteds = rows.map((row) => row.id);
         if (numSelected > 0 && numSelected < rowCount) {
-          setSelected([]);
+          dispatch(insertCheckedRows([]))
         } else {
-          setSelected(newSelecteds);
+          dispatch(insertCheckedRows(newSelecteds))
         }
         return;
       }
-      setSelected([])
+      dispatch(insertCheckedRows([]))
     };
  
    

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import type { NextPage } from 'next'
 import Container from '../../src/components/Container'
 import Table from '../../src/components/CustomTable'
@@ -7,14 +7,18 @@ import ColorButton from '../../src/components/ColorButton';
 import { red, blue } from '@mui/material/colors';
 import {RowType, ColumnType} from '../../src/components/CustomTable'
 import backendAxios from '../../src/helpers/axios'
-import dateFormatter from '../../src/helpers/dateFormatter';
 import styles from '../../styles/Results.module.css'
 import { workerData } from 'worker_threads';
 import PercentageBar from '../../src/components/PercentageBar';
 import {highColor, middleColor, lowColor, unknownColor} from "../../src/helpers/colors"
 import { useRouter } from 'next/router'
 import ResultForm from '../../src/components/ResultForm';
-const priorities = [
+import { useSelector, useDispatch } from 'react-redux'
+import {insertRows, changeMode, changeOpendForm, changeEndpoint, changeCurrentPage, insertRowsCount} from '../../store/reducers/tableReducer'
+import ResultRowButton from '../../src/components/ResultRowButton';
+import ResultRowPriority from '../../src/components/ResultRowPriority';
+
+export const priorities = [
   {color: highColor, label: "高"},
   {color: middleColor, label: "中"},
   {color: lowColor, label: "低"},
@@ -48,57 +52,44 @@ const columns = [
 
 
 interface Props {
-  results: any[]
+  results: any[],
+  rowsCount: number
 }
 
 
 
 const Result: NextPage = (props) => {
 
-  const {results:resultData} = props as Props
-  const [results, setResults] = useState<any[]>(resultData)
-  const [open, setOpen] = useState<string>("")
+  const {results, rowsCount} = props as Props
+  const dispatch = useDispatch()
+  const openedForm = useSelector(state => state.tables.openedForm)
+  
+  
   const router = useRouter()
-  results.map((row) => {
-    row.latest_check_date = dateFormatter(row.latest_check_date)
-    const sum = row.priorities.sum
-    const colors = {high: highColor, middle: middleColor, low: lowColor, unknown: unknownColor}
-    const priorities = {...row.priorities}
-    delete priorities.sum
-    row.priority = (
-      <div>
-      <div className={styles.prioritiesContainer}>
-        {Object.keys(priorities).map((key, index) => (
-          <div className={styles.priorityContainer} key={`priority-row-${index}`}>
-          <div className={styles.priorityBox} 
-          style={{backgroundColor: colors[key as "high" | "middle" | "low" | "unknown"]}}></div>
-          <p>{row.priorities[key]}</p>
-          </div>
-        ))}
-      </div>
-      <PercentageBar {...row.priorities}/>
-      </div>
 
-    )
-    row.button = (
-      <div className='table-button-container'>
-       <ColorButton color={blue} label="詳細"
-       onClick={() => {router.push(`/results/${row.id}`)}}/>
-      </div>
-    )
-    return row
-  })
+  useEffect(() => {
+    dispatch(insertRows(results))
+    dispatch(changeCurrentPage(1))
+    dispatch(insertRowsCount(rowsCount))
+    dispatch(changeEndpoint("api/v1/result/product"))
+    
+  }, [])
+
+  const customizeRow = (row:any) => {
+    const newRow = {...row, priority:<ResultRowPriority row={row}/>, button: <ResultRowButton row={row}/>}
+    return newRow
+  }
 
   const onFilter = () => {
-    setOpen('ResultForm')
+    dispatch(changeOpendForm('ResultForm'))
   }
     return (
       <Container>
+        <div  className='header-button-container'>
         <ColorButton color={blue} label="絞り込む" onClick={onFilter} className='margin-button'/>
-          <Table columns={columns} rows={results}/>
-          <ResultForm open={"ResultForm"===open} setOpen={setOpen}
-          results={results}
-          setResults={setResults} mode=""/>
+        </div>
+          <Table columns={columns} customizeRow={customizeRow}/>
+          <ResultForm open={"ResultForm"===openedForm}/>
       </Container>
     )
   }
@@ -106,15 +97,18 @@ const Result: NextPage = (props) => {
   export async function getStaticProps() {
 
     let results:any[] = []
+    let rowsCount:number = 0
     try {
       const res = await backendAxios.get('api/v1/result/product')
-      results = res.data
+      results = res.data.results
+      rowsCount = res.data.count
     } catch(err) {
       console.log(err)
     }
     return {
       props: {
-        results
+        results,
+        rowsCount
       },
     }
   }

@@ -11,9 +11,12 @@ import FormModal, {FormColumnType, FormType} from '../src/components/FormModal'
 import ProductForm, {ProductType} from '../src/components/ProductForm';
 import backendAxios from '../src/helpers/axios'
 import {GenreType} from '../src/GlobalType'
-import dateFormatter from '../src/helpers/dateFormatter';
+import { useSelector, useDispatch } from 'react-redux'
 import DeleteForm from '../src/components/DeleteForm';
-
+import {insertRows, changeMode, changeOpendForm, insertRowsCount, changeCurrentPage, changeEndpoint} from '../store/reducers/tableReducer'
+import ConditionRowButton from '../src/components/ConditionRowButton';
+import ProductRowButton from '../src/components/ProductRowButton';
+import Footer from "../src/components/Footer"
 const columns = [
   {id: 1, name: "name", label: "商品名"},
   {id: 2, name: "product_condition", label: "チェック条件"},
@@ -29,69 +32,63 @@ const columns = [
 interface Props {
   genres: GenreType[],
   products : any[],
-  productConditions: any[]
+  productConditions: any[],
+  rowsCount: number
 }
 
 
 const Main: NextPage = (props) => {
-  const [open, setOpen] = useState<string>("")
-  const [mode, setMode] = useState<"edit" | "create" | "">("")
-  const [currentRow, setCurrentRow] = useState<ProductType | null>(null)
-  const {genres, products, productConditions} = props as Props
+  const {genres, products, productConditions, rowsCount} = props as Props
+  const openedForm = useSelector(state => state.tables.openedForm)
+  const currentRow = useSelector(state => state.tables.currentRow)
+  const dispatch = useDispatch()
 
-  const onEdit = (row:ProductType) => {
-    setMode("edit")
-    setCurrentRow(row)
-    setOpen("ProductForm")
-  }
+  useEffect(() => {
+    dispatch(insertRows(products))
+    dispatch(insertRowsCount(rowsCount))
+    dispatch(changeCurrentPage(1))
+    dispatch(changeEndpoint("api/v1/product/"))
+
+    
+  }, [])
+
 
   const onCreate = () => {
-    setMode("create")
-    setCurrentRow(null)
-    setOpen("ProductForm")
+    dispatch(changeOpendForm('ProductForm'))
+    dispatch(changeMode('new'))
   }
 
-  const onDelete = (row:ProductType) => {
-    setOpen("DeleteForm")
-    setCurrentRow(row)
+  const customizeRow = (row:any) => {
+    const newRow = {...row, button: <ProductRowButton row={row}/>}
+    return newRow
   }
 
-  products.map((row) => {
-    row.created_at = dateFormatter(row.created_at)
-    row.updated_at = dateFormatter(row.updated_at)
-    row.button = (
-      <div className='table-button-container'>
-      <ColorButton color={teal} label="編集"
-       onClick={() => onEdit(row)}/>
-       <ColorButton color={red} label="削除"
-       onClick={() => onDelete(row)}/>
-      </div>
-    )
-    return row
-  })
+
     return (
       <Container>
+        <div  className='header-button-container'>
         <ColorButton color={blue} label="商品登録" onClick={onCreate} className='margin-button'/>
         <ColorButton color={red} label="一括削除" onClick={() => {console.log('clicked')}} className='margin-button'/>
-        <Table columns={columns} rows={products}/>
-        <ProductForm open={open==="ProductForm"} setOpen={setOpen} mode={mode}
+        </div>
+        <Table columns={columns} customizeRow={customizeRow}/>
+        <Footer/>
+        <ProductForm open={openedForm==="ProductForm"}
         genres={genres}
-        row={currentRow}
         productConditions={productConditions}/>
-        <DeleteForm open={open==="DeleteForm"} setOpen={setOpen} title={currentRow?.name} 
+        <DeleteForm open={openedForm==="DeleteForm"} title={currentRow?.name} 
         endpoint={`api/v1/product/${currentRow?.id}/`}/>
       </Container>
     )
   }
 
   export async function getStaticProps() {
-    // Call an external API endpoint to get posts.
-    // You can use any data fetching library
+
     let productConditions:any[] = []
     let genres:any[] = []
     let products:any[] = []
+    let rowsCount:number = 0
     try {
-      const res = await backendAxios.get('api/v1/condition/')
+      const res = await backendAxios.get('api/v1/condition/list/')
       console.log(res.data)
       productConditions = res.data
     } catch(err) {
@@ -106,28 +103,19 @@ const Main: NextPage = (props) => {
     }
 
     try {
-      const res = await backendAxios.get('api/v1/product')
-      products = res.data
-      for (let i = 0; i < products.length; i++) {
-        const newTrademarks = []
-        const trademarks = products[i].trademarks
-        for (let j = 0; j < trademarks.length; j++) {
-          const trademark = trademarks[j]
-          newTrademarks.push(trademark["name"])
-        }
-        products[i].trademarks = newTrademarks
-      }
+      const res = await backendAxios.get('api/v1/product/')
+      products = res.data.results
+      rowsCount = res.data.count
     } catch(err) {
       console.log(err)
     }
-  
-    // By returning { props: { posts } }, the Blog component
-    // will receive `posts` as a prop at build time
+
     return {
       props: {
         products,
         genres,
-        productConditions
+        productConditions,
+        rowsCount
       },
     }
   }

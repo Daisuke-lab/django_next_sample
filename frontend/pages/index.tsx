@@ -14,6 +14,7 @@ const Home: NextPage = () => {
         src={background}
         layout="fill"
         objectFit="cover"
+        alt="yakuji-background"
         //
       />
     </div>

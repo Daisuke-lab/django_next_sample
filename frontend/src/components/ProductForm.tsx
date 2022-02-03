@@ -14,7 +14,9 @@ import FormControl from '@mui/material/FormControl';
 import backendAxios from '../helpers/axios'
 import TagsInput from './TagsInput'
 import { useSession} from "next-auth/react"
-
+import { useSelector, useDispatch } from 'react-redux'
+import {addRow, closeForm, insertRows} from '../../store/reducers/tableReducer'
+import { removeBlank } from '../helpers/removeBlank';
 export interface ProductType {
     id: number,
     user: string,
@@ -29,39 +31,59 @@ export interface ProductType {
 
 interface Props extends FormProps{
     productConditions: any[],
-    genres: GenreType[],
-    row: ProductType | null
+    genres: GenreType[]
 }
 function ProductForm(props:Props) {
-    const title = props.mode==="edit"?"調査対象編集":"調査対象登録"
+    console.log(props)
+    const dispatch = useDispatch()
+    const mode = useSelector(state => state.tables.mode)
+    const rows = useSelector(state => state.tables.rows)
+    const currentRow = useSelector(state => state.tables.currentRow)
+    const title = mode==="edit"?"調査対象編集":"調査対象登録"
     const [trademarks, setTrademarks] = useState<string[]>([])
-    const formModalProps = {open: props.open, setOpen: props.setOpen, title}
-    const {row, mode} = props
+    const formModalProps = {title, open: props.open}
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
     const { data: session } = useSession()
     useEffect(() => {
-        if (row !== null) {
-            setTrademarks(row.trademarks)
-            setValue('name', row.name, { shouldValidate: true })
-            setValue('memo', row.memo)
-            setValue('genre', row.genre)
-            setValue('product_condition', row.product_condition)
+        if (currentRow !== null) {
+            setTrademarks(currentRow.trademarks)
+            setValue('name', currentRow.name, { shouldValidate: true })
+            setValue('memo', currentRow.memo)
+            setValue('genre', currentRow.genre)
+            setValue('product_condition', currentRow.product_condition)
+        } else {
+            setValue('name', "")
+            setValue('memo', "")
+            setValue('genre', "")
+            setValue('product_condition', "")
         }
-    }, [row])
+    }, [currentRow])
     const onSubmit = async (data:any) => {
-        data.trademark_names = trademarks
+        data.trademarks = trademarks
         data.user = session?.id
+        removeBlank(data)
         console.log(data)
         try {
-            if (mode==="create") {
+            if (mode==="new") {
                 const res = await backendAxios.post('/api/v1/product/', data)
+                const newRow = res.data
+                dispatch(addRow(newRow))
             } else {
-                const res = await backendAxios.put(`/api/v1/product/${row?.id}/`, data)
+                const res = await backendAxios.put(`/api/v1/product/${currentRow?.id}/`, data)
+                const newRow = res.data
+                const filteredRows = rows.filter((row:any) => row !== currentRow)
+                const newRows = [...filteredRows, newRow]
+                dispatch(insertRows(newRows))
             }
-            props.setOpen("")
+            onClose()
         } catch(err) {
             console.log(err)
         }
+    }
+
+    const onClose = () => {
+        setTrademarks([])
+        dispatch(closeForm())
     }
     return (
         <FormModal {...formModalProps}>
@@ -79,7 +101,7 @@ function ProductForm(props:Props) {
             <Autocomplete
                 className="form-modal-field"
                 options={props.productConditions.map((option) => option.title)}
-                defaultValue={row!==null?row.product_condition:""}
+                defaultValue={currentRow!==null?currentRow.product_condition:""}
                 renderInput={(params) => <TextField {...params} label="選択してください"
                 variant="standard" {...register('product_condition',{
                     required: true
@@ -103,7 +125,7 @@ function ProductForm(props:Props) {
             <Autocomplete
                 className="form-modal-field"
                 options={props.genres.map((option) => option.name)}
-                defaultValue={row!==null?row.genre:""}
+                defaultValue={currentRow!==null?currentRow.genre:""}
                 renderInput={(params) => <TextField {...params} label="選択してください"
                 variant="standard" {...register('genre',{
                     required: true
@@ -117,7 +139,7 @@ function ProductForm(props:Props) {
             </CustomField>
 
             <div className="form-modal-button-container">
-            <Button variant="outlined" onClick={() => props.setOpen('')}>キャンセル</Button>
+            <Button variant="outlined" onClick={onClose}>キャンセル</Button>
             <Button variant="contained" type="submit">保存する</Button>
             </div>
 

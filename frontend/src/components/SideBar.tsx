@@ -30,7 +30,7 @@ function SideBar(props:Props) {
 
 
     return (
-        <Grid item xs={12} md={3}>
+        <Grid item xs={15} md={2}>
           <Demo>
             <List dense={dense}>
               {Object.keys(props.pages).map((key, index) => (

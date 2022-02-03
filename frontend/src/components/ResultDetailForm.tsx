@@ -16,6 +16,9 @@ import Checkbox from '@mui/material/Checkbox';
 import Input from '@mui/material/Input';
 import FormControl from '@mui/material/FormControl';
 import { useRouter } from 'next/router'
+import { useSelector, useDispatch } from 'react-redux'
+import {addRow, closeForm, insertRows} from '../../store/reducers/tableReducer'
+
 
 interface Props extends FormProps {
     results: any[],
@@ -23,15 +26,16 @@ interface Props extends FormProps {
 }
 function ResultDetailForm(props:Props) {
     const title = "チェック結果詳細を絞り込む"
-    const {results, setResults, setOpen} = props
-    const formModalProps = {open: props.open, setOpen: props.setOpen, title}
+    const formModalProps = {open: props.open, title}
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
     const [priorities, setPriorities] = useState<number[]>([])
     const [confirmeds, setConfirmeds] = useState<boolean[]>([])
+    const dispatch = useDispatch()
+
     useEffect(() => {
         setPriorities([])
         setConfirmeds([])
-    }, [results])
+    }, [])
     const router = useRouter()
     const { id:productId } = router.query
     const onPriorityChange = (checked: boolean, priority:number) => {
@@ -65,8 +69,9 @@ function ResultDetailForm(props:Props) {
         console.log(query)
         try {
             const res = await backendAxios.get(`api/v1/result/list${query}`)
-            setResults(res.data)
-            setOpen('')
+            const newRows = res.data
+            dispatch(insertRows(newRows))
+            dispatch(closeForm())
             setPriorities([])
             setConfirmeds([])
         } catch(err) {
@@ -111,7 +116,7 @@ function ResultDetailForm(props:Props) {
                 </CustomField>
 
                     <div className="form-modal-button-container">
-                    <Button variant="outlined" onClick={() => props.setOpen('')}>キャンセル</Button>
+                    <Button variant="outlined" onClick={() => dispatch(closeForm())}>キャンセル</Button>
                     <Button variant="contained" type="submit">絞り込む</Button>
                     </div>
             </form>

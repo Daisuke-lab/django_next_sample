@@ -9,8 +9,9 @@ import DeleteForm from '../src/components/DeleteForm';
 import DomainForm, {DomainType, TrademarkType} from '../src/components/DomainForm';
 import backendAxios from '../src/helpers/axios'
 import {RowType, ColumnType} from '../src/components/CustomTable'
-import dateFormatter from '../src/helpers/dateFormatter';
-
+import { useSelector, useDispatch } from 'react-redux'
+import {insertRows, changeMode, changeOpendForm, changeCurrentPage, insertRowsCount, changeEndpoint} from '../store/reducers/tableReducer'
+import DomainRowButton from '../src/components/DomainRowButton';
 const columns = [
   {id: 1, name: "trademark", label: "商標"},
   {id: 2, name: "domain", label: "ドメイン"},
@@ -24,57 +25,50 @@ const columns = [
 
 interface Props {
   trademarks: TrademarkType[],
-  domains: any[]
+  domains: any[],
+  rowsCount: number
 }
 
 const DomainSetting: NextPage = (props) => {
-    const {trademarks, domains} = props as Props
-    const [open, setOpen] = useState<string>("")
-    const [mode, setMode] = useState<"edit" | "create" | "">("")
-    const [currentRow, setCurrentRow] = useState<DomainType | null>(null)
+    const {trademarks, domains, rowsCount} = props as Props
+    const openedForm = useSelector(state => state.tables.openedForm)
+    const currentRow = useSelector(state => state.tables.currentRow)
+    const dispatch = useDispatch()
 
-    const onEdit = (row:DomainType) => {
-      setMode("edit")
-      setCurrentRow(row)
-      setOpen("DomainForm")
-    }
+    useEffect(() => {
+      dispatch(insertRows(domains))
+      dispatch(changeCurrentPage(1))
+      dispatch(insertRowsCount(rowsCount))
+      dispatch(changeEndpoint("api/v1/domain/"))
+      
+    }, [])
+
+
   
     const onCreate = () => {
-      setMode("create")
-      setCurrentRow(null)
-      setOpen("DomainForm")
-    }
-  
-    const onDelete = (row:DomainType) => {
-      setOpen("DeleteForm")
-      setCurrentRow(row)
+      dispatch(changeOpendForm('DomainForm'))
+      dispatch(changeMode('new'))
     }
 
-    domains.map((row) => {
-      row.created_at = dateFormatter(row.created_at)
-      row.button = (
-        <div className='table-button-container'>
-        <ColorButton color={teal} label="編集"
-         onClick={() => onEdit(row)}/>
-         <ColorButton color={red} label="削除"
-         onClick={() => onDelete(row)}/>
-        </div>
-      )
-      return row
-    })
+    const customizeRow = (row:any) => {
+      const newRow = {...row, button: <DomainRowButton row={row} />}
+      return newRow
+    }
+  
+
 
 
     return (
       <Container>
+        <div className='header-button-container'>
         <ColorButton color={blue} label="追加登録" onClick={onCreate} className='margin-button'/>
-          <Table columns={columns} rows={domains}/>
+        </div>
+          <Table columns={columns} customizeRow={customizeRow}/>
           <DomainForm
-          open={open==="DomainForm"}
-          setOpen={setOpen} mode={mode}
-          row={currentRow}
+          open={openedForm==="DomainForm"}
           trademarks={trademarks}
           />
-          <DeleteForm open={open==="DeleteForm"} setOpen={setOpen} title={currentRow?.domain} 
+          <DeleteForm open={openedForm==="DeleteForm"} title={currentRow?.domain} 
         endpoint={`api/v1/domain/${currentRow?.id}/`}/>
       </Container>
     )
@@ -85,6 +79,7 @@ const DomainSetting: NextPage = (props) => {
     // You can use any data fetching library
     let trademarks:TrademarkType[] = []
     let domains:any[] = []
+    let rowsCount:number = 0
     try {
       const res = await backendAxios.get('api/v1/domain/trademark/')
       trademarks = res.data
@@ -93,19 +88,17 @@ const DomainSetting: NextPage = (props) => {
     }
     try {
       const res = await backendAxios.get('api/v1/domain/')
-      domains = res.data
+      domains = res.data.results
+      rowsCount = res.data.count
     } catch(err) {
       console.log(err)
     }
 
-  
-  
-    // By returning { props: { posts } }, the Blog component
-    // will receive `posts` as a prop at build time
     return {
       props: {
         trademarks,
-        domains
+        domains,
+        rowsCount
       },
     }
   }

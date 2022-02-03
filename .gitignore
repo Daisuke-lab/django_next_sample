@@ -6,3 +6,5 @@ env.json
 .production_back_env
 .production_front_env
 .next/
+.env.production
+.env.development
