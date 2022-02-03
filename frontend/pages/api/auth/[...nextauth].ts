@@ -8,6 +8,7 @@ const googleClientId = process.env.GOOGLE_CLIENT_ID !== undefined ?process.env.G
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET !== undefined ?process.env.GOOGLE_CLIENT_SECRET:""
 const facebookClientId = process.env.FACEBOOK_CLIENT_ID !== undefined ?process.env.FACEBOOK_CLIENT_ID:""
 const facebookClientSecret = process.env.FACEBOOK_CLIENT_SECRET !== undefined ?process.env.FACEBOOK_CLIENT_SECRET:""
+const JWTSecret = process.env.JWT_SECRET !== undefined ? process.env.JWT_SECRET: ""
 const prisma = new PrismaClient()
 
 interface SessionProps {
@@ -34,7 +35,7 @@ export default NextAuth({
   signOut: '/auth/signout',
   error: '/auth/error', // Error code passed in query string as ?error=
   verifyRequest: '/auth/verify-request', // (used for check email message)
-  newUser: '/main' // New users will be directed here on first sign in (leave the property out if not of interest)
+  newUser: '/products' // New users will be directed here on first sign in (leave the property out if not of interest)
 },
 callbacks: {
   async session({ session, user}:SessionProps) {
@@ -43,5 +44,13 @@ callbacks: {
     }
     return Promise.resolve(session)
   },
+},
+secret: JWTSecret,
+jwt: {
+  // A secret to use for key generation. Defaults to the top-level `secret`.
+  secret: JWTSecret,
+  // The maximum age of the NextAuth.js issued JWT in seconds.
+  // Defaults to `session.maxAge`.
+  maxAge: 60 * 60 * 24 * 30,
 }
 })

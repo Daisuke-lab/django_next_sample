@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile.frontend_nginx
     ports:
-      - "80:80"
+      - "80:8888"
     depends_on:
       - next
     networks:
