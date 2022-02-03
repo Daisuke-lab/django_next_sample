@@ -11,8 +11,9 @@ import Amplify from 'aws-amplify';
 import "@aws-amplify/ui-react/styles.css";
 import {AmplifyProvider} from "@aws-amplify/ui-react";
 import { useRouter } from 'next/router'
-
-
+import { Provider } from 'react-redux'
+import store from '../store/store'
+import { SnackbarProvider} from 'notistack';
 
 export default function App({
   Component,
@@ -21,11 +22,15 @@ export default function App({
   return (
     <AmplifyProvider>
     <SessionProvider session={session}>
+      <Provider store={store}>
+      <SnackbarProvider maxSnack={3}>
         <Layout>
         <Auth>
           <Component {...pageProps} />
         </Auth>
         </Layout>
+        </SnackbarProvider>
+        </Provider>
     </SessionProvider>
     </AmplifyProvider>
   )

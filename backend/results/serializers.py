@@ -23,8 +23,13 @@ class ProductResultSerializer(serializers.ModelSerializer):
         trademarks = Trademark.objects.filter(product=obj.id).values_list('name', flat=True)
         return trademarks
     def get_latest_check_date(self, obj):
-        latest_result = Check_Result.objects.filter(url__domain__trademark__product__id=obj.pk).latest("created_at")
-        return latest_result.created_at
+        results = Check_Result.objects.filter(url__domain__trademark__product__id=obj.pk)
+
+        if len(results) > 0:
+            latest_result_created_at = results.latest("created_at").created_at
+        else: 
+            latest_result_created_at = None
+        return latest_result_created_at
 
     def get_priorities(self, obj):
         results = Check_Result.objects.filter(url__domain__trademark__product__id=obj.pk).annotate(

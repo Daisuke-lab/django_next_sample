@@ -3,9 +3,8 @@ from wsgiref import validate
 from rest_framework import serializers
 from .models import NG_Keyword, Composite_Keyword, NG_Keyword_Condition
 from products.models import Product_Condition
-from django.shortcuts import get_object_or_404
 from django.utils import timezone
-
+from config.helper import get_object_or_404
 
 class NGKeywordConditionSerializer(serializers.ModelSerializer):
     front_check_word_count = serializers.IntegerField()
@@ -24,8 +23,10 @@ class NGKeywordConditionSerializer(serializers.ModelSerializer):
 
 
 
+
+
 class ProductConditionSerializer(serializers.ModelSerializer):
-    ng_keyword_conditions = NGKeywordConditionSerializer(many=True)
+    ng_keyword_conditions = NGKeywordConditionSerializer(many=True, default=[], allow_null=True)
     title = serializers.CharField(max_length=100)
     ng_keywords = serializers.ListField(child=serializers.CharField(max_length=100), write_only=True)
     class Meta:
@@ -34,6 +35,7 @@ class ProductConditionSerializer(serializers.ModelSerializer):
         write_only_fields = ('ng_keywords',)
         read_only_fields = ["ng_keyword_conditions", "id"]
         extra_kwargs = {'ng_keyword_conditions': {'required': False}}
+
 
     def validate_title(self, value):
         print(self.context['request'].parser_context)
@@ -55,70 +57,77 @@ class ProductConditionSerializer(serializers.ModelSerializer):
                 )
 
         return value
- 
+
+    def to_representation(self, obj):
+        self.fields['ng_keywords'] = serializers.SerializerMethodField()
+        self.fields["ng_keyword_conditions"] = serializers.SerializerMethodField(read_only=True)
+        return super().to_representation(obj)
+
+    def get_ng_keywords(self, obj):
+        ng_keywords = []
+        product_condition = get_object_or_404(Product_Condition, "product_condition", id=obj.id)
+        ng_keyword_conditions = NG_Keyword_Condition.objects.filter(product_condition=product_condition)
+        for ng_keyword_condition in ng_keyword_conditions:
+            ng_keywords.append(ng_keyword_condition.ng_keyword.name)
+        return set(ng_keywords)
+
+    def get_ng_keyword_conditions(self, obj):
+        product_condition = get_object_or_404(Product_Condition, "product_condition", id=obj.id)
+        ng_keyword_conditions = NG_Keyword_Condition.objects.filter(product_condition=product_condition,
+        composite_keyword__isnull=False).values()
+        return ng_keyword_conditions
 
     def create(self, validated_data):
         product_condition = Product_Condition.objects.create(title=validated_data["title"])
-        print(product_condition.__dict__)
+        product_condition = self._create(validated_data, product_condition)
+        return product_condition
+
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        old_ng_keyword_conditions = NG_Keyword_Condition.objects.filter(product_condition=instance)
+        old_ng_keyword_conditions.delete()
+        instance = self._create(validated_data, instance)
+        return instance
+
+    def _create(self, validated_data, product_condition):
         ng_keyword_conditions = validated_data.get("ng_keyword_conditions")
         ng_keyword_conditions = ng_keyword_conditions if ng_keyword_conditions is not None else []
+        remained_ng_keywords = validated_data["ng_keywords"]
         ng_keywords = validated_data.pop("ng_keywords")
         for ng_keyword_condition in ng_keyword_conditions:
             if ng_keyword_condition["ng_keyword"] == "全体":
                 for ng_keyword in ng_keywords:
-                    self.create_ng_keyword_condition(ng_keyword, ng_keyword_condition, product_condition)
+                    remained_ng_keywords.remove(ng_keyword) if ng_keyword in remained_ng_keywords else remained_ng_keywords
+                    self.create_ng_keyword_condition(ng_keyword, product_condition, ng_keyword_condition)
             else:
-                self.create_ng_keyword_condition(ng_keyword_condition["ng_keyword"], ng_keyword_condition, product_condition)
-        print('you are')
-        print(validated_data)
+                remained_ng_keywords.remove(ng_keyword) if ng_keyword in remained_ng_keywords else remained_ng_keywords
+                self.create_ng_keyword_condition(ng_keyword_condition["ng_keyword"], product_condition, ng_keyword_condition)
+        
+
+        for ng_keyword in remained_ng_keywords:
+            self.create_ng_keyword_condition(ng_keyword, product_condition)
         return product_condition
 
-    def create_ng_keyword_condition(self, ng_keyword_name, ng_keyword_condition, product_condition):
-        print('you are here')
-        composite_keyword,_ = Composite_Keyword.objects.get_or_create(name=ng_keyword_condition["composite_keyword"])
+    def create_ng_keyword_condition(self, ng_keyword_name, product_condition, ng_keyword_condition=None):
         ng_keyword,_ = NG_Keyword.objects.get_or_create(name=ng_keyword_name)
-        ng_keyword_condition_data = {
-            "ng_keyword": ng_keyword,
-            "composite_keyword": composite_keyword,
-            "front_check_word_count": ng_keyword_condition["front_check_word_count"],
-            "back_check_word_count": ng_keyword_condition["back_check_word_count"],
-            "product_condition": product_condition
-        }
-        print(ng_keyword_condition_data)
+        if ng_keyword_condition is not None:
+            composite_keyword,_ = Composite_Keyword.objects.get_or_create(name=ng_keyword_condition["composite_keyword"])
+            
+            ng_keyword_condition_data = {
+                "ng_keyword": ng_keyword,
+                "composite_keyword": composite_keyword,
+                "front_check_word_count": ng_keyword_condition["front_check_word_count"],
+                "back_check_word_count": ng_keyword_condition["back_check_word_count"],
+                "product_condition": product_condition
+            }
+        else:
+            ng_keyword_condition_data = {
+                "ng_keyword": ng_keyword,
+                "product_condition": product_condition
+            }
         new_ng_keyword_condition = NG_Keyword_Condition.objects.create(**ng_keyword_condition_data)
 
         return new_ng_keyword_condition
 
 
-    def update(self, instance, validated_data):
-        instance.title = validated_data.get('title', instance.title)
-        ng_keyword_conditions = validated_data["ng_keyword_conditions"]
-        for ng_keyword_condition in ng_keyword_conditions:
-            if ng_keyword_condition["ng_keyword"] == "全体":
-                for ng_keyword in validated_data["ng_keywords"]:
-                    if ng_keyword_condition.get("id") is not None:
-                        self.update_ng_keyword_condition(ng_keyword, ng_keyword_condition, instance)
-                    else:
-                        self.create_ng_keyword_condition(ng_keyword, ng_keyword_condition, instance)
-            else:
-                if ng_keyword_condition.get("id") is not None:
-                        self.update_ng_keyword_condition(ng_keyword_condition["ng_keyword"], ng_keyword_condition, instance)
-                else:
-                    self.create_ng_keyword_condition(ng_keyword_condition["ng_keyword"], ng_keyword_condition, instance)
 
-        instance.updated_at = timezone.now()
-        instance.save()
-        return instance
-
-    def update_ng_keyword_condition(self, ng_keyword_name, ng_keyword_condition, product_condition):
-        composite_keyword,_ = Composite_Keyword.objects.get_or_create(name=ng_keyword_condition["composite_keyword"])
-        ng_keyword,_ = NG_Keyword.objects.get_or_create(name=ng_keyword_name)
-        instance = get_object_or_404(NG_Keyword_Condition, id=ng_keyword_condition.get("id"))
-        instance.ng_keyword = ng_keyword
-        instance.composite_keyword = composite_keyword
-        instance.front_check_word_count = ng_keyword_condition.get('front_check_word_count', instance.front_check_word_count)
-        instance.back_check_word_count = ng_keyword_condition.get('back_check_word_count', instance.back_check_word_count)
-        instance.product_condition = product_condition
-        instance.updated_at = timezone.now()
-        instance.save()
-        return instance

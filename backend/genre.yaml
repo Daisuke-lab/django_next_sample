@@ -1,0 +1,34 @@
+- model: products.genre
+  pk: 1
+  fields:
+    name: 人材
+
+- model: products.genre
+  pk: 2
+  fields:
+    name: 金融
+
+- model: products.genre
+  pk: 3
+  fields:
+    name: サービス
+
+- model: products.genre
+  pk: 4
+  fields:
+    name: コンプレックス
+
+- model: products.genre
+  pk: 5
+  fields:
+    name: 美容/健康
+
+- model: products.genre
+  pk: 6
+  fields:
+    name: 生活
+
+- model: products.genre
+  pk: 7
+  fields:
+    name: その他

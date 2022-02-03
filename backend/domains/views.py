@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from .serializers import TrademarkSerializer, DomainSerializer
 from .models import Trademark, Domain
-
+from rest_framework.pagination import PageNumberPagination
 
 class ListCreateTrademark(generics.ListCreateAPIView):
     queryset = Trademark.objects.all()
@@ -21,6 +21,7 @@ class ListCreateDomain(generics.ListCreateAPIView):
     queryset = Domain.objects.all()
     permission_classes = [AllowAny]
     serializer_class = DomainSerializer
+    pagination_class = PageNumberPagination
 
 
 class RetrieveUpdateDestroyDomain(generics.RetrieveUpdateDestroyAPIView):

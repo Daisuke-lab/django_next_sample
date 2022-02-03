@@ -7,7 +7,8 @@ import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import styles from '../../styles/FormModal.module.css'
-
+import { useSelector, useDispatch } from 'react-redux'
+import {closeForm} from '../../store/reducers/tableReducer'
 export interface FormColumnType {
     type: string,
     name: string,
@@ -17,7 +18,6 @@ export interface FormColumnType {
 }
 
 export interface FormType {
-    mode: "edit" | "create" | "filter"
     title: string,
     mainButtonLabel: string
 }
@@ -25,7 +25,6 @@ export interface FormType {
 
 interface Props{
     open: boolean,
-    setOpen: React.Dispatch<React.SetStateAction<string>>,
     children: any,
     title:string
 }
@@ -43,6 +42,7 @@ const style = {
     p: 4,
   }  as const;
 function FormModal(props:Props) {
+  const dispatch = useDispatch()
     return (
         <div>
       <Modal
@@ -58,7 +58,7 @@ function FormModal(props:Props) {
         <Fade in={props.open}>
           <Box sx={style}>
             <div style={{position: "relative"}}>
-            <IconButton className={styles.closeIcon} onClick={() => props.setOpen("")}>
+            <IconButton className={styles.closeIcon} onClick={() => dispatch(closeForm())}>
               <CloseIcon/>
             </IconButton>
             <h1 className={styles.formTitle}>{props.title}</h1>

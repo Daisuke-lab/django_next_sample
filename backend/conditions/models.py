@@ -24,11 +24,11 @@ class NG_Keyword(models.Model):
 
 class NG_Keyword_Condition(models.Model):
     ng_keyword = models.ForeignKey(NG_Keyword, on_delete=models.CASCADE)
-    composite_keyword = models.ForeignKey(Composite_Keyword, on_delete=models.CASCADE)
+    composite_keyword = models.ForeignKey(Composite_Keyword, on_delete=models.CASCADE, null=True)
     product_condition = models.ForeignKey("products.Product_Condition", on_delete=models.CASCADE,
     related_name="ng_keyword_conditions")
-    front_check_word_count = models.IntegerField()
-    back_check_word_count = models.IntegerField()
+    front_check_word_count = models.IntegerField(null=True)
+    back_check_word_count = models.IntegerField(null=True)
     status = models.IntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

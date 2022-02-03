@@ -11,6 +11,10 @@ import Table from '../../src/components/CustomTable'
 import Chip from '@mui/material/Chip';
 import {highColor, middleColor, lowColor, unknownColor} from "../../src/helpers/colors"
 import ResultDetailForm from '../../src/components/ResultDetailForm';
+import { useSelector, useDispatch } from 'react-redux'
+import {insertRows, changeMode, changeOpendForm, changeCurrentPage, insertRowsCount, changeEndpoint} from '../../store/reducers/tableReducer'
+
+
 const columns = [
     {id: 1, name: "domain", label: "ドメイン"},
     {id: 2, name: "url", label: "URL"},
@@ -20,39 +24,49 @@ const columns = [
   ] as ColumnType[]
 
   interface Props {
-    results: any[]
+    results: any[],
+    rowsCount : number,
+    productId: number
   }
 
 const Result: NextPage = (props) => {
   const [confirmedResult, setConfirmedResult] = useState<number[]>([])
-  const {results:resultData} = props as Props
-  const [results, setResults] = useState<any[]>(resultData)
-  const [open, setOpen] = useState<string>("")
-    results.map((row) => {
-      const priorities = {
-        "高": highColor,
-        "中": middleColor,
-        "低": lowColor,
-        "判定中": unknownColor
-  
-      }
-      const priority_display = row.priority_display as "高" | "中" | "低" | "判定中"
+  const {results, rowsCount, productId} = props as Props
+  const dispatch = useDispatch()
+  const openedForm = useSelector(state => state.tables.openedForm)
+  useEffect(() => {
+    dispatch(insertRows(results))
+    dispatch(changeCurrentPage(1))
+    dispatch(insertRowsCount(rowsCount))
+    dispatch(changeEndpoint(`api/v1/result/list?product_id=${productId}`))
+  }, [])
 
-      row.priority = (
-        <Chip label={row.priority_display} size="small"
-         style={{backgroundColor: priorities[priority_display],
-        color: "white"}}/>
-      )
-      row.button = (
-        <div className='table-button-container'>
-         <ColorButton color={blue} label="確認済"
-         disabled={row.confirmed || confirmedResult.includes(row.id)}
-         onClick={() => {onConfirm(row)}}/>
-        </div>
-      )
-      return row
-    })
+  const custmizeRow = (row:any) => {
+    const priorities = {
+      "高": highColor,
+      "中": middleColor,
+      "低": lowColor,
+      "判定中": unknownColor
 
+    }
+    const priority_display = row.priority_display as "高" | "中" | "低" | "判定中"
+
+    const priority = (
+      <Chip label={row.priority_display} size="small"
+       style={{backgroundColor: priorities[priority_display],
+      color: "white"}}/>
+    )
+
+    const button = (
+      <div className='table-button-container'>
+       <ColorButton color={blue} label="確認済"
+       disabled={row.confirmed || confirmedResult.includes(row.id)}
+       onClick={() => {onConfirm(row)}}/>
+      </div>
+    )
+    const newRow = {...row, button, priority}
+    return newRow
+  }
   const onConfirm = async (row:any) => {
     try {
       const data = {confirmed: true}
@@ -63,9 +77,7 @@ const Result: NextPage = (props) => {
     }
   }
 
-  const onFilter = () => {
-    setOpen('ResultDetailForm')
-  }
+
     return (
         <Container>
             <div className={styles.headerContainer}>
@@ -74,16 +86,12 @@ const Result: NextPage = (props) => {
                     <a>チェック結果一覧</a>
             </Link>
             {"　＞　"}チェック結果詳細
+            </div >
+            <ColorButton color={blue} label="絞り込む" onClick={() => dispatch(changeOpendForm('ResultDetailForm'))} className='margin-button'/>
             </div>
-            <ColorButton color={blue} label="絞り込む" onClick={onFilter} className='margin-button'/>
-            </div>
-            <Table columns={columns} rows={results}/>
+            <Table columns={columns}/>
             <ResultDetailForm
-            open={open==="ResultDetailForm"}
-            setOpen={setOpen}
-            results={results}
-            setResults={setResults}
-            mode=""
+            open={openedForm==="ResultDetailForm"}
             />
         </Container>
     )
@@ -94,13 +102,14 @@ export async function getServerSideProps(context:any)  {
     let results:any[] = []
     try {
       const res = await backendAxios.get(`api/v1/result/list?product_id=${productId}`)
-      results = res.data
+      results = res.data.results
     } catch(err) {
       console.log(err)
     }
     return {
       props: {
-        results
+        results,
+        productId
       },
     }
   }

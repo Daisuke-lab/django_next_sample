@@ -15,6 +15,9 @@ import FormControl from '@mui/material/FormControl';
 import backendAxios from '../helpers/axios'
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import { useSelector, useDispatch } from 'react-redux'
+import {addRow, closeForm, insertRows} from '../../store/reducers/tableReducer'
+import ConditionRowButton from './ConditionRowButton';
 
 export interface NgKeywordConditionType {
     ng_keyword: string,
@@ -37,39 +40,52 @@ export interface ProductConditionType {
     }[]
 }
 
-interface Props extends FormProps {
-    row: ProductConditionType | null
-}
-function ConditionForm(props:Props) {
-    const {mode, row} = props
+
+function ConditionForm(props:FormProps) {
+    const mode = useSelector(state => state.tables.mode)
     const modeJapanese = mode==="edit"?"編集":"作成"
+    const dispatch = useDispatch()
+    const rows = useSelector(state => state.tables.rows)
+    const currentRow = useSelector(state => state.tables.currentRow)
     const title = `チェック条件${modeJapanese}`
-    const formModalProps = {open: props.open, setOpen: props.setOpen, title}
+    const formModalProps = {open: props.open, title}
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
     const [ngKeywords, setNgKeywords] = useState<string[]>([])
     const [generalError, setGeneralError] = useState<string>("")
     useEffect(() => {
-        if (row !== null) {
-            setNgKeywords(row.ng_keywords)
-            setValue('title', row.title, { shouldValidate: true })
-            setValue('ng_keyword_conditions', row.ng_keyword_conditions, { shouldValidate: true })
+        if (currentRow !== null) {
+            console.log(currentRow.ng_keywords)
+            setNgKeywords(currentRow.ng_keywords)
+            setValue('title', currentRow.title, { shouldValidate: true })
+            setValue('ng_keyword_conditions', currentRow.ng_keyword_conditions, { shouldValidate: true })
+        } else {
+            setNgKeywords([])
+            setValue('title', "")
+            setValue('ng_keyword_conditions', [])
         }
-    }, [row])
+        setGeneralError("")
+    }, [currentRow])
     const onSubmit = async (data:any) => {
         data["ng_keywords"] = ngKeywords
         console.log(data)
         try {
-            if (mode === "create") {
+            if (mode === "new") {
                 const res = await backendAxios.post(`api/v1/condition/`, data)
                 console.log(res)
+                const newRow = res.data
+                dispatch(addRow(newRow))
             } else {
-                const res = await backendAxios.put(`api/v1/condition/${row?.id}/`, data)
+                const res = await backendAxios.put(`api/v1/condition/${currentRow?.id}/`, data)
                 console.log(res)
+                const newRow = res.data
+                const filteredRows = rows.filter((row:any) => row !== currentRow)
+                const newRows = [...filteredRows, newRow]
+                dispatch(insertRows(newRows))
             }
-            props.setOpen('')
+            dispatch(closeForm())
         } catch (err:any) {
             const errorMessages = err?.response?.data
-            if(errorMessages.title !== undefined) {
+            if(errorMessages?.title !== undefined) {
                 setGeneralError('同じタイトルのチェック条件が既に存在しています。')
             }
             
@@ -113,7 +129,7 @@ function ConditionForm(props:Props) {
             </CustomField>
 
             <div className="form-modal-button-container">
-            <Button variant="outlined" onClick={() => props.setOpen('')}>キャンセル</Button>
+            <Button variant="outlined" onClick={() => dispatch(closeForm())}>キャンセル</Button>
             <Button variant="contained" type="submit">保存する</Button>
             </div>
             </form>

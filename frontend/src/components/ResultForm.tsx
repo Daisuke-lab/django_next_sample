@@ -11,24 +11,24 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Button from '@mui/material/Button';
 import styles from '../../styles/ResultForm.module.css'
 import {convertObjectToQuery} from '../../src/helpers/convertObjectToQuery'
-interface Props extends FormProps {
-    results: any[],
-    setResults: React.Dispatch<React.SetStateAction<any[]>>
-}
-function ResultForm(props:Props) {
+import { useSelector, useDispatch } from 'react-redux'
+import {addRow, closeForm, insertRows} from '../../store/reducers/tableReducer'
+
+function ResultForm(props:FormProps) {
     const title = "チェック結果を絞り込む"
-    const {results, setResults, setOpen} = props
-    const formModalProps = {open: props.open, setOpen: props.setOpen, title}
+    const {open} = props
+    const formModalProps = {open, title}
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
     const [startDate, setStartDate] = useState<Date | null>(null)
     const [endDate, setEndDate] = useState<Date | null>(null)
+    const dispatch = useDispatch()
     const onSubmit = async (data:any) => {
         const query = convertObjectToQuery(data)
         try {
             const res = await backendAxios.get(`api/v1/result/product${query}`)
-            console.log(res)
-            setResults(res.data)
-            setOpen('')
+            const newRows = res.data
+            dispatch(insertRows(newRows))
+            dispatch(closeForm())
         } catch(err) {
             console.log(err)
         }
@@ -66,7 +66,7 @@ function ResultForm(props:Props) {
             </LocalizationProvider>
             </div>
             <div className="form-modal-button-container">
-            <Button variant="outlined" onClick={() => props.setOpen('')}>キャンセル</Button>
+            <Button variant="outlined" onClick={() => dispatch(closeForm())}>キャンセル</Button>
             <Button variant="contained" type="submit">絞り込む</Button>
             </div>
             </form>

@@ -27,6 +27,14 @@ a {
   justify-content: space-evenly;
 }
 
+.table-button-container button {
+  margin: 5px
+}
+
+.header-button-container {
+  margin: 20px
+}
+
 .form-modal-field {
   width: 300px;
   margin: 10px !important;
@@ -36,4 +44,13 @@ a {
   margin-top: 30px;
   display: flex;
   justify-content: space-evenly;
+}
+
+
+.pagination-container {
+  margin: 20px
+}
+
+.pagination-container ul {
+  justify-content: center
 }

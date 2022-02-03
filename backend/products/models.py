@@ -27,7 +27,7 @@ class Product_Condition(models.Model):
 class Product(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
-    memo = models.TextField()
+    memo = models.TextField(null=True)
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
     status = models.IntegerField(default=1)
     product_condition = models.ForeignKey(Product_Condition, on_delete=models.CASCADE)

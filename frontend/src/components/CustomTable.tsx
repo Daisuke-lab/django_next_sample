@@ -13,8 +13,10 @@ import CustomTablePaginationActions from './CustomTablePaginationActions';
 import CustomTableHeader from './CustomTableHeader';
 import Footer from './Footer'
 import Checkbox from '@mui/material/Checkbox';
-
- 
+import { useSelector, useDispatch } from 'react-redux'
+import {addRow, closeForm, insertRows, insertCheckedRows} from '../../store/reducers/tableReducer'
+import formatter from '../helpers/formatter';
+import CustomPagination from './CustomPagination';
 export interface RowType {
     [key: string] : any
 }
@@ -27,19 +29,31 @@ export interface ColumnType {
 
 }
  interface Props {
-   rows: RowType[],
-   columns: ColumnType[]
- }
+   columns: ColumnType[],
+   customizeRow?: (row:any) => void
+  }
  
 export default function CustomTable(props:Props) {
   const [page, setPage] = useState<number>(0);
+  const {customizeRow} = props
+  const dispatch = useDispatch()
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
-  const [rows, setRows] = useState<RowType[]>(props.rows)
-  const [selected, setSelected] = useState<readonly number[]>([]);
-
+  const rowsData = useSelector(state => state.tables.rows)
+  const checkedRows = useSelector(state => state.tables.checkedRows)
+  const [rows, setRows] = useState<RowType[]>(rowsData)
+  
   useEffect(() => {
-    setRows(props.rows)
-  }, [props.rows])
+    const newRowsData = rowsData.map((row:any) => {
+      const newRow = customizeRow !== undefined?customizeRow(row):row
+      return newRow
+    })
+    console.log(newRowsData)
+    setRows(newRowsData)
+  }, [rowsData])
+
+  // useEffect(() => {
+  //   setRows(props.rows)
+  // }, [props.rows])
 
 
   const handleChangePage = (e:React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage:number) => {
@@ -51,39 +65,37 @@ export default function CustomTable(props:Props) {
     setPage(0);
   };
 
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+  const isSelected = (id: number) => checkedRows.indexOf(id) !== -1;
 
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-    const selectedIndex = selected.indexOf(id);
+    const selectedIndex = checkedRows.indexOf(id);
     let newSelected: readonly number[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
+      newSelected = newSelected.concat(checkedRows, id);
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
+      newSelected = newSelected.concat(checkedRows.slice(1));
+    } else if (selectedIndex === checkedRows.length - 1) {
+      newSelected = newSelected.concat(checkedRows.slice(0, -1));
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        checkedRows.slice(0, selectedIndex),
+        checkedRows.slice(selectedIndex + 1),
       );
     }
-
-    setSelected(newSelected);
+    dispatch(insertCheckedRows(newSelected))
   };
  
   return (
     <>
     <Paper sx={{ width: '90%', overflow: 'hidden', marginTop: '20px',
     marginLeft: "auto", marginRight: "auto", marginBottom: "20px" }}>
-      <TableContainer sx={{ maxHeight: 700 }}>
+      <TableContainer sx={{ maxHeight: 400 }}>
       <Table sx={{ minWidth: 700 }}  stickyHeader aria-label="sticky table">
         <CustomTableHeader columns={props.columns} rows={rows}
-         setRows={setRows} numSelected={selected.length} setSelected={setSelected}/>
+         setRows={setRows} numSelected={checkedRows.length}/>
         <TableBody>
           {rows
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((row, index) => {
               const isItemSelected = isSelected(row.id);
               const labelId = `enhanced-table-checkbox-${index}`;
@@ -103,7 +115,7 @@ export default function CustomTable(props:Props) {
                     const value = row[column.name];
                     return (
                       <TableCell key={column.id}>
-                        {value}
+                        {formatter(value)}
                       </TableCell>
                     );
                   })}
@@ -113,26 +125,8 @@ export default function CustomTable(props:Props) {
         </TableBody>
       </Table>
     </TableContainer>
-    <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-              colSpan={3}
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              SelectProps={{
-                inputProps: {
-                  'aria-label': 'rows per page',
-                },
-                native: true,
-              }}
-              className="pagination-box"
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={CustomTablePaginationActions}
-            />
-            
     </Paper>
-    <Footer selected={selected}/>
+    <CustomPagination/>
     </>
   );
 }
