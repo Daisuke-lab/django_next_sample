@@ -63,7 +63,7 @@ const Condition: NextPage = (props) => {
     )
   }
 
-  export async function getStaticProps() {
+  export async function getServerSideProps(context:any) {
     let productConditions:any[] = []
     let rowsCount:number = 0
     try {

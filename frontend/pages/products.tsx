@@ -81,7 +81,7 @@ const Main: NextPage = (props) => {
     )
   }
 
-  export async function getStaticProps() {
+  export async function getServerSideProps(context:any) {
 
     let productConditions:any[] = []
     let genres:any[] = []

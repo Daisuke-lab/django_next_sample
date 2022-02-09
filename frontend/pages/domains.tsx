@@ -74,7 +74,7 @@ const DomainSetting: NextPage = (props) => {
     )
   }
 
-  export async function getStaticProps() {
+  export async function getServerSideProps(context:any) {
     // Call an external API endpoint to get posts.
     // You can use any data fetching library
     let trademarks:TrademarkType[] = []

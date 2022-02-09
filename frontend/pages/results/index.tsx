@@ -94,7 +94,7 @@ const Result: NextPage = (props) => {
     )
   }
 
-  export async function getStaticProps() {
+  export async function getServerSideProps(context:any) {
 
     let results:any[] = []
     let rowsCount:number = 0
