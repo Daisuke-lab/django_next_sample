@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Input from '@mui/material/Input';
@@ -10,7 +10,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import styles from '../../styles/NgKeywordConditionsField.module.css'
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 
@@ -29,6 +29,10 @@ function NgWordConditionsField(props:Props) {
         name: "ng_keyword_conditions"
       });
 
+    // useEffect(() => {
+    //     remove(0)
+    // }, [])
+
 
     const onAdd = () => {
         const newNgKeywordCondition = {
@@ -37,13 +41,14 @@ function NgWordConditionsField(props:Props) {
             front_check_word_count: 0,
             back_check_word_count: 0,
             check_target_period: 0,
-            period_unit: "days"
+            period_unit: 1
         } as NgKeywordConditionType
         append(newNgKeywordCondition)
     }
     const onDelete = (index:number) => {
         remove(index);
     }
+    console.log(fields)
     return (
         <>
         <div style={{width: "350px"}}>
@@ -73,60 +78,48 @@ function NgWordConditionsField(props:Props) {
                 />
             <FormHelperText>{errors.ng_keyword_conditions?.[index]?.composite_keyword?"この項目は必須です。":""}</FormHelperText>
             </FormControl>
+
             <FormControl error={errors.ng_keyword_conditions?.[index]?.front_check_word_count?true:false}>
-            <TextField
-                label="チェック文字数（前）"
+                <Controller control={control} name={`ng_keyword_conditions.${index}.front_check_word_count`}
+                 render={({ field }) => ( 
+                <TextField {...field} label="チェック文字数（前）"
                 className="form-modal-field"
                 InputProps={{
                     endAdornment: <InputAdornment position="end">文字以内</InputAdornment>,
                 }}
                 type="number"
-                variant="standard"
-                {...register(`ng_keyword_conditions.${index}.front_check_word_count`, {
-                    min: 1,
-                    required: true
-                  })}
-                />
+                variant="standard" /> 
+                )} />
                 <FormHelperText>{errors.ng_keyword_conditions?.[index]?.front_check_word_count?"1以上を入力して下さい。":""}</FormHelperText>
             </FormControl>
             <FormControl error={errors.ng_keyword_conditions?.[index]?.back_check_word_count?true:false}>
-                <TextField
+            <Controller control={control} name={`ng_keyword_conditions.${index}.back_check_word_count`}
+                 render={({ field }) => ( 
+                <TextField {...field} label="チェック文字数（後）"
                 className="form-modal-field"
-                label="チェック文字数（後）"
                 InputProps={{
                     endAdornment: <InputAdornment position="end">文字以内</InputAdornment>,
                 }}
                 type="number"
-                variant="standard"
-                {...register(`ng_keyword_conditions.${index}.back_check_word_count`, {
-                    min: 1,
-                    required: true
-                  })}
-                />
+                variant="standard" /> 
+                )} />
                 <FormHelperText>{errors.ng_keyword_conditions?.[index]?.back_check_word_count?"1以上を入力して下さい。":""}</FormHelperText>
-                </FormControl>
-                <FormControl error={errors.ng_keyword_conditions?.[index]?.check_target_peirod?true:false}>
-                <TextField
-                className="form-modal-field"
-                label="チェック対象期間"
-                InputProps={{
-                    endAdornment: (<Select
-                    {...register(`ng_keyword_conditions.${index}.period_unit`)}
-                    defaultValue="days">
-                                        <MenuItem value="days">日以内</MenuItem>
-                                        <MenuItem value="month">月以内</MenuItem>
-                                        <MenuItem value="year">年以内</MenuItem>
-                                    </Select>),
-                }}
-                type="number"
-                variant="standard"
-                {...register(`ng_keyword_conditions.${index}.check_target_period`, {
-                    min: 1,
-                    required: true
-                  })}
-                />
+            </FormControl>
+
+            <FormControl error={errors.ng_keyword_conditions?.[index]?.check_target_peirod?true:false}>
+                <Controller control={control} name={`ng_keyword_conditions.${index}.check_targe_period`}
+                 render={({ field }) => ( 
+                    <TextField
+                    className="form-modal-field"
+                    label="チェック対象期間"
+                    type="number"
+
+                    variant="standard"
+                    {...field}
+                    />
+                )} />
                 <FormHelperText>{errors.ng_keyword_conditions?.[index]?.check_target_period?"1以上を入力して下さい。":""}</FormHelperText>
-                </FormControl>
+            </FormControl>
             <IconButton onClick={() => onDelete(index)}>
                 <CancelIcon/>
             </IconButton>

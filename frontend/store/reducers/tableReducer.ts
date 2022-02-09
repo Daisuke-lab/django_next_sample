@@ -51,13 +51,9 @@ export const tableSlice = createSlice({
     },
     changeCurrentRow: (state, action) => {
       const newRow = {...action.payload, button: null}
-      console.log(newRow)
       state.currentRow = action.payload
     },
     deleteRow: (state, action) => {
-      console.log(action.payload)
-      console.log(state)
-      state.rows.map((row) => {console.log(row)})
       state.rows = state.rows.filter((row) => row !== action.payload)
     },
     insertRowsCount: (state, action) => {

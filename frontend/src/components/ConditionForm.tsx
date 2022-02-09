@@ -25,7 +25,7 @@ export interface NgKeywordConditionType {
     front_check_word_count: number,
     back_check_word_count: number,
     check_target_period: number,
-    period_unit: "days" | "months" | "years"
+    period_unit: 1 | 2 | 3
 }
 
 export interface ProductConditionType {

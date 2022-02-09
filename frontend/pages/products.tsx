@@ -21,9 +21,10 @@ const columns = [
   {id: 1, name: "name", label: "商品名"},
   {id: 2, name: "product_condition", label: "チェック条件"},
   {id: 3, name: "genre", label:"ジャンル"},
-  {id: 4, name: "created_at", label:"登録日"},
-  {id: 5, name: "updated_at", label:"最終チェック日"},
-  {id: 5, name: "button", display: false},
+  {id: 4, name: "small_genre", label:"ジャンル（小）"},
+  {id: 5, name: "created_at", label:"登録日"},
+  {id: 6, name: "updated_at", label:"最終チェック日"},
+  {id: 7, name: "button", display: false},
 ] as ColumnType[]
 
 

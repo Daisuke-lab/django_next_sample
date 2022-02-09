@@ -13,10 +13,11 @@ class ProductResultSerializer(serializers.ModelSerializer):
     latest_check_date = serializers.SerializerMethodField()
     priorities = serializers.SerializerMethodField()
     genre = serializers.CharField(max_length=2000, source="small_genre.genre.name")
+    small_genre = serializers.CharField(max_length=2000, source="small_genre.name")
     product_name = serializers.CharField(max_length=200, source="name")
     class Meta:
         model = Product
-        fields = ["id", "product_name", "latest_check_date", "genre", "priorities", "trademarks"]
+        fields = ["id", "product_name", "latest_check_date", "genre", "small_genre", "priorities", "trademarks"]
 
 
     def get_trademarks(self, obj):

@@ -47,7 +47,6 @@ export default function CustomTable(props:Props) {
       const newRow = customizeRow !== undefined?customizeRow(row):row
       return newRow
     })
-    console.log(newRowsData)
     setRows(newRowsData)
   }, [rowsData])
 

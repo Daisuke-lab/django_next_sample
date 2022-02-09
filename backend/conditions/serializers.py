@@ -100,8 +100,9 @@ class ProductConditionSerializer(serializers.ModelSerializer):
                     remained_ng_keywords.remove(ng_keyword) if ng_keyword in remained_ng_keywords else remained_ng_keywords
                     self.create_ng_keyword_condition(ng_keyword, product_condition, ng_keyword_condition)
             else:
+                ng_keyword = ng_keyword_condition["ng_keyword"]
                 remained_ng_keywords.remove(ng_keyword) if ng_keyword in remained_ng_keywords else remained_ng_keywords
-                self.create_ng_keyword_condition(ng_keyword_condition["ng_keyword"], product_condition, ng_keyword_condition)
+                self.create_ng_keyword_condition(ng_keyword, product_condition, ng_keyword_condition)
         
 
         for ng_keyword in remained_ng_keywords:
@@ -112,13 +113,16 @@ class ProductConditionSerializer(serializers.ModelSerializer):
         ng_keyword,_ = NG_Keyword.objects.get_or_create(name=ng_keyword_name)
         if ng_keyword_condition is not None:
             composite_keyword,_ = Composite_Keyword.objects.get_or_create(name=ng_keyword_condition["composite_keyword"])
+            check_target_period = self.get_check_target_period(ng_keyword_condition["check_target_period"], ng_keyword_condition["period_unit"])
             
             ng_keyword_condition_data = {
                 "ng_keyword": ng_keyword,
                 "composite_keyword": composite_keyword,
                 "front_check_word_count": ng_keyword_condition["front_check_word_count"],
                 "back_check_word_count": ng_keyword_condition["back_check_word_count"],
-                "product_condition": product_condition
+                "product_condition": product_condition,
+                "check_target_period": ng_keyword_condition["check_target_period"],
+                "period_unit": ng_keyword_condition["period_unit"]
             }
         else:
             ng_keyword_condition_data = {
@@ -128,6 +132,15 @@ class ProductConditionSerializer(serializers.ModelSerializer):
         new_ng_keyword_condition = NG_Keyword_Condition.objects.create(**ng_keyword_condition_data)
 
         return new_ng_keyword_condition
+
+    def get_check_target_period(self, check_target_period, period_unit):
+        if period_unit == "days":
+            return check_target_period
+        elif period_unit == "months":
+            return check_target_period * 30
+        elif period_unit == "years":
+            return check_target_period * 365
+
 
 
 

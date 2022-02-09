@@ -27,7 +27,7 @@ class ListCreateGenre(generics.ListCreateAPIView):
     serializer_class = GenreSerializer
 
 class ListCreateSmallGenre(generics.ListCreateAPIView):
-    queryset = Small_Genre
+    queryset = Small_Genre.objects.all()
     permission_classes = [AllowAny]
     serializer_class = SmallGenreSerializer
     filterset_class = SmallGenreFilter
