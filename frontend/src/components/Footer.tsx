@@ -1,10 +1,10 @@
 import React from 'react'
 import Button from '@mui/material/Button';
 import backendAxios from '../helpers/axios'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import { useSnackbar } from 'notistack';
 function Footer() {
-    const checkedRows = useSelector(state => state.tables.checkedRows)
+    const checkedRows = useAppSelector(state => state.tables.checkedRows)
     const { enqueueSnackbar } = useSnackbar();
     const onClick = async () => {
         const data = {"product_ids": checkedRows}

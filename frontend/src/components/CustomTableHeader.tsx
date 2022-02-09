@@ -10,7 +10,7 @@ import Tooltip from '@mui/material/Tooltip';
 import {RowType, ColumnType} from './CustomTable'
 import Checkbox from '@mui/material/Checkbox';
 import {addRow, closeForm, insertRows, insertCheckedRows} from '../../store/reducers/tableReducer'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 
 interface Props {
   columns: ColumnType[],
@@ -25,7 +25,7 @@ function CustomTableHeader(props:Props) {
     const [orderBy, setOrderBy] = React.useState<string>('id');
     const {columns, rows, setRows, numSelected } = props;
     const rowCount = rows.length;
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const handleRequestSort = (columnName:string) => {
         const isAsc = orderBy === columnName && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');

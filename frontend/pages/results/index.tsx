@@ -13,7 +13,7 @@ import PercentageBar from '../../src/components/PercentageBar';
 import {highColor, middleColor, lowColor, unknownColor} from "../../src/helpers/colors"
 import { useRouter } from 'next/router'
 import ResultForm from '../../src/components/ResultForm';
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {insertRows, changeMode, changeOpendForm, changeEndpoint, changeCurrentPage, insertRowsCount} from '../../store/reducers/tableReducer'
 import ResultRowButton from '../../src/components/ResultRowButton';
 import ResultRowPriority from '../../src/components/ResultRowPriority';
@@ -61,8 +61,8 @@ interface Props {
 const Result: NextPage = (props) => {
 
   const {results, rowsCount} = props as Props
-  const dispatch = useDispatch()
-  const openedForm = useSelector(state => state.tables.openedForm)
+  const dispatch = useAppDispatch()
+  const openedForm = useAppSelector(state => state.tables.openedForm)
   
   
   const router = useRouter()
@@ -100,8 +100,8 @@ const Result: NextPage = (props) => {
     let rowsCount:number = 0
     try {
       const res = await backendAxios.get('api/v1/result/product')
-      results = res.data.results
-      rowsCount = res.data.count
+      results = res.data?.results !== undefined ?res.data?.results:[]
+      rowsCount = res.data?.count !== undefined ?res.data?.count:0
     } catch(err) {
       console.log(err)
     }

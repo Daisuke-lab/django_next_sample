@@ -13,7 +13,7 @@ import CustomTablePaginationActions from './CustomTablePaginationActions';
 import CustomTableHeader from './CustomTableHeader';
 import Footer from './Footer'
 import Checkbox from '@mui/material/Checkbox';
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {addRow, closeForm, insertRows, insertCheckedRows} from '../../store/reducers/tableReducer'
 import formatter from '../helpers/formatter';
 import CustomPagination from './CustomPagination';
@@ -36,10 +36,10 @@ export interface ColumnType {
 export default function CustomTable(props:Props) {
   const [page, setPage] = useState<number>(0);
   const {customizeRow} = props
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
-  const rowsData = useSelector(state => state.tables.rows)
-  const checkedRows = useSelector(state => state.tables.checkedRows)
+  const rowsData = useAppSelector(state => state.tables.rows)
+  const checkedRows = useAppSelector(state => state.tables.checkedRows)
   const [rows, setRows] = useState<RowType[]>(rowsData)
   
   useEffect(() => {

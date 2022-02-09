@@ -12,7 +12,7 @@ class ProductResultSerializer(serializers.ModelSerializer):
     trademarks = serializers.SerializerMethodField()
     latest_check_date = serializers.SerializerMethodField()
     priorities = serializers.SerializerMethodField()
-    genre = serializers.CharField(max_length=2000, source="genre.name")
+    genre = serializers.CharField(max_length=2000, source="small_genre.genre.name")
     product_name = serializers.CharField(max_length=200, source="name")
     class Meta:
         model = Product

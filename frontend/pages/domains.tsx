@@ -9,7 +9,7 @@ import DeleteForm from '../src/components/DeleteForm';
 import DomainForm, {DomainType, TrademarkType} from '../src/components/DomainForm';
 import backendAxios from '../src/helpers/axios'
 import {RowType, ColumnType} from '../src/components/CustomTable'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../store/hooks'
 import {insertRows, changeMode, changeOpendForm, changeCurrentPage, insertRowsCount, changeEndpoint} from '../store/reducers/tableReducer'
 import DomainRowButton from '../src/components/DomainRowButton';
 const columns = [
@@ -31,9 +31,9 @@ interface Props {
 
 const DomainSetting: NextPage = (props) => {
     const {trademarks, domains, rowsCount} = props as Props
-    const openedForm = useSelector(state => state.tables.openedForm)
-    const currentRow = useSelector(state => state.tables.currentRow)
-    const dispatch = useDispatch()
+    const openedForm = useAppSelector(state => state.tables.openedForm)
+    const currentRow = useAppSelector(state => state.tables.currentRow)
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
       dispatch(insertRows(domains))
@@ -82,17 +82,22 @@ const DomainSetting: NextPage = (props) => {
     let rowsCount:number = 0
     try {
       const res = await backendAxios.get('api/v1/domain/trademark/')
-      trademarks = res.data
+      trademarks = res.data !== undefined ?res.data:[]
     } catch(err) {
       console.log(err)
     }
     try {
       const res = await backendAxios.get('api/v1/domain/')
-      domains = res.data.results
-      rowsCount = res.data.count
+      domains = res.data?.results !== undefined ?res.data?.results:[]
+      rowsCount = res.data?.count !== undefined ?res.data?.count:0
     } catch(err) {
       console.log(err)
     }
+    console.log({
+      trademarks,
+      domains,
+      rowsCount
+    })
 
     return {
       props: {

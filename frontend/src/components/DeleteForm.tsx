@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import Input from '@mui/material/Input';
 import Button from '@mui/material/Button';
 import backendAxios from '../helpers/axios'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {closeForm, deleteRow, changeCurrentRow, insertRows} from '../../store/reducers/tableReducer'
 
 interface Props {
@@ -16,9 +16,9 @@ function DeleteForm(props:Props) {
     const title = props.title!==undefined?`${props.title}の削除`:"削除"
     const formModalProps = {open: props.open, title}
     const [input, setInput] = useState<string>('')
-    const dispatch = useDispatch()
-    const currentRow = useSelector(state => state.tables.currentRow)
-    const rows = useSelector(state => state.tables.rows)
+    const dispatch = useAppDispatch()
+    const currentRow = useAppSelector(state => state.tables.currentRow)
+    const rows = useAppSelector(state => state.tables.rows)
     const onChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         setInput(e.target.value)
     }

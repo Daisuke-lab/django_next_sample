@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import FormModal from './FormModal'
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import Input from '@mui/material/Input';
 import CustomField from './CustomField'
 import Button from '@mui/material/Button';
@@ -14,7 +14,7 @@ import FormControl from '@mui/material/FormControl';
 import backendAxios from '../helpers/axios'
 import TagsInput from './TagsInput'
 import { useSession} from "next-auth/react"
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {addRow, closeForm, insertRows} from '../../store/reducers/tableReducer'
 import { removeBlank } from '../helpers/removeBlank';
 export interface ProductType {
@@ -35,12 +35,13 @@ interface Props extends FormProps{
 }
 function ProductForm(props:Props) {
     console.log(props)
-    const dispatch = useDispatch()
-    const mode = useSelector(state => state.tables.mode)
-    const rows = useSelector(state => state.tables.rows)
-    const currentRow = useSelector(state => state.tables.currentRow)
+    const dispatch = useAppDispatch()
+    const mode = useAppSelector(state => state.tables.mode)
+    const rows = useAppSelector(state => state.tables.rows)
+    const currentRow = useAppSelector(state => state.tables.currentRow)
     const title = mode==="edit"?"調査対象編集":"調査対象登録"
     const [trademarks, setTrademarks] = useState<string[]>([])
+    const [smallGenres, setSmallGenres] = useState<any[]>([])
     const formModalProps = {title, open: props.open}
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
     const { data: session } = useSession()
@@ -50,11 +51,13 @@ function ProductForm(props:Props) {
             setValue('name', currentRow.name, { shouldValidate: true })
             setValue('memo', currentRow.memo)
             setValue('genre', currentRow.genre)
+            setValue('small_genre', currentRow.small_genre)
             setValue('product_condition', currentRow.product_condition)
         } else {
             setValue('name', "")
             setValue('memo', "")
             setValue('genre', "")
+            setValue('small_genre', "")
             setValue('product_condition', "")
         }
     }, [currentRow])
@@ -62,14 +65,15 @@ function ProductForm(props:Props) {
         data.trademarks = trademarks
         data.user = session?.id
         removeBlank(data)
+        const {genre, ...newData} = data 
         console.log(data)
         try {
             if (mode==="new") {
-                const res = await backendAxios.post('/api/v1/product/', data)
+                const res = await backendAxios.post('/api/v1/product/', newData)
                 const newRow = res.data
                 dispatch(addRow(newRow))
             } else {
-                const res = await backendAxios.put(`/api/v1/product/${currentRow?.id}/`, data)
+                const res = await backendAxios.put(`/api/v1/product/${currentRow?.id}/`, newData)
                 const newRow = res.data
                 const filteredRows = rows.filter((row:any) => row !== currentRow)
                 const newRows = [...filteredRows, newRow]
@@ -84,6 +88,17 @@ function ProductForm(props:Props) {
     const onClose = () => {
         setTrademarks([])
         dispatch(closeForm())
+    }
+
+    const onGenreChange = async (event: React.SyntheticEvent<Element, Event>, data:string) => {
+        console.log(data)
+        try {
+            const res = await backendAxios.get(`api/v1/product/small_genre?genre=${data}`)
+            setSmallGenres(res.data)
+            setValue('small_genre', null)
+        } catch (err) {
+            console.log(err)
+        }
     }
     return (
         <FormModal {...formModalProps}>
@@ -124,6 +139,7 @@ function ProductForm(props:Props) {
             <FormControl error={errors.genre?true:false}>
             <Autocomplete
                 className="form-modal-field"
+                onChange={onGenreChange}
                 options={props.genres.map((option) => option.name)}
                 defaultValue={currentRow!==null?currentRow.genre:""}
                 renderInput={(params) => <TextField {...params} label="選択してください"
@@ -132,6 +148,20 @@ function ProductForm(props:Props) {
                   })} />}
                 />
                 <FormHelperText>{errors.genre?"この項目は必須です。":""}</FormHelperText>
+                </FormControl>
+            </CustomField>
+            <CustomField label="ジャンル（小）" mandatory={true}>
+            <FormControl error={errors.small_genre?true:false}>
+            <Autocomplete
+                className="form-modal-field"
+                options={smallGenres.map((option) => option.name)}
+                defaultValue={currentRow!==null?currentRow.small_genre:""}
+                renderInput={(params) => <TextField {...params} label="選択してください"
+                variant="standard" {...register('small_genre',{
+                    required: true
+                  })} />}
+                />
+                <FormHelperText>{errors.small_genre?"この項目は必須です。":""}</FormHelperText>
                 </FormControl>
             </CustomField>
             <CustomField label="メモ" mandatory={false}>

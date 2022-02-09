@@ -11,7 +11,7 @@ import Table from '../../src/components/CustomTable'
 import Chip from '@mui/material/Chip';
 import {highColor, middleColor, lowColor, unknownColor} from "../../src/helpers/colors"
 import ResultDetailForm from '../../src/components/ResultDetailForm';
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {insertRows, changeMode, changeOpendForm, changeCurrentPage, insertRowsCount, changeEndpoint} from '../../store/reducers/tableReducer'
 
 
@@ -32,8 +32,8 @@ const columns = [
 const Result: NextPage = (props) => {
   const [confirmedResult, setConfirmedResult] = useState<number[]>([])
   const {results, rowsCount, productId} = props as Props
-  const dispatch = useDispatch()
-  const openedForm = useSelector(state => state.tables.openedForm)
+  const dispatch = useAppDispatch()
+  const openedForm = useAppSelector(state => state.tables.openedForm)
   useEffect(() => {
     dispatch(insertRows(results))
     dispatch(changeCurrentPage(1))
@@ -102,7 +102,7 @@ export async function getServerSideProps(context:any)  {
     let results:any[] = []
     try {
       const res = await backendAxios.get(`api/v1/result/list?product_id=${productId}`)
-      results = res.data.results
+      results = res.data?.results !== undefined ?res.data?.results:[]
     } catch(err) {
       console.log(err)
     }

@@ -11,7 +11,7 @@ import FormModal, {FormColumnType, FormType} from '../src/components/FormModal'
 import ProductForm, {ProductType} from '../src/components/ProductForm';
 import backendAxios from '../src/helpers/axios'
 import {GenreType} from '../src/GlobalType'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../store/hooks'
 import DeleteForm from '../src/components/DeleteForm';
 import {insertRows, changeMode, changeOpendForm, insertRowsCount, changeCurrentPage, changeEndpoint} from '../store/reducers/tableReducer'
 import ConditionRowButton from '../src/components/ConditionRowButton';
@@ -39,9 +39,9 @@ interface Props {
 
 const Main: NextPage = (props) => {
   const {genres, products, productConditions, rowsCount} = props as Props
-  const openedForm = useSelector(state => state.tables.openedForm)
-  const currentRow = useSelector(state => state.tables.currentRow)
-  const dispatch = useDispatch()
+  const openedForm = useAppSelector(state => state.tables.openedForm)
+  const currentRow = useAppSelector(state => state.tables.currentRow)
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     dispatch(insertRows(products))
@@ -90,22 +90,22 @@ const Main: NextPage = (props) => {
     try {
       const res = await backendAxios.get('api/v1/condition/list/')
       console.log(res.data)
-      productConditions = res.data
+      productConditions = res.data !== undefined ?res.data:[]
     } catch(err) {
       console.log(err)
     }
 
     try {
       const res = await backendAxios.get('api/v1/product/genre/')
-      genres = res.data
+      genres = res.data !== undefined ?res.data:[]
     } catch(err) {
       console.log(err)
     }
 
     try {
       const res = await backendAxios.get('api/v1/product/')
-      products = res.data.results
-      rowsCount = res.data.count
+      products = res.data?.results !== undefined ?res.data?.results:[]
+      rowsCount = res.data?.count !== undefined ?res.data?.count:0
     } catch(err) {
       console.log(err)
     }

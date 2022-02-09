@@ -50,7 +50,6 @@ export default function TransitionsModal(props:Props) {
             <div className={styles.buttonContainer}>
               <LoginButton provider="google"/>
               <LoginButton provider="facebook"/>
-              <LoginButton provider="apple"/>
             </div>
           </Box>
         </Fade>

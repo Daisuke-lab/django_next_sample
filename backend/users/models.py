@@ -7,7 +7,7 @@ class User(models.Model):
     name = models.CharField(max_length=200,null=True)
     email = models.CharField(max_length=200, unique=True,null=True)
     emailVerified = models.DateTimeField(null=True)
-    image = models.CharField(max_length=200, null=True)
+    image = models.CharField(max_length=1000, null=True)
     class Meta:
         db_table = 'user'
  

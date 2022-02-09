@@ -11,7 +11,7 @@ import FormModal, {FormColumnType, FormType} from '../src/components/FormModal'
 import ConditionForm, {ProductConditionType} from "../src/components/ConditionForm"
 import backendAxios from '../src/helpers/axios'
 import DeleteForm from '../src/components/DeleteForm';
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../store/hooks'
 import {insertRows, changeMode, changeOpendForm, changeCurrentPage, insertRowsCount, changeEndpoint} from '../store/reducers/tableReducer'
 import ConditionRowButton from '../src/components/ConditionRowButton'
 const columns = [
@@ -30,9 +30,9 @@ interface Props {
 
 const Condition: NextPage = (props) => {
   const {productConditions, rowsCount} = props as Props 
-  const openedForm = useSelector(state => state.tables.openedForm)
-  const currentRow = useSelector(state => state.tables.currentRow)
-  const dispatch = useDispatch()
+  const openedForm = useAppSelector(state => state.tables.openedForm)
+  const currentRow = useAppSelector(state => state.tables.currentRow)
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     dispatch(insertRows(productConditions))
@@ -68,8 +68,8 @@ const Condition: NextPage = (props) => {
     let rowsCount:number = 0
     try {
       const res = await backendAxios.get('api/v1/condition/')
-      productConditions = res.data.results
-      rowsCount = res.data.count
+      productConditions = res.data?.results !== undefined ?res.data?.results:[]
+      rowsCount = res.data?.count !== undefined ?res.data?.count:0
     } catch(err) {
       console.log(err)
     }

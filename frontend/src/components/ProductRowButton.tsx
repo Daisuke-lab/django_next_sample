@@ -1,7 +1,7 @@
 import React from 'react';
 import ColorButton from './ColorButton';
 import { red, blue, teal } from '@mui/material/colors';
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {changeMode, changeOpendForm, changeCurrentRow} from '../../store/reducers/tableReducer'
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 
 function ProductRowButton(props:Props) {
     const {row} = props
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const onEdit = (row:any) => {
         dispatch(changeMode('edit'))
         dispatch(changeOpendForm('ProductForm'))

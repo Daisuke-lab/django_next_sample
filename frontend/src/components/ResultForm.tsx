@@ -11,7 +11,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Button from '@mui/material/Button';
 import styles from '../../styles/ResultForm.module.css'
 import {convertObjectToQuery} from '../../src/helpers/convertObjectToQuery'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {addRow, closeForm, insertRows} from '../../store/reducers/tableReducer'
 
 function ResultForm(props:FormProps) {
@@ -21,7 +21,7 @@ function ResultForm(props:FormProps) {
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
     const [startDate, setStartDate] = useState<Date | null>(null)
     const [endDate, setEndDate] = useState<Date | null>(null)
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const onSubmit = async (data:any) => {
         const query = convertObjectToQuery(data)
         try {

@@ -16,21 +16,17 @@ import Checkbox from '@mui/material/Checkbox';
 import Input from '@mui/material/Input';
 import FormControl from '@mui/material/FormControl';
 import { useRouter } from 'next/router'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {addRow, closeForm, insertRows} from '../../store/reducers/tableReducer'
 
 
-interface Props extends FormProps {
-    results: any[],
-    setResults: React.Dispatch<React.SetStateAction<any[]>>
-}
-function ResultDetailForm(props:Props) {
+function ResultDetailForm(props:FormProps) {
     const title = "チェック結果詳細を絞り込む"
     const formModalProps = {open: props.open, title}
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
     const [priorities, setPriorities] = useState<number[]>([])
     const [confirmeds, setConfirmeds] = useState<boolean[]>([])
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
         setPriorities([])

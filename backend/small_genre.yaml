@@ -1,0 +1,613 @@
+- model: products.smallgenre
+  pk: 1
+  fields:
+    name: 看護師
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 2
+  fields:
+    name: 薬剤師
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 3
+  fields:
+    name: 医師
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 4
+  fields:
+    name: IT
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 5
+  fields:
+    name: 総合転職
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 6
+  fields:
+    name: 第二新卒
+    genre: 1 
+
+
+- model: products.smallgenre
+  pk: 7
+  fields:
+    name: 派遣
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 8
+  fields:
+    name: スカウト型
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 9
+  fields:
+    name: その他転職
+    genre: 1 
+- model: products.smallgenre
+  pk: 10
+  fields:
+    name: 医療職
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 11
+  fields:
+    name: プログラミング
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 12
+  fields:
+    name: 英会話
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 13
+  fields:
+    name: 資格
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 14
+  fields:
+    name: 介護
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 15
+  fields:
+    name: 保育
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 16
+  fields:
+    name: 学校/受験
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 17
+  fields:
+    name: パート/アルバイト
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 18
+  fields:
+    name: 新卒/インターン
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 19
+  fields:
+    name: 求人媒体
+    genre: 1 
+
+- model: products.smallgenre
+  pk: 20
+  fields:
+    name: 有期雇用
+    genre: 1 
+
+
+
+
+- model: products.smallgenre
+  pk: 21
+  fields:
+    name: クレジットカード
+    genre: 2
+
+- model: products.smallgenre
+  pk: 22
+  fields:
+    name: 自転車保険
+    genre: 2
+
+- model: products.smallgenre
+  pk: 23
+  fields:
+    name: 大手キャッシング
+    genre: 2
+
+- model: products.smallgenre
+  pk: 24
+  fields:
+    name: FX
+    genre: 2
+
+- model: products.smallgenre
+  pk: 25
+  fields:
+    name: その他投資
+    genre: 2
+
+- model: products.smallgenre
+  pk: 26
+  fields:
+    name: 生命保険
+    genre: 2
+
+- model: products.smallgenre
+  pk: 27
+  fields:
+    name: 中小キャッシング
+    genre: 2
+
+- model: products.smallgenre
+  pk: 28
+  fields:
+    name: その他保険
+    genre: 2
+
+- model: products.smallgenre
+  pk: 29
+  fields:
+    name: 仮想通貨
+    genre: 2
+
+- model: products.smallgenre
+  pk: 30
+  fields:
+    name: クラウドファンディング
+    genre: 2
+
+- model: products.smallgenre
+  pk: 31
+  fields:
+    name: 住宅ローン
+    genre: 2
+
+- model: products.smallgenre
+  pk: 32
+  fields:
+    name: 教育ローン
+    genre: 2
+
+- model: products.smallgenre
+  pk: 33
+  fields:
+    name: 証券
+    genre: 2
+
+- model: products.smallgenre
+  pk: 34
+  fields:
+    name: 傷害保険
+    genre: 2
+
+
+
+
+- model: products.smallgenre
+  pk: 35
+  fields:
+    name: ウェディング
+    genre: 3
+
+- model: products.smallgenre
+  pk: 36
+  fields:
+    name: プロバイダー
+    genre: 3
+
+- model: products.smallgenre
+  pk: 37
+  fields:
+    name: 中古車査定
+    genre: 3
+
+- model: products.smallgenre
+  pk: 38
+  fields:
+    name: 漫画
+    genre: 3
+
+- model: products.smallgenre
+  pk: 39
+  fields:
+    name: 不動産査定
+    genre: 3
+
+- model: products.smallgenre
+  pk: 40
+  fields:
+    name: ゲーム
+    genre: 3
+
+- model: products.smallgenre
+  pk: 41
+  fields:
+    name: その他アプリ
+    genre: 3
+
+- model: products.smallgenre
+  pk: 42
+  fields:
+    name: ネット婚活
+    genre: 3
+
+- model: products.smallgenre
+  pk: 43
+  fields:
+    name: 出会い
+    genre: 3
+
+- model: products.smallgenre
+  pk: 44
+  fields:
+    name: 格安スマホ
+    genre: 3
+
+- model: products.smallgenre
+  pk: 45
+  fields:
+    name: 結婚相談所
+    genre: 3
+
+- model: products.smallgenre
+  pk: 46
+  fields:
+    name: 音楽
+    genre: 3
+
+- model: products.smallgenre
+  pk: 47
+  fields:
+    name: 動画
+    genre: 3
+
+- model: products.smallgenre
+  pk: 48
+  fields:
+    name: WiFi
+    genre: 3
+
+- model: products.smallgenre
+  pk: 49
+  fields:
+    name: ガジェット
+    genre: 3
+
+- model: products.smallgenre
+  pk: 50
+  fields:
+    name: 着物買取
+    genre: 3
+
+- model: products.smallgenre
+  pk: 51
+  fields:
+    name: ダイエットジム
+    genre: 4
+
+- model: products.smallgenre
+  pk: 52
+  fields:
+    name: AGAクリニック
+    genre: 4
+
+- model: products.smallgenre
+  pk: 53
+  fields:
+    name: 育毛用品
+    genre: 4
+
+- model: products.smallgenre
+  pk: 54
+  fields:
+    name: ダイエット食品
+    genre: 4
+
+- model: products.smallgenre
+  pk: 55
+  fields:
+    name: ダイエットサプリ
+    genre: 4
+
+- model: products.smallgenre
+  pk: 56
+  fields:
+    name: ダイエット飲料
+    genre: 4
+
+- model: products.smallgenre
+  pk: 57
+  fields:
+    name: 筋トレ用品
+    genre: 4
+
+- model: products.smallgenre
+  pk: 58
+  fields:
+    name: スポーツジム
+    genre: 4
+
+- model: products.smallgenre
+  pk: 59
+  fields:
+    name: 痩身サロン
+    genre: 4
+
+- model: products.smallgenre
+  pk: 60
+  fields:
+    name: 筋トレ_サプリ
+    genre: 4
+
+- model: products.smallgenre
+  pk: 61
+  fields:
+    name: ダイエット器具
+    genre: 4
+
+- model: products.smallgenre
+  pk: 62
+  fields:
+    name: エステ
+    genre: 5
+
+- model: products.smallgenre
+  pk: 63
+  fields:
+    name: コスメ
+    genre: 5
+
+- model: products.smallgenre
+  pk: 64
+  fields:
+    name: 健康飲料
+    genre: 5
+
+- model: products.smallgenre
+  pk: 65
+  fields:
+    name: 脱毛サロン
+    genre: 5
+
+- model: products.smallgenre
+  pk: 66
+  fields:
+    name: その他美容
+    genre: 5
+
+- model: products.smallgenre
+  pk: 67
+  fields:
+    name: 健康サプリ
+    genre: 5
+
+- model: products.smallgenre
+  pk: 68
+  fields:
+    name: 健康食品
+    genre: 5
+
+- model: products.smallgenre
+  pk: 69
+  fields:
+    name: スキンケア
+    genre: 5
+
+- model: products.smallgenre
+  pk: 70
+  fields:
+    name: 脱毛用品
+    genre: 5
+
+- model: products.smallgenre
+  pk: 71
+  fields:
+    name: 美容整形
+    genre: 5
+
+- model: products.smallgenre
+  pk: 72
+  fields:
+    name: ヘアケア
+    genre: 5
+
+- model: products.smallgenre
+  pk: 73
+  fields:
+    name: インフラ
+    genre: 6
+
+- model: products.smallgenre
+  pk: 74
+  fields:
+    name: 旅行
+    genre: 6
+
+- model: products.smallgenre
+  pk: 75
+  fields:
+    name: 総合通販
+    genre: 6
+
+- model: products.smallgenre
+  pk: 76
+  fields:
+    name: ファッション
+    genre: 6
+
+
+- model: products.smallgenre
+  pk: 77
+  fields:
+    name: ウォーターサーバー
+    genre: 6
+
+- model: products.smallgenre
+  pk: 78
+  fields:
+    name: リフォーム
+    genre: 6
+
+- model: products.smallgenre
+  pk: 79
+  fields:
+    name: 老人ホーム
+    genre: 6
+
+- model: products.smallgenre
+  pk: 80
+  fields:
+    name: パソコン機器
+    genre: 6
+
+- model: products.smallgenre
+  pk: 81
+  fields:
+    name: 探偵
+    genre: 6
+
+- model: products.smallgenre
+  pk: 82
+  fields:
+    name: ペット用品
+    genre: 6
+
+- model: products.smallgenre
+  pk: 83
+  fields:
+    name: AV情報家電
+    genre: 6
+
+- model: products.smallgenre
+  pk: 84
+  fields:
+    name: 不用品買取
+    genre: 6
+
+
+- model: products.smallgenre
+  pk: 85
+  fields:
+    name: 不動産情報
+    genre: 6
+
+- model: products.smallgenre
+  pk: 86
+  fields:
+    name: キッチン家電
+    genre: 6
+
+- model: products.smallgenre
+  pk: 87
+  fields:
+    name: 生活家電
+    genre: 6
+
+- model: products.smallgenre
+  pk: 88
+  fields:
+    name: 土地活用
+    genre: 6
+
+- model: products.smallgenre
+  pk: 89
+  fields:
+    name: 引越し
+    genre: 6
+
+- model: products.smallgenre
+  pk: 90
+  fields:
+    name: カメラ機器
+    genre: 6
+
+- model: products.smallgenre
+  pk: 91
+  fields:
+    name: 終活
+    genre: 6
+
+- model: products.smallgenre
+  pk: 92
+  fields:
+    name: パソコン周辺機器
+    genre: 6
+
+- model: products.smallgenre
+  pk: 93
+  fields:
+    name: 宅食
+    genre: 6
+
+- model: products.smallgenre
+  pk: 94
+  fields:
+    name: その他
+    genre: 7
+
+- model: products.smallgenre
+  pk: 96
+  fields:
+    name: ブログ
+    genre: 7
+
+- model: products.smallgenre
+  pk: 97
+  fields:
+    name: ポイントサイト
+    genre: 7
+
+- model: products.smallgenre
+  pk: 98
+  fields:
+    name: オフィスサービス
+    genre: 7
+
+- model: products.smallgenre
+  pk: 99
+  fields:
+    name: システム
+    genre: 7
+
+- model: products.smallgenre
+  pk: 100
+  fields:
+    name: 人材サービス
+    genre: 7
+
+- model: products.smallgenre
+  pk: 101
+  fields:
+    name: ニュース/ポータル
+    genre: 7
+
+- model: products.smallgenre
+  pk: 102
+  fields:
+    name: レンタルサーバー
+    genre: 7

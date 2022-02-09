@@ -15,5 +15,6 @@ DATABASES = {
 
 CORS_ORIGIN_WHITELIST = [
     'https://yakuji.colue.net',
+    "https://medipat.org"
 ]
 

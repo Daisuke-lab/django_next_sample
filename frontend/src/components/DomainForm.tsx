@@ -17,7 +17,7 @@ import { useSession} from "next-auth/react"
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { AnyRecord } from 'dns';
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {addRow, closeForm, insertRows} from '../../store/reducers/tableReducer'
 
 export interface  TrademarkType {
@@ -43,10 +43,10 @@ interface Props extends FormProps{
 
 function DomainForm(props:Props) {
     const {open} = props
-    const mode = useSelector(state => state.tables.mode)
-    const rows = useSelector(state => state.tables.rows)
-    const currentRow = useSelector(state => state.tables.currentRow)
-    const dispatch = useDispatch()
+    const mode = useAppSelector(state => state.tables.mode)
+    const rows = useAppSelector(state => state.tables.rows)
+    const currentRow = useAppSelector(state => state.tables.currentRow)
+    const dispatch = useAppDispatch()
     const title = mode==="edit"?"ドメイン編集":"ドメイン登録"
     const formModalProps = {open: props.open, title}
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();

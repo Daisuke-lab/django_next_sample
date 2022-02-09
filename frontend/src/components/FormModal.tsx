@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import styles from '../../styles/FormModal.module.css'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {closeForm} from '../../store/reducers/tableReducer'
 export interface FormColumnType {
     type: string,
@@ -42,7 +42,7 @@ const style = {
     p: 4,
   }  as const;
 function FormModal(props:Props) {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
     return (
         <div>
       <Modal

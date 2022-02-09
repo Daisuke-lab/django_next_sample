@@ -32,7 +32,7 @@ function LoginButton(props:Props) {
     return (
         <button className={styles.loginButton} onClick={() => signIn(props.provider)}>
             {generateIcon()}
-            Login With {prividerName}
+            <span>Login With {prividerName}</span>
         </button>
     )
 }

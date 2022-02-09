@@ -15,7 +15,7 @@ import FormControl from '@mui/material/FormControl';
 import backendAxios from '../helpers/axios'
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {addRow, closeForm, insertRows} from '../../store/reducers/tableReducer'
 import ConditionRowButton from './ConditionRowButton';
 
@@ -42,11 +42,11 @@ export interface ProductConditionType {
 
 
 function ConditionForm(props:FormProps) {
-    const mode = useSelector(state => state.tables.mode)
+    const mode = useAppSelector(state => state.tables.mode)
     const modeJapanese = mode==="edit"?"編集":"作成"
-    const dispatch = useDispatch()
-    const rows = useSelector(state => state.tables.rows)
-    const currentRow = useSelector(state => state.tables.currentRow)
+    const dispatch = useAppDispatch()
+    const rows = useAppSelector(state => state.tables.rows)
+    const currentRow = useAppSelector(state => state.tables.currentRow)
     const title = `チェック条件${modeJapanese}`
     const formModalProps = {open: props.open, title}
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();

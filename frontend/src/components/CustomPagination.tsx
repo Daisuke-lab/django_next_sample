@@ -1,18 +1,23 @@
 import React, {useState} from 'react';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {changeCurrentPage, insertRows} from '../../store/reducers/tableReducer'
 import backendAxios from '../helpers/axios';
 
 function CustomPagination() {
-    const rowsCount = useSelector(state => state.tables.rowsCount)
-    const currentPage = useSelector(state => state.tables.currentPage)
-    const endpoint = useSelector(state => state.tables.endpoint)
-    const dispatch = useDispatch()
+    const rowsCount = useAppSelector(state => state.tables.rowsCount)
+    const currentPage = useAppSelector(state => state.tables.currentPage)
+    const endpoint = useAppSelector(state => state.tables.endpoint)
+    const dispatch = useAppDispatch()
     const handleChange = async (event: React.ChangeEvent<unknown>, value: number) => {
       try {
-        const url = `${endpoint}?page=${value}`
+        let url:string = ""
+        if (endpoint.includes("?")) {
+          url = `${endpoint}&page=${value}`
+        } else {
+          url = `${endpoint}?page=${value}`
+        }
         const res = await backendAxios.get(url)
         dispatch(insertRows(res.data.results))
         dispatch(changeCurrentPage(value))
