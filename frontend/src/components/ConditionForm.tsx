@@ -57,7 +57,7 @@ function ConditionForm(props:FormProps) {
             console.log(currentRow.ng_keywords)
             setNgKeywords(currentRow.ng_keywords)
             setValue('title', currentRow.title, { shouldValidate: true })
-            setValue('ng_keyword_conditions', currentRow.ng_keyword_conditions, { shouldValidate: true })
+            //setValue('ng_keyword_conditions', currentRow.ng_keyword_conditions)
         } else {
             setNgKeywords([])
             setValue('title', "")

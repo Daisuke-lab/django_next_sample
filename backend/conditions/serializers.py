@@ -38,7 +38,6 @@ class ProductConditionSerializer(serializers.ModelSerializer):
 
 
     def validate_title(self, value):
-        print(self.context['request'].parser_context)
         kwargs = self.context['request'].parser_context["kwargs"]
         pk = kwargs.get('pk')
         if pk is None:#create
@@ -75,6 +74,11 @@ class ProductConditionSerializer(serializers.ModelSerializer):
         product_condition = get_object_or_404(Product_Condition, "product_condition", id=obj.id)
         ng_keyword_conditions = NG_Keyword_Condition.objects.filter(product_condition=product_condition,
         composite_keyword__isnull=False).values()
+        for ng_keyword_condition in ng_keyword_conditions:
+            ng_keyword = get_object_or_404(NG_Keyword, "ng_keyword",id=ng_keyword_condition["ng_keyword_id"])
+            composite_keyword = get_object_or_404(Composite_Keyword, "composite_keyword",id=ng_keyword_condition["composite_keyword_id"])
+            ng_keyword_condition["ng_keyword"] = ng_keyword.name
+            ng_keyword_condition["composite_keyword"] = composite_keyword.name
         return ng_keyword_conditions
 
     def create(self, validated_data):
@@ -92,10 +96,11 @@ class ProductConditionSerializer(serializers.ModelSerializer):
     def _create(self, validated_data, product_condition):
         ng_keyword_conditions = validated_data.get("ng_keyword_conditions")
         ng_keyword_conditions = ng_keyword_conditions if ng_keyword_conditions is not None else []
-        remained_ng_keywords = validated_data["ng_keywords"]
+        remained_ng_keywords = [ng_keyword for ng_keyword in validated_data["ng_keywords"]]
         ng_keywords = validated_data.pop("ng_keywords")
         for ng_keyword_condition in ng_keyword_conditions:
             if ng_keyword_condition["ng_keyword"] == "全体":
+                print(ng_keywords)
                 for ng_keyword in ng_keywords:
                     remained_ng_keywords.remove(ng_keyword) if ng_keyword in remained_ng_keywords else remained_ng_keywords
                     self.create_ng_keyword_condition(ng_keyword, product_condition, ng_keyword_condition)
@@ -113,7 +118,6 @@ class ProductConditionSerializer(serializers.ModelSerializer):
         ng_keyword,_ = NG_Keyword.objects.get_or_create(name=ng_keyword_name)
         if ng_keyword_condition is not None:
             composite_keyword,_ = Composite_Keyword.objects.get_or_create(name=ng_keyword_condition["composite_keyword"])
-            check_target_period = self.get_check_target_period(ng_keyword_condition["check_target_period"], ng_keyword_condition["period_unit"])
             
             ng_keyword_condition_data = {
                 "ng_keyword": ng_keyword,
@@ -133,13 +137,6 @@ class ProductConditionSerializer(serializers.ModelSerializer):
 
         return new_ng_keyword_condition
 
-    def get_check_target_period(self, check_target_period, period_unit):
-        if period_unit == "days":
-            return check_target_period
-        elif period_unit == "months":
-            return check_target_period * 30
-        elif period_unit == "years":
-            return check_target_period * 365
 
 
 

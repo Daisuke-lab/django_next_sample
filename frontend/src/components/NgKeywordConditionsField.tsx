@@ -9,10 +9,12 @@ import {NgKeywordConditionType} from './ConditionForm'
 import InputAdornment from '@mui/material/InputAdornment';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import styles from '../../styles/NgKeywordConditionsField.module.css'
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
+import { current } from '@reduxjs/toolkit';
 
 interface Props {
     ngKeywords: string[],
@@ -28,10 +30,17 @@ function NgWordConditionsField(props:Props) {
         control,
         name: "ng_keyword_conditions"
       });
+    const currentRow = useAppSelector(state => state.tables.currentRow)
 
-    // useEffect(() => {
-    //     remove(0)
-    // }, [])
+    useEffect(() => {
+        if (currentRow !== null) {
+            for (let i = 0; i < currentRow.ng_keyword_conditions.length; i++) {
+                const ngKeywordCondition = currentRow.ng_keyword_conditions[i]
+                console.log(ngKeywordCondition)
+                append(ngKeywordCondition)
+            }
+        }
+    }, [])
 
 
     const onAdd = () => {
@@ -58,7 +67,7 @@ function NgWordConditionsField(props:Props) {
             <Autocomplete
                 className="form-modal-field"
                 options={["全体", ...ngKeywords]}
-                defaultValue="全体"
+                defaultValue={ngKeywordCondition?.ng_keyword}
                 renderInput={(params) => <TextField {...params} label="NGキーワード"
                 {...register(`ng_keyword_conditions.${index}.ng_keyword`,{
                     required: true
@@ -107,13 +116,23 @@ function NgWordConditionsField(props:Props) {
             </FormControl>
 
             <FormControl error={errors.ng_keyword_conditions?.[index]?.check_target_peirod?true:false}>
-                <Controller control={control} name={`ng_keyword_conditions.${index}.check_targe_period`}
+                <Controller control={control} name={`ng_keyword_conditions.${index}.check_target_period`}
                  render={({ field }) => ( 
                     <TextField
                     className="form-modal-field"
                     label="チェック対象期間"
                     type="number"
-
+                    InputProps={{
+                        endAdornment: (
+                            <Controller control={control} name={`ng_keyword_conditions.${index}.period_unit`}
+                     render={({ field }) => ( 
+                        <Select {...field} defaultValue={ngKeywordCondition?.period_unit}>
+                        <MenuItem value="1">日以内</MenuItem>
+                        <MenuItem value="2">カ月以内</MenuItem>
+                        <MenuItem value="3">年以内</MenuItem>
+                        </Select>
+                    )} />),
+                    }}
                     variant="standard"
                     {...field}
                     />
