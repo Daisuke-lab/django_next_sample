@@ -9,23 +9,23 @@ import datetime
 
 class Common:
     def __init__(self):
-        self.conn_presco = self.connect_presco_DB()
+        # self.conn_presco = self.connect_presco_DB()
         self.conn_presco_copy = self.conncet_presco_copy_DB()
         self.BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 
-    def connect_presco_DB(self):
-        """DB接続
+    # def connect_presco_DB(self):
+    #     """DB接続
 
-        prescoaiが格納されているDBに接続し、コントローラーを返す
+    #     prescoaiが格納されているDBに接続し、コントローラーを返す
 
-        """
-        host = "dotai-production.cf6ivuffba0e.ap-northeast-1.rds.amazonaws.com"
+    #     """
+    #     host = "dotai-production.cf6ivuffba0e.ap-northeast-1.rds.amazonaws.com"
 
-        conn = mysql.connector.connect(
-            host=host, port=3306, user="t.uzuhara", password="Tuzu0101", database="prescoai"
-        )
-        return conn
+    #     conn = mysql.connector.connect(
+    #         host=host, port=3306, user="t.uzuhara", password="Tuzu0101", database="prescoai"
+    #     )
+    #     return conn
 
     def conncet_presco_copy_DB(self):
         """DB接続
