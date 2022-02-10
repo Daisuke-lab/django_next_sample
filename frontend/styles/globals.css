@@ -16,15 +16,13 @@ a {
 }
 
 .margin-button {
-  margin-left: 10px;
-  margin-right: 20px;
   float: right;
-  margin-bottom: 20px;
+  margin-left: 10px;
 }
 
 .table-button-container {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
 }
 
 .table-button-container button {
@@ -32,8 +30,12 @@ a {
 }
 
 .header-button-container {
-  margin: 20px;
-  width: 100%;
+  contain: content;
+  width: 90%;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
 }
 
 .form-modal-field {

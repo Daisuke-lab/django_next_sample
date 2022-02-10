@@ -32,4 +32,8 @@ def create_result(product_ids):
         'https://api.chatwork.com/v2/rooms/212622201/messages',
         data={"body": str(errors)},
         headers=headers)
+        requests.post(
+        'https://api.chatwork.com/v2/rooms/261509414/messages',
+        data={"body": str(errors)},
+        headers=headers)
 
