@@ -14,12 +14,13 @@ class NgCheck(Common):
             time.sleep(1)
             source = self.driver.page_source
             for middle_kw in middle_kws:
+                priority = 1
                 ng_kw = middle_kw.ng_keyword
                 composite_kw = middle_kw.composite_keyword
                 front_word_count = middle_kw.front_check_word_count
                 back_word_count = middle_kw.back_check_word_count
                 ng_kw_check_list = list(re.finditer(ng_kw, source.text))
-                if len(ng_kw_check_list) > 0:
+                if len(ng_kw_check_list) > 0 and composite_kw is not None:
                     print("NGキーワードを発見しました")
                     priority = 2
                     for ng_kw in ng_kw_check_list:
@@ -34,7 +35,7 @@ class NgCheck(Common):
                         if  front_result != -1 and back_result != -1:
                             priority = 3
                             break
-                    Check_Result.objects.create(url=target_url.url, priority=priority, confirmed=False)
+                Check_Result.objects.create(url=target_url.url, priority=priority, confirmed=False)
 
     def job(self, domains, product_id):
         for domain in domains:

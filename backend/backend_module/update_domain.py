@@ -82,6 +82,12 @@ class UpdateDomain(Common):
                 update_domains.append(str(domain))
         return update_domains
 
+    def get_presco_copy_domains(self, product_id):
+        query = f"SELECT domain FROM presco_db_copy WHERE pg_id = '{product_id}'"
+        presco_copy_domains = self.commit_query(conn=self.conn_presco_copy, query=query, select=True)
+        domains = [data["domain"] for data in presco_copy_domains]
+        return domains
+
     def get_specific_search_domains(self):
         result_domain_lists = []
         keyword = f"intext:'{self.trademark_kw.name}'"
@@ -146,10 +152,11 @@ class UpdateDomain(Common):
 
     def job(self, product_id):
         self.trademark = Trademark.objects.get(product=product_id)
-        specific_search_domains = self.get_specific_search_domains()
         # プレスコのデータを取得できなくなってしまったためコメントアウト
         # dotai_domains = self.get_dotai_domains()
         # referrer_domains = self.get_referrer_domain()
-        all_domains = list(set(specific_search_domains))
+        specific_search_domains = self.get_specific_search_domains()
+        presco_copy_domains = self.get_presco_copy_domains(product_id=product_id)
+        all_domains = list(set(specific_search_domains + presco_copy_domains))
         self.update_domain_database(domains=all_domains)
         return all_domains
