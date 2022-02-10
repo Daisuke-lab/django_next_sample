@@ -26,6 +26,7 @@ class Small_Genre(models.Model):
 class Product_Condition(models.Model):
     title = models.CharField(unique=True, max_length=500)
     status = models.IntegerField(default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     class Meta:
         db_table = 'product_condition'

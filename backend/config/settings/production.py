@@ -1,6 +1,6 @@
 import os
 
-DEBUG = False
+DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # 変更

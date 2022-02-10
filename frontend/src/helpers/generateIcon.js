@@ -3,7 +3,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
-
+import BarChartIcon from '@mui/icons-material/BarChart';
 const generateIcon = (title) => {
     switch(title) {
         case "調査対象商品一覧／登録":
@@ -14,6 +14,8 @@ const generateIcon = (title) => {
             return <ListAltIcon/>
         case "ドメイン設定":
             return <AccountTreeIcon/>
+        case "チェック結果詳細":
+            return <BarChartIcon/>
         default:
             return <></>
     }

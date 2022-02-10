@@ -11,6 +11,7 @@ import FormModal, {FormColumnType, FormType} from '../src/components/FormModal'
 import ConditionForm, {ProductConditionType} from "../src/components/ConditionForm"
 import backendAxios from '../src/helpers/axios'
 import DeleteForm from '../src/components/DeleteForm';
+import { useSession,getSession } from "next-auth/react"
 import { useAppSelector, useAppDispatch } from '../store/hooks'
 import {insertRows, changeMode, changeOpendForm, changeCurrentPage, insertRowsCount, changeEndpoint} from '../store/reducers/tableReducer'
 import ConditionRowButton from '../src/components/ConditionRowButton'
@@ -64,10 +65,13 @@ const Condition: NextPage = (props) => {
   }
 
   export async function getServerSideProps(context:any) {
+    const session = await getSession(context) 
+    const userId = session?.id
+
     let productConditions:any[] = []
     let rowsCount:number = 0
     try {
-      const res = await backendAxios.get('api/v1/condition/')
+      const res = await backendAxios.get(`api/v1/condition/?user=${userId}`)
       productConditions = res.data?.results !== undefined ?res.data?.results:[]
       rowsCount = res.data?.count !== undefined ?res.data?.count:0
     } catch(err) {

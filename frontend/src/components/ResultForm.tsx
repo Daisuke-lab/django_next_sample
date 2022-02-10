@@ -13,6 +13,8 @@ import styles from '../../styles/ResultForm.module.css'
 import {convertObjectToQuery} from '../../src/helpers/convertObjectToQuery'
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {addRow, closeForm, insertRows} from '../../store/reducers/tableReducer'
+import { useSession} from "next-auth/react"
+
 
 function ResultForm(props:FormProps) {
     const title = "チェック結果を絞り込む"
@@ -22,10 +24,13 @@ function ResultForm(props:FormProps) {
     const [startDate, setStartDate] = useState<Date | null>(null)
     const [endDate, setEndDate] = useState<Date | null>(null)
     const dispatch = useAppDispatch()
+    const { data: session } = useSession()
+    const userId = session?.userId
+
     const onSubmit = async (data:any) => {
         const query = convertObjectToQuery(data)
         try {
-            const res = await backendAxios.get(`api/v1/result/product${query}`)
+            const res = await backendAxios.get(`api/v1/result/product${query}&user=${userId}`)
             const newRows = res.data
             dispatch(insertRows(newRows))
             dispatch(closeForm())

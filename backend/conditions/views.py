@@ -6,11 +6,11 @@ from .serializers import ProductConditionSerializer
 from rest_framework.response import Response
 from .filters import ProductConditionFilter
 from rest_framework.pagination import PageNumberPagination
-
 class ListProductCondition(generics.ListAPIView):
     queryset = Product_Condition.objects.all()
     permission_classes = [AllowAny]
     serializer_class = ProductConditionSerializer
+    filterset_class = ProductConditionFilter
     
 
 class ListCreateProductCondition(generics.ListCreateAPIView):
@@ -18,6 +18,7 @@ class ListCreateProductCondition(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = ProductConditionSerializer
     pagination_class = PageNumberPagination
+    filterset_class = ProductConditionFilter
 
 
 class RetrieveUpdateDestroyProductCondition(generics.RetrieveUpdateDestroyAPIView):

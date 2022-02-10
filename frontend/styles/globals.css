@@ -28,11 +28,12 @@ a {
 }
 
 .table-button-container button {
-  margin: 5px
+  margin: 5px;
 }
 
 .header-button-container {
-  margin: 20px
+  margin: 20px;
+  width: 100%;
 }
 
 .form-modal-field {
@@ -46,11 +47,10 @@ a {
   justify-content: space-evenly;
 }
 
-
 .pagination-container {
-  margin: 20px
+  margin: 20px;
 }
 
 .pagination-container ul {
-  justify-content: center
+  justify-content: center;
 }

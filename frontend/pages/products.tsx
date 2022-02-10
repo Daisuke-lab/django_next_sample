@@ -9,6 +9,7 @@ import {RowType, ColumnType} from '../src/components/CustomTable'
 import {productColumns} from '../src/helpers/formColumns'
 import FormModal, {FormColumnType, FormType} from '../src/components/FormModal'
 import ProductForm, {ProductType} from '../src/components/ProductForm';
+import { useSession,getSession } from "next-auth/react"
 import backendAxios from '../src/helpers/axios'
 import {GenreType} from '../src/GlobalType'
 import { useAppSelector, useAppDispatch } from '../store/hooks'
@@ -83,13 +84,15 @@ const Main: NextPage = (props) => {
   }
 
   export async function getServerSideProps(context:any) {
+    const session = await getSession(context) 
+    const userId = session?.id
 
     let productConditions:any[] = []
     let genres:any[] = []
     let products:any[] = []
     let rowsCount:number = 0
     try {
-      const res = await backendAxios.get('api/v1/condition/list/')
+      const res = await backendAxios.get(`api/v1/condition/list?user=${userId}`)
       console.log(res.data)
       productConditions = res.data !== undefined ?res.data:[]
     } catch(err) {
@@ -104,7 +107,7 @@ const Main: NextPage = (props) => {
     }
 
     try {
-      const res = await backendAxios.get('api/v1/product/')
+      const res = await backendAxios.get(`api/v1/product/?user=${userId}`)
       products = res.data?.results !== undefined ?res.data?.results:[]
       rowsCount = res.data?.count !== undefined ?res.data?.count:0
     } catch(err) {

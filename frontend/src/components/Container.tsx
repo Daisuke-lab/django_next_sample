@@ -25,7 +25,7 @@ function Container({children}:any) {
         const pathname:string= window.location.pathname;
         setCurrentTitle(pages[pathname])
 
-        if (pathname.includes("results")) {
+        if (pathname.includes("results/")) {
             setCurrentTitle("チェック結果詳細")
         }
     }, [])

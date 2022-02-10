@@ -61,7 +61,7 @@ function NgWordConditionsField(props:Props) {
     return (
         <>
         <div style={{width: "350px"}}>
-        {fields.map((ngKeywordCondition, index) => (
+        {(fields as any).map((ngKeywordCondition:NgKeywordConditionType, index:number) => (
             <div key={ngKeywordCondition.id} className={styles.fieldsContainer}>
             <FormControl error={errors.ng_keyword_conditions?.[index]?.ng_keyword?true:false}>
             <Autocomplete
