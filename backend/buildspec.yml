@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...          
+      - docker build -t 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_backend:latest -f Dockerfile.python .
+      - docker build -t 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_frontend:latest -f Dockerfile.node .
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_backend:latest
+      - docker push 381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_frontend:latest
+
+
+      
