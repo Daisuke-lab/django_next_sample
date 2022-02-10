@@ -151,7 +151,7 @@ class UpdateDomain(Common):
                 client_domain.save()
 
     def job(self, product_id):
-        self.trademark = Trademark.objects.get(product=product_id)
+        self.trademark_kw = Trademark.objects.get(product=product_id)
         # プレスコのデータを取得できなくなってしまったためコメントアウト
         # dotai_domains = self.get_dotai_domains()
         # referrer_domains = self.get_referrer_domain()
