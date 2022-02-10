@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import styles from '../../styles/ResultForm.module.css'
 import {convertObjectToQuery} from '../../src/helpers/convertObjectToQuery'
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { useSession} from "next-auth/react"
 import Checkbox from '@mui/material/Checkbox';
 import Input from '@mui/material/Input';
 import FormControl from '@mui/material/FormControl';
@@ -27,6 +28,8 @@ function ResultDetailForm(props:FormProps) {
     const [priorities, setPriorities] = useState<number[]>([])
     const [confirmeds, setConfirmeds] = useState<boolean[]>([])
     const dispatch = useAppDispatch()
+    const { data: session } = useSession()
+    const userId = session?.userId
 
     useEffect(() => {
         setPriorities([])
@@ -61,7 +64,7 @@ function ResultDetailForm(props:FormProps) {
       }
     const onSubmit = async (data:any) => {
         console.log(data)
-        const query = convertObjectToQuery(data) + `&product_id=${productId}`
+        const query = convertObjectToQuery(data) + `&product_id=${productId}&user=${userId}`
         console.log(query)
         try {
             const res = await backendAxios.get(`api/v1/result/list${query}`)

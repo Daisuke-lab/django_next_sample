@@ -7,13 +7,14 @@ from rest_framework.permissions import AllowAny
 from .serializers import ProductSerializer, GenreSerializer, SmallGenreSerializer
 from .models import Product, Genre, Small_Genre
 from rest_framework.pagination import PageNumberPagination
-from .filters import SmallGenreFilter
+from .filters import SmallGenreFilter, ProductFilter
 
 class ListCreateProduct(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     permission_classes = [AllowAny]
     serializer_class = ProductSerializer
     pagination_class = PageNumberPagination
+    filterset_class = ProductFilter
 
 
 class RetrieveUpdateDestroyProduct(generics.RetrieveUpdateDestroyAPIView):

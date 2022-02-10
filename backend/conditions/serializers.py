@@ -31,7 +31,7 @@ class ProductConditionSerializer(serializers.ModelSerializer):
     ng_keywords = serializers.ListField(child=serializers.CharField(max_length=100), write_only=True)
     class Meta:
         model = Product_Condition
-        fields = ["ng_keyword_conditions", "title", "ng_keywords", "id"]
+        fields = ["ng_keyword_conditions", "title", "ng_keywords", "id", "user"]
         write_only_fields = ('ng_keywords',)
         read_only_fields = ["ng_keyword_conditions", "id"]
         extra_kwargs = {'ng_keyword_conditions': {'required': False}}
@@ -82,7 +82,7 @@ class ProductConditionSerializer(serializers.ModelSerializer):
         return ng_keyword_conditions
 
     def create(self, validated_data):
-        product_condition = Product_Condition.objects.create(title=validated_data["title"])
+        product_condition = Product_Condition.objects.create(title=validated_data["title"], user=validated_data["user"])
         product_condition = self._create(validated_data, product_condition)
         return product_condition
 

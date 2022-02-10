@@ -17,9 +17,10 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {addRow, closeForm, insertRows} from '../../store/reducers/tableReducer'
-import ConditionRowButton from './ConditionRowButton';
+import { useSession} from "next-auth/react"
 
 export interface NgKeywordConditionType {
+    id?: any
     ng_keyword: string,
     composite_keyword: string,
     front_check_word_count: number,
@@ -52,6 +53,7 @@ function ConditionForm(props:FormProps) {
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
     const [ngKeywords, setNgKeywords] = useState<string[]>([])
     const [generalError, setGeneralError] = useState<string>("")
+    const { data: session } = useSession()
     useEffect(() => {
         if (currentRow !== null) {
             console.log(currentRow.ng_keywords)
@@ -66,7 +68,8 @@ function ConditionForm(props:FormProps) {
         setGeneralError("")
     }, [currentRow])
     const onSubmit = async (data:any) => {
-        data["ng_keywords"] = ngKeywords
+        data.ng_keywords = ngKeywords
+        data.user = session?.id
         console.log(data)
         try {
             if (mode === "new") {

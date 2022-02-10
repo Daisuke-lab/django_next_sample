@@ -19,11 +19,10 @@ class TrademarkSerializer(serializers.ModelSerializer):
 
 class DomainSerializer(serializers.ModelSerializer):
     type_display = serializers.CharField(source='get__type_display', read_only=True)
-    trademark_data = TrademarkSerializer(source="trademark", read_only=True)
     class Meta:
         model = Domain
-        fields = ["trademark", "domain", "_type", "created_at", "updated_at", "id", "type_display", "trademark_data"]
-        read_only_fields = ["created_at", "updated_at", "id", "type_display", "trademark_data"]
+        fields = ["trademark", "domain", "_type", "created_at", "updated_at", "id", "type_display"]
+        read_only_fields = ["created_at", "updated_at", "id", "type_display"]
 
 
     def create(self, validated_data):
@@ -38,4 +37,8 @@ class DomainSerializer(serializers.ModelSerializer):
         instance.updated_at = timezone.now()
         instance.save()
         return instance
+
+    def to_representation(self, obj):
+        self.fields['trademark'] = serializers.CharField(source="trademark.name")
+        return super().to_representation(obj)
 

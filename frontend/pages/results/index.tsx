@@ -8,7 +8,7 @@ import { red, blue } from '@mui/material/colors';
 import {RowType, ColumnType} from '../../src/components/CustomTable'
 import backendAxios from '../../src/helpers/axios'
 import styles from '../../styles/Results.module.css'
-import { workerData } from 'worker_threads';
+import { useSession,getSession } from "next-auth/react"
 import PercentageBar from '../../src/components/PercentageBar';
 import {highColor, middleColor, lowColor, unknownColor} from "../../src/helpers/colors"
 import { useRouter } from 'next/router'
@@ -96,11 +96,13 @@ const Result: NextPage = (props) => {
   }
 
   export async function getServerSideProps(context:any) {
+    const session = await getSession(context) 
+    const userId = session?.id
 
     let results:any[] = []
     let rowsCount:number = 0
     try {
-      const res = await backendAxios.get('api/v1/result/product')
+      const res = await backendAxios.get(`api/v1/result/product?user=${userId}`)
       results = res.data?.results !== undefined ?res.data?.results:[]
       rowsCount = res.data?.count !== undefined ?res.data?.count:0
     } catch(err) {

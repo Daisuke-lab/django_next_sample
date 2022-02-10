@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from .models import Small_Genre
+from .models import Small_Genre, Product
 
 
 class SmallGenreFilter(filters.FilterSet):
@@ -8,3 +8,9 @@ class SmallGenreFilter(filters.FilterSet):
     class Meta:
         model = Small_Genre
         fields = ["genre"]
+
+class ProductFilter(filters.FilterSet):
+    user = filters.CharFilter(field_name="user__id")
+    class Meta:
+        model = Product
+        fields = ["user"]

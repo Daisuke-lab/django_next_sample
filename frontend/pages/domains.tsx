@@ -8,6 +8,7 @@ import { red, blue, teal } from '@mui/material/colors';
 import DeleteForm from '../src/components/DeleteForm';
 import DomainForm, {DomainType, TrademarkType} from '../src/components/DomainForm';
 import backendAxios from '../src/helpers/axios'
+import { useSession,getSession } from "next-auth/react"
 import {RowType, ColumnType} from '../src/components/CustomTable'
 import { useAppSelector, useAppDispatch } from '../store/hooks'
 import {insertRows, changeMode, changeOpendForm, changeCurrentPage, insertRowsCount, changeEndpoint} from '../store/reducers/tableReducer'
@@ -75,19 +76,21 @@ const DomainSetting: NextPage = (props) => {
   }
 
   export async function getServerSideProps(context:any) {
+    const session = await getSession(context) 
+    const userId = session?.id
     // Call an external API endpoint to get posts.
     // You can use any data fetching library
     let trademarks:TrademarkType[] = []
     let domains:any[] = []
     let rowsCount:number = 0
     try {
-      const res = await backendAxios.get('api/v1/domain/trademark/')
+      const res = await backendAxios.get(`api/v1/domain/trademark?user=${userId}`)
       trademarks = res.data !== undefined ?res.data:[]
     } catch(err) {
       console.log(err)
     }
     try {
-      const res = await backendAxios.get('api/v1/domain/')
+      const res = await backendAxios.get(`api/v1/domain/?user=${userId}`)
       domains = res.data?.results !== undefined ?res.data?.results:[]
       rowsCount = res.data?.count !== undefined ?res.data?.count:0
     } catch(err) {
