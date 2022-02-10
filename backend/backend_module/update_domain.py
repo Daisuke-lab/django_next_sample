@@ -2,7 +2,7 @@
 import imp
 import sys
 from turtle import update
-# from products.models import Product
+from products.models import Product
 
 sys.path.append("../")
 from backend_module.common import Common
@@ -158,5 +158,5 @@ class UpdateDomain(Common):
         specific_search_domains = self.get_specific_search_domains()
         presco_copy_domains = self.get_presco_copy_domains(product_id=product_id)
         all_domains = list(set(specific_search_domains + presco_copy_domains))
-        # self.update_domain_database(domains=all_domains)
+        self.update_domain_database(domains=all_domains)
         return all_domains
