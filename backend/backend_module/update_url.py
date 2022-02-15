@@ -1,7 +1,7 @@
 # 調査対象URLのリストをget
 from itertools import product
 import sys
-from backend.products.models import Product
+from products.models import Product
 
 sys.path.append("../")
 from backend_module.common import Common
