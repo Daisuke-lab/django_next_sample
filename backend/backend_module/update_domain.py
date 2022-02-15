@@ -84,12 +84,16 @@ class UpdateDomain(Common):
     #             update_domains.append(str(domain))
     #     return update_domains
 
-    # def get_presco_copy_domains(self, product_instance):
-    #     user_instance = product_instance.user
-    #     query = f"SELECT domain FROM presco_db_copy WHERE pg_id = '{user_instance.pg_id}'"
-    #     presco_copy_domains = self.commit_query(conn=self.conn_presco_copy, query=query, select=True)
-    #     domains = [data["domain"] for data in presco_copy_domains]
-    #     return domains
+    def get_presco_copy_domains(self, product_instance):
+        user_instance = product_instance.user
+        try:
+            user_pg_id = user_instance.pg_id
+            query = f"SELECT domain FROM presco_db_copy WHERE pg_id = '{user_pg_id}'"
+            presco_copy_domains = self.commit_query(conn=self.conn_presco_copy, query=query, select=True)
+            domains = [data["domain"] for data in presco_copy_domains]
+            return domains
+        except:
+            return []
 
     def get_domain_from_url(self, url):
         return urllib.parse.urlparse(url).scheme + "://" + urllib.parse.urlparse(url).netloc
@@ -165,8 +169,8 @@ class UpdateDomain(Common):
         # referrer_domains = self.get_referrer_domain()
         for trademark_instance in trademark_kws:
             specific_search_domains = self.get_specific_search_domains(trademark_kw=trademark_instance)
-            # presco_copy_domains = self.get_presco_copy_domains(product_instance=product_instance)
-            all_domains = specific_search_domains
+            presco_copy_domains = self.get_presco_copy_domains(product_instance=product_instance)
+            all_domains = specific_search_domains + presco_copy_domains
             self.update_domain_database(domains=all_domains, trademark_kw=trademark_instance)
             final_results += [dict(domain=domain, trademark_kw=trademark_instance.name) for domain in all_domains]
         return final_results
