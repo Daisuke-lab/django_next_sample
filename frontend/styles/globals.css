@@ -17,7 +17,7 @@ a {
 
 .margin-button {
   float: right;
-  margin-left: 10px;
+  margin-left: 10px !important;
 }
 
 .table-button-container {

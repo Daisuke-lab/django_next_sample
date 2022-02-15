@@ -3,7 +3,8 @@ import { Navbar, Container, Nav } from 'react-bootstrap';
 import LoginModal from "./LoginModal"
 import { signOut } from "next-auth/react"
 import { useSession } from "next-auth/react"
-
+import Image from 'next/image'
+import titleImage from '../../public/title.png'
 function Layout({ children }:any) {
     const [open, setOpen] = useState<boolean>(false)
     const { data: session, status } = useSession()
@@ -13,7 +14,9 @@ function Layout({ children }:any) {
         <>
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" style={{zIndex: 1}} id="navbar">
             <Container>
-            <Navbar.Brand href="#home">メディパト</Navbar.Brand>
+            <Navbar.Brand href="#home" style={{paddingBottom:0}}>
+            <Image src={titleImage} width={100}/>
+            </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav" style={{justifyContent: "end"}}>
                 <Nav>

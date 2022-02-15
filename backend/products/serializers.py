@@ -29,7 +29,7 @@ class SmallGenreSerializer(serializers.ModelSerializer):
         
         
 class ProductSerializer(serializers.ModelSerializer):
-    product_condition = serializers.CharField(max_length=200)
+    product_condition = serializers.CharField(max_length=200, allow_null=True)
     small_genre = serializers.CharField(max_length=200)
     genre = serializers.CharField(max_length=200, source="small_genre.genre.name", read_only=True)
     trademarks = serializers.ListField(child=serializers.CharField(max_length=100), write_only=True)
@@ -37,11 +37,13 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = ["user", "name", "memo", "small_genre", "product_condition", "id", "created_at", "updated_at", "trademarks", "trademarks", "genre"]
         read_only_fields = ["id", 'created_at', 'updated_at', "trademarks", "genre"]
-        extra_kwargs = {'memo': {'required': False}}
+        extra_kwargs = {'memo': {'required': False}, "product_condition": {"required": False}}
 
     def create(self, validated_data):
         print(validated_data)
-        product_condition = get_object_or_404(Product_Condition, "product_condition", title=validated_data["product_condition"])
+        product_condition = None
+        if validated_data.get('product_condition') is not None:
+            product_condition = get_object_or_404(Product_Condition, "product_condition", title=validated_data["product_condition"])
         small_genre = get_object_or_404(Small_Genre, "samll_genre", name=validated_data["small_genre"])
         product_data = {
             "user": validated_data["user"],
@@ -58,7 +60,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
-        product_condition = get_object_or_404(Product_Condition,"product_condition", title=validated_data["product_condition"])
+        product_condition = None
+        if validated_data.get('product_condition') is not None:
+            product_condition = get_object_or_404(Product_Condition, "product_condition", title=validated_data["product_condition"])
         small_genre = get_object_or_404(Small_Genre, "small_genre", name=validated_data["small_genre"])
         instance.name = validated_data.get('name', instance.name)
         instance.user = validated_data.get('user', instance.user)

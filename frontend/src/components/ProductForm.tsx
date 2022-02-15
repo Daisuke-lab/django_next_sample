@@ -111,18 +111,16 @@ function ProductForm(props:Props) {
                   <FormHelperText>{errors.name?"この項目は必須です。":""}</FormHelperText>
                   </FormControl>
             </CustomField>
-            <CustomField label="チェック条件" mandatory={true}>
+            <CustomField label="チェック条件" mandatory={false}>
             <FormControl error={errors.product_condition?true:false}>
             <Autocomplete
                 className="form-modal-field"
                 options={props.productConditions.map((option) => option.title)}
                 defaultValue={currentRow!==null?currentRow.product_condition:""}
                 renderInput={(params) => <TextField {...params} label="選択してください"
-                variant="standard" {...register('product_condition',{
-                    required: true
-                  })} />}
+                variant="standard" {...register('product_condition')} />}
                 />
-                <FormHelperText>{errors.product_condition?"この項目は必須です。":""}</FormHelperText>
+                <FormHelperText>{errors.product_condition?"適切な値を入力してください。":""}</FormHelperText>
                 </FormControl>
             </CustomField>
             <CustomField label="商標KW" mandatory={true}>

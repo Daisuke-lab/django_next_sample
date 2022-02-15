@@ -55,9 +55,10 @@ function DomainForm(props:Props) {
         name: "domain"
       });
     useEffect(() => {
-        console.log(domain)
-        const newDomain = domain.replace('https://', '').replace('http://', '').split('/')[0]
-        setValue("domain", newDomain)
+        if (domain !== undefined) {
+            const newDomain = domain.replace('https://', '').replace('http://', '').split('/')[0]
+            setValue("domain", newDomain)
+        }
     }, [domain])
     const [type, setType] = useState<1 | 2>(1)
     const [trademark, setTrademark] = useState<number>(0)

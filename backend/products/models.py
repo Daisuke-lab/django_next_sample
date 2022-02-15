@@ -40,7 +40,7 @@ class Product(models.Model):
     memo = models.TextField(null=True)
     small_genre = models.ForeignKey(Small_Genre, on_delete=models.CASCADE)
     status = models.IntegerField(default=1)
-    product_condition = models.ForeignKey(Product_Condition, on_delete=models.CASCADE)
+    product_condition = models.ForeignKey(Product_Condition, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     class Meta:
