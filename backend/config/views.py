@@ -10,7 +10,7 @@ def celery_test(request):
 
 def home(request):
     #health check用
-    return HttpResponse("this is medicine robo backend home2")
+    return HttpResponse("this is medicine robo backend home")
 
 
 def check_start(request):
