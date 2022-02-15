@@ -8,3 +8,4 @@ env.json
 .next/
 .env.production
 .env.development
+*.zip
