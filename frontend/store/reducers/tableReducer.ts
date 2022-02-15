@@ -38,6 +38,9 @@ export const tableSlice = createSlice({
     addCheckedRow: (state, action) => {
         state.checkedRows = [...state.checkedRows, action.payload]
     },
+    resetCheckedRows: (state) => {
+      state.checkedRows = []
+    },
     changeMode: (state, action) => {
       state.mode = action.payload
     },
@@ -71,6 +74,6 @@ export const tableSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { insertRows, addCheckedRow, addRow, changeMode, changeOpendForm, closeForm,
   deleteRow, changeCurrentRow, insertCheckedRows,
-  insertRowsCount, changeCurrentPage, changeEndpoint} = tableSlice.actions
+  insertRowsCount, changeCurrentPage, changeEndpoint, resetCheckedRows} = tableSlice.actions
 
 export default tableSlice.reducer

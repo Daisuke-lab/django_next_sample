@@ -2,20 +2,27 @@ import React from 'react'
 import Button from '@mui/material/Button';
 import backendAxios from '../helpers/axios'
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
+import {resetCheckedRows} from '../../store/reducers/tableReducer'
 import { useSnackbar } from 'notistack';
 function Footer() {
     const checkedRows = useAppSelector(state => state.tables.checkedRows)
+    const dispatch = useAppDispatch()
     const { enqueueSnackbar } = useSnackbar();
     const onClick = async () => {
-        const data = {"product_ids": checkedRows}
-        console.log(data)
-        try {
-            const res = await backendAxios.post('check_start/', data)
-            console.log(res)
-            enqueueSnackbar('チェックの開始に成功しました。', { variant: "success" });
-        } catch (err) {
-            console.log(err)
-            enqueueSnackbar('チェックの開始に失敗しました。', { variant: "error" });
+        if (checkedRows.length > 0) {
+            const data = {"product_ids": checkedRows}
+            console.log(data)
+            try {
+                const res = await backendAxios.post('check_start/', data)
+                console.log(res)
+                dispatch(resetCheckedRows())
+                enqueueSnackbar('チェックの開始に成功しました。', { variant: "success" });
+            } catch (err) {
+                console.log(err)
+                enqueueSnackbar('チェックの開始に失敗しました。', { variant: "error" });
+            }
+        } else {
+            enqueueSnackbar('チェックする商品を選択してください。', { variant: "error" });
         }
     }
     const buttons = () => {

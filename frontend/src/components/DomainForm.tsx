@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import FormModal from './FormModal'
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller,useWatch } from "react-hook-form";
 import Input from '@mui/material/Input';
 import CustomField from './CustomField'
 import Button from '@mui/material/Button';
@@ -50,6 +50,15 @@ function DomainForm(props:Props) {
     const title = mode==="edit"?"ドメイン編集":"ドメイン登録"
     const formModalProps = {open: props.open, title}
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
+    const domain = useWatch({
+        control,
+        name: "domain"
+      });
+    useEffect(() => {
+        console.log(domain)
+        const newDomain = domain.replace('https://', '').replace('http://', '').split('/')[0]
+        setValue("domain", newDomain)
+    }, [domain])
     const [type, setType] = useState<1 | 2>(1)
     const [trademark, setTrademark] = useState<number>(0)
 
