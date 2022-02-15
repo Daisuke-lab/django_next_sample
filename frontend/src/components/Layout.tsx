@@ -22,7 +22,11 @@ function Layout({ children }:any) {
                 <Nav>
                     {!isUser?
                     <Nav.Link href="#login" onClick={() => setOpen(true)}>ログイン</Nav.Link>:
-                    <Nav.Link href="#logout" onClick={() => signOut()}>ログアウト</Nav.Link>}
+                    <>
+                    <Nav.Link href="/mypage">マイページ</Nav.Link>
+                    <Nav.Link href="#logout" onClick={() => signOut()}>ログアウト</Nav.Link>
+                    </>
+                    }
                 </Nav>
             </Navbar.Collapse>
             </Container>
