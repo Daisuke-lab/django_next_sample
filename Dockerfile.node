@@ -16,6 +16,6 @@ RUN rm package-lock.json && npm install
 
 RUN npm run build
 
-RUN npx prisma generate
+#RUN npx prisma generate
 
 CMD npm start
