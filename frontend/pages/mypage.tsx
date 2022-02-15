@@ -33,7 +33,7 @@ const MyPage: NextPage = () => {
                 <p style={{display: "flex"}}>
                     <span>
                         <LocationOnIcon/>
-                        Seattle, WA
+                        日本
                     </span>
                     <span>
                         <LinkIcon/>
