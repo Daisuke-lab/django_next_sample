@@ -2,7 +2,6 @@
 import imp
 import sys
 from turtle import update
-from products.models import Product
 
 sys.path.append("../")
 from backend_module.common import Common
@@ -13,6 +12,8 @@ import config
 from django.utils import timezone
 from googleapiclient.discovery import build
 from domains.models import Domain, Url, Trademark
+from products.models import Product
+import urllib.parse
 
 class UpdateDomain(Common):
     # def get_dotai_domains(self):
@@ -88,6 +89,9 @@ class UpdateDomain(Common):
         domains = [data["domain"] for data in presco_copy_domains]
         return domains
 
+    def get_domain_from_url(self, url):
+        return urllib.parse.urlparse(url).scheme + "://" + urllib.parse.urlparse(url).netloc
+
     def get_specific_search_domains(self):
         result_domain_lists = []
         keyword = f"intext:'{self.trademark_kw.name}'"
@@ -124,7 +128,7 @@ class UpdateDomain(Common):
                     print(e)
                     break
             if total_result_check:
-                print("検索結果が０件または")
+                print("検索結果が0件でした")
                 break
             try:
                 start_index = res[n_page].get("queries").get("nextPage")[0].get("startIndex")
@@ -134,8 +138,8 @@ class UpdateDomain(Common):
         for uni_res in res:
             if "items" in uni_res and len(uni_res["items"]) > 0:
                 for item in uni_res["items"]:
-                    link = item["link"]
-                    result_domain_lists.append(link)
+                    domain = self.get_domain_from_url(url=item["link"])
+                    result_domain_lists.append(domain)
         return result_domain_lists
 
     def update_domain_database(self, domains):
@@ -151,7 +155,8 @@ class UpdateDomain(Common):
                 client_domain.save()
 
     def job(self, product_id):
-        self.trademark_kw = Trademark.objects.get(product=product_id)
+        product_instance = Product.objects.get(id=product_id)
+        self.trademark_kw = Trademark.objects.get(product=product_instance)
         # プレスコのデータを取得できなくなってしまったためコメントアウト
         # dotai_domains = self.get_dotai_domains()
         # referrer_domains = self.get_referrer_domain()

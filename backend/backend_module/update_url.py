@@ -1,5 +1,7 @@
 # 調査対象URLのリストをget
+from itertools import product
 import sys
+from backend.products.models import Product
 
 sys.path.append("../")
 from backend_module.common import Common
@@ -127,12 +129,11 @@ class UpdateTargetUrl(Common):
                     print(e)
                     break
             if total_result_check:
-                print("検索結果が０件または")
+                print("検索結果が0件でした")
                 break
             try:
                 start_index = res[n_page].get("queries").get("nextPage")[0].get("startIndex")
             except:
-                print("ページが１ページしかありません")
                 break
         for uni_res in res:
             if "items" in uni_res and len(uni_res["items"]) > 0:
@@ -141,12 +142,14 @@ class UpdateTargetUrl(Common):
                     result_url_lists.append(link)
         return result_url_lists
 
-    def job(self, domains):
+    def job(self, domains, product_id):
+        product_instance = Product.objects.get(id=product_id)
+        self.target_kw = Trademark.objects.get(product=product_instance)
         for target_domain in domains:
             all_url_list = self.get_domain_allurl(domain=target_domain)
-            if len(all_url_list) > 1000:
-                print("サイトマップからのURL抽出数が上限の1000を超えました")
-                print("APIを利用します。")
+            if len(all_url_list) > 1000 or len(all_url_list) == 0:
+                print("fetch more than 1000 urls or 0")
+                print("try to get url by using API...")
                 all_url_list = self.get_search_result_api(domain=target_domain)
                 filtered_url_list = all_url_list
             else:
