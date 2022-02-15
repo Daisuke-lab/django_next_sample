@@ -44,12 +44,7 @@ const MyPage: NextPage = () => {
                         2009年6月からTwitterを利用しています
                     </span>
                 </p>
-                <p>
-                    <span>342 フォロー中</span>
-                    <span>5,628万 フォロワー</span>
-                </p>
             </div>
-            <CustomTabs/>
         </div>
   )
 }
