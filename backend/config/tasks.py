@@ -21,7 +21,7 @@ def create_result(product_ids):
     try:
         for product_id in product_ids:
             domains = UpdateDomain().job(product_id=product_id)
-            UpdateTargetUrl().job(domains=domains)
+            UpdateTargetUrl().job(domains=domains, product_id=product_id)
             NgCheck().job(domains=domains)
     except Exception as e: 
         exc_type, exc_obj, exc_tb = sys.exc_info()

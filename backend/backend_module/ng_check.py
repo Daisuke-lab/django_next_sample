@@ -38,7 +38,8 @@ class NgCheck(Common):
                 Check_Result.objects.create(url=target_url.url, priority=priority, confirmed=False)
 
     def job(self, domains, product_id):
-        for domain in domains:
-            client_target_urls = Url.objects.fileter(domain=domain)
+        # domainsは、{domain:, trademark_kw:}の辞書型リスト
+        for target_domain in domains:
+            client_target_urls = Url.objects.filter(domain=target_domain["domain"])
             middle_kws = NG_Keyword_Condition.objects.filter(product_condition=Product.objects.get(id=product_id).product_condition).exclude(status=0)
             self.ng_check(middle_kws=middle_kws, target_urls=client_target_urls)

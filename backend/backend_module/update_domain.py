@@ -13,6 +13,7 @@ from django.utils import timezone
 from googleapiclient.discovery import build
 from domains.models import Domain, Url, Trademark
 from products.models import Product
+from users.models import User
 import urllib.parse
 
 class UpdateDomain(Common):
@@ -83,18 +84,23 @@ class UpdateDomain(Common):
     #             update_domains.append(str(domain))
     #     return update_domains
 
-    def get_presco_copy_domains(self, product_id):
-        query = f"SELECT domain FROM presco_db_copy WHERE pg_id = '{product_id}'"
-        presco_copy_domains = self.commit_query(conn=self.conn_presco_copy, query=query, select=True)
-        domains = [data["domain"] for data in presco_copy_domains]
-        return domains
+    def get_presco_copy_domains(self, product_instance):
+        user_instance = product_instance.user
+        try:
+            user_pg_id = user_instance.pg_id
+            query = f"SELECT domain FROM presco_db_copy WHERE pg_id = '{user_pg_id}'"
+            presco_copy_domains = self.commit_query(conn=self.conn_presco_copy, query=query, select=True)
+            domains = [data["domain"] for data in presco_copy_domains]
+            return domains
+        except:
+            return []
 
     def get_domain_from_url(self, url):
         return urllib.parse.urlparse(url).scheme + "://" + urllib.parse.urlparse(url).netloc
 
-    def get_specific_search_domains(self):
+    def get_specific_search_domains(self, trademark_kw):
         result_domain_lists = []
-        keyword = f"intext:'{self.trademark_kw.name}'"
+        keyword = f"intext:'{trademark_kw.name}'"
         GOOGLE_API_KEY = config.GOOGLE_API_KEY
         CUSTOM_SEARCH_ENGINE_ID = config.CUSTOM_SEARCH_ENGINE_KEY
         service = build("customsearch", "v1", developerKey=GOOGLE_API_KEY)
@@ -119,7 +125,7 @@ class UpdateDomain(Common):
                     )
                     if n_page == 0:
                         total_result = int(res[0].get("searchInformation").get("totalResults"))
-                        print(f"検索結果：{total_result}件 intext:'{self.trademark_kw.name}'")
+                        print(f"検索結果：{total_result}件 intext:'{trademark_kw.name}'")
                         if total_result == 0:
                             total_result_check = 1
                             break
@@ -142,13 +148,13 @@ class UpdateDomain(Common):
                     result_domain_lists.append(domain)
         return result_domain_lists
 
-    def update_domain_database(self, domains):
+    def update_domain_database(self, domains, trademark_kw):
         for domain in domains:
             if domain == "":
                 continue
-            client_domain = Domain.objects.get(domain=domain, trademark=self.trademark_kw)
+            client_domain = Domain.objects.get(domain=domain, trademark=trademark_kw)
             if client_domain is None:
-                Domain.objects.create(trademark=self.trademark_kw, domain=domain, status=1)
+                Domain.objects.create(trademark=trademark_kw, domain=domain, status=1)
             else:
                 client_domain.status = 1
                 client_domain.updated_at = timezone.now()
@@ -156,12 +162,15 @@ class UpdateDomain(Common):
 
     def job(self, product_id):
         product_instance = Product.objects.get(id=product_id)
-        self.trademark_kw = Trademark.objects.get(product=product_instance)
+        trademark_kws = Trademark.objects.get(product=product_instance)
+        final_results = []
         # プレスコのデータを取得できなくなってしまったためコメントアウト
         # dotai_domains = self.get_dotai_domains()
         # referrer_domains = self.get_referrer_domain()
-        specific_search_domains = self.get_specific_search_domains()
-        presco_copy_domains = self.get_presco_copy_domains(product_id=product_id)
-        all_domains = list(set(specific_search_domains + presco_copy_domains))
-        self.update_domain_database(domains=all_domains)
-        return all_domains
+        for trademark_instance in trademark_kws:
+            specific_search_domains = self.get_specific_search_domains(trademark_kw=trademark_instance)
+            presco_copy_domains = self.get_presco_copy_domains(product_instance=product_instance)
+            all_domains = specific_search_domains + presco_copy_domains
+            self.update_domain_database(domains=all_domains, trademark_kw=trademark_instance)
+            final_results += [dict(domain=domain, trademark_kw=trademark_instance.name) for domain in all_domains]
+        return final_results
