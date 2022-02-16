@@ -41,9 +41,14 @@ callbacks: {
   async session({ session, user}:SessionProps) {
     if (session !== undefined) {  
       session.id = user.id
+      console.log(session)
     }
     return Promise.resolve(session)
   },
+  async signIn({ user, account, profile, email, credentials }) {
+    return true
+  }
+
 },
 secret: JWTSecret,
 jwt: {

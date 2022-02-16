@@ -1,0 +1,40 @@
+.header {
+  position: relative;
+  height: 250px;
+}
+
+.banner {
+  height: 100px;
+  width: 100%;
+  contain: content;
+}
+
+.banner img {
+  width: 100%;
+  object-fit: cover;
+}
+.personalIcon {
+  position: absolute;
+  top: 30px;
+  left: 57px;
+  text-align: center;
+}
+.personalIcon p {
+  margin: 0;
+}
+.icon {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+  padding: 10px;
+  background: white;
+  object-fit: cover;
+}
+
+.cardContainer {
+  width: 50%;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 20px;
+}

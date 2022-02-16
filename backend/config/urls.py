@@ -8,6 +8,7 @@ urlpatterns = [
     path('api/v1/domain/', include('domains.urls'),name="domain"),
     path('api/v1/result/', include('results.urls'),name="result"),
     path('api/v1/condition/', include('conditions.urls'),name="condition"),
+    path('api/v1/user/', include('users.urls'),name="condition"),
     path('test/', celery_test),
     path('', home),
     path('check_start/', ResultCreateView.as_view())
