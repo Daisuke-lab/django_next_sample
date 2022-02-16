@@ -2,7 +2,6 @@ version: 0.2
 artifacts:
   files:
     - appspec.yml
-  base-directory: $CODEBUILD_SRC_DIR
   name: ecs-artifcats
   descard-paths: no
   
