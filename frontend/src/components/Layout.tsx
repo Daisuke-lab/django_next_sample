@@ -14,7 +14,7 @@ function Layout({ children }:any) {
         <>
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" style={{zIndex: 1}} id="navbar">
             <Container>
-            <Navbar.Brand href="#home" style={{paddingBottom:0}}>
+            <Navbar.Brand href="/products" style={{paddingBottom:0}}>
             <Image src={titleImage} width={100}/>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
