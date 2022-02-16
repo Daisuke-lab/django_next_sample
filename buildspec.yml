@@ -15,7 +15,7 @@ phases:
       - echo FACEBOOK_CLIENT_ID=${FACEBOOK_CLIENT_ID} >> frontend/.env.production
       - echo FACEBOOK_CLIENT_SECRET=${FACEBOOK_CLIENT_SECRET} >> frontend/.env.production
       - echo NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL} >> frontend/.env.production
-      - echo NEXTAUTH_URLL=${NEXTAUTH_URL} >> frontend/.env.production
+      - echo NEXTAUTH_URL=${NEXTAUTH_URL} >> frontend/.env.production
       - echo JWT_SECRET=${JWT_SECRET} >> frontend/.env.production
   build:
     commands:
