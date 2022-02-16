@@ -1,7 +1,5 @@
 version: 0.2
 artifacts:
-  files:
-    - appspec.yml
   name: ecs-artifcats
   descard-paths: no
   
