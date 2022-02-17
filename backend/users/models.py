@@ -5,7 +5,7 @@ from django.db.models.deletion import CASCADE
 class User(models.Model):
     id = models.CharField(max_length=200,primary_key=True)
     name = models.CharField(max_length=200,null=True)
-    pg_id = models.IntegerField(null=True)
+    mc_id = models.IntegerField(null=True)
     email = models.CharField(max_length=200, unique=True,null=True)
     emailVerified = models.DateTimeField(null=True)
     image = models.CharField(max_length=1000, null=True)
