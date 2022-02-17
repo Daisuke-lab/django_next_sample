@@ -4,7 +4,7 @@ import sys
 from products.models import Product
 
 sys.path.append("../")
-from backend_module.common import Common
+from .common import Common
 import backend_module.config as config
 import time
 import requests
@@ -21,12 +21,13 @@ class UpdateTargetUrl(Common):
         for target_url in target_urls:
             if target_url == "":
                 continue
-            client_target_url = Url.objects.get(domain=domain, url=target_url)
-            if client_target_url is None:
-                Url.objects.create(domain=domain, url=target_url)
-            else:
+            domain_instance = Domain.objects.get(domain=domain)
+            try:
+                client_target_url = Url.objects.get(domain=domain_instance, url=target_url)
                 client_target_url.updated_at = timezone.now()
                 client_target_url.save()
+            except:
+                Url.objects.create(domain=domain_instance, url=target_url)
 
     def get_loc_urls(self, sitemap_url):
         """サイトマップからURLを抽出するメソッド
@@ -121,6 +122,7 @@ class UpdateTargetUrl(Common):
                     if n_page == 0:
                         total_result = int(res[0].get("searchInformation").get("totalResults"))
                         print(f"検索結果：{total_result}件 intext:'{trademark_kw}'")
+                        print(f"調査キーワード：{keyword}")
                         if total_result == 0:
                             total_result_check = 1
                             break
@@ -142,8 +144,13 @@ class UpdateTargetUrl(Common):
                     result_url_lists.append(link)
         return result_url_lists
 
-    def job(self, domains):
-        # domainsは、{domain:, trademark_kw:}の辞書型リスト
+    def job(self, product_id):
+        product_instance = Product.objects.get(id=product_id)
+        trademark_kws = Trademark.objects.filter(product=product_instance)
+        domains = []
+        for trademark_kw in trademark_kws:
+            tmp_domains = Domain.objects.filter(trademark=trademark_kw, _type=2)
+            [domains.append(dict(domain=data.domain, trademark_kw=trademark_kw.name)) for data in tmp_domains]
         for target_domain in domains:
             all_url_list = self.get_domain_allurl(domain=target_domain["domain"])
             if len(all_url_list) > 1000 or len(all_url_list) == 0:

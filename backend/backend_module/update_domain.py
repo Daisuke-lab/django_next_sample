@@ -4,11 +4,11 @@ import sys
 from turtle import update
 
 sys.path.append("../")
-from backend_module.common import Common
+from .common import Common
 import re
 import datetime
 import time
-import config
+from . import config
 from django.utils import timezone
 from googleapiclient.discovery import build
 from domains.models import Domain, Url, Trademark
@@ -87,8 +87,8 @@ class UpdateDomain(Common):
     def get_presco_copy_domains(self, product_instance):
         user_instance = product_instance.user
         try:
-            user_pg_id = user_instance.pg_id
-            query = f"SELECT domain FROM presco_db_copy WHERE pg_id = '{user_pg_id}'"
+            user_mc_id = user_instance.mc_id
+            query = f"SELECT domain FROM presco_db_copy WHERE mc_id = '{user_mc_id}'"
             presco_copy_domains = self.commit_query(conn=self.conn_presco_copy, query=query, select=True)
             domains = [data["domain"] for data in presco_copy_domains]
             return domains
@@ -106,7 +106,7 @@ class UpdateDomain(Common):
         service = build("customsearch", "v1", developerKey=GOOGLE_API_KEY)
         res = []
         start_index = 1
-        page_limit = 5
+        page_limit = 10
         for n_page in range(0, page_limit):
             total_result_check = 0
             while True:
@@ -126,6 +126,7 @@ class UpdateDomain(Common):
                     if n_page == 0:
                         total_result = int(res[0].get("searchInformation").get("totalResults"))
                         print(f"検索結果：{total_result}件 intext:'{trademark_kw.name}'")
+                        print(f"調査キーワード：{keyword}")
                         if total_result == 0:
                             total_result_check = 1
                             break
@@ -152,18 +153,17 @@ class UpdateDomain(Common):
         for domain in domains:
             if domain == "":
                 continue
-            client_domain = Domain.objects.get(domain=domain, trademark=trademark_kw)
-            if client_domain is None:
-                Domain.objects.create(trademark=trademark_kw, domain=domain, status=1)
-            else:
+            try:
+                client_domain = Domain.objects.get(domain=domain, trademark=trademark_kw)
                 client_domain.status = 1
                 client_domain.updated_at = timezone.now()
                 client_domain.save()
+            except:
+                Domain.objects.create(trademark=trademark_kw, domain=domain, status=1, _type=2)
 
     def job(self, product_id):
         product_instance = Product.objects.get(id=product_id)
-        trademark_kws = Trademark.objects.get(product=product_instance)
-        final_results = []
+        trademark_kws = Trademark.objects.filter(product=product_instance)
         # プレスコのデータを取得できなくなってしまったためコメントアウト
         # dotai_domains = self.get_dotai_domains()
         # referrer_domains = self.get_referrer_domain()
@@ -172,5 +172,3 @@ class UpdateDomain(Common):
             presco_copy_domains = self.get_presco_copy_domains(product_instance=product_instance)
             all_domains = specific_search_domains + presco_copy_domains
             self.update_domain_database(domains=all_domains, trademark_kw=trademark_instance)
-            final_results += [dict(domain=domain, trademark_kw=trademark_instance.name) for domain in all_domains]
-        return final_results

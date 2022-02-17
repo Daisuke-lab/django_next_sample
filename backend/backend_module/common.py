@@ -13,6 +13,7 @@ class Common:
         self.conn_presco_copy = self.conncet_presco_copy_DB()
         self.BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+        # self.driver = self.start_chromedriver()
 
     # def connect_presco_DB(self):
     #     """DB接続
@@ -75,12 +76,12 @@ class Common:
         options = Options()
         options.add_argument(
             "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36")
+        options.add_argument("--headless")
         if self.ENVIRONMENT == "production":
-            options.add_argument("--headless")
             file_path = "/usr/local/bin/chromedriver"
             options.add_argument('--disable-dev-shm-usage')
         else:
-            file_path = os.path.join(self.BASE_DIR, "", "chromedriver.exe")
+            file_path = os.path.join(self.BASE_DIR, "backend_module", "chromedriver.exe")
         if reset:
             random_num = random.randrange(len(proxies) - 1)
             options.add_argument("--proxy-server={}".format(proxies[random_num]))
