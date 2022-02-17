@@ -9,7 +9,6 @@ interface Props {
 }
 function ResultRowPriority(props:Props) {
     const colors = {high: highColor, middle: middleColor, low: lowColor, unknown: unknownColor}
-    console.log(props.row)
   return <div>
   <div className={styles.prioritiesContainer}>
     {Object.keys(priorities).map((key, index) => (

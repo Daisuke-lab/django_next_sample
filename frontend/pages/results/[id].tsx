@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import type { NextPage } from 'next'
 import Container from '../../src/components/Container'
-import Link from 'next/link'
 import ColorButton from '../../src/components/ColorButton';
 import { red, blue } from '@mui/material/colors';
 import styles from '../../styles/Results.module.css'
@@ -13,7 +12,11 @@ import {highColor, middleColor, lowColor, unknownColor} from "../../src/helpers/
 import ResultDetailForm from '../../src/components/ResultDetailForm';
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {insertRows, changeMode, changeOpendForm, changeCurrentPage, insertRowsCount, changeEndpoint} from '../../store/reducers/tableReducer'
-
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
+import Stack from '@mui/material/Stack';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 const columns = [
     {id: 1, name: "domain", label: "ドメイン"},
@@ -26,19 +29,20 @@ const columns = [
   interface Props {
     results: any[],
     rowsCount : number,
-    productId: number
+    productId: number,
+    endpoint: string
   }
 
 const Result: NextPage = (props) => {
   const [confirmedResult, setConfirmedResult] = useState<number[]>([])
-  const {results, rowsCount, productId} = props as Props
+  const {results, rowsCount, productId, endpoint} = props as Props
   const dispatch = useAppDispatch()
   const openedForm = useAppSelector(state => state.tables.openedForm)
   useEffect(() => {
     dispatch(insertRows(results))
     dispatch(changeCurrentPage(1))
     dispatch(insertRowsCount(rowsCount))
-    dispatch(changeEndpoint(`api/v1/result/list?product_id=${productId}`))
+    dispatch(changeEndpoint(endpoint))
   }, [])
 
   const custmizeRow = (row:any) => {
@@ -77,16 +81,26 @@ const Result: NextPage = (props) => {
     }
   }
 
+  const breadcrumbs = [
+    <Link underline="hover" key="1" color="inherit" href="/results">
+      チェック結果一覧
+    </Link>,
+    <Typography key="3" color="text.primary">
+      チェック結果詳細
+    </Typography>,
+  ];
+
 
     return (
         <Container>
             <div className={styles.headerContainer}>
-            <div>
-            <Link href="/results">
-                    <a>チェック結果一覧</a>
-            </Link>
-            {"　＞　"}チェック結果詳細
-            </div >
+            <Breadcrumbs
+              separator={<NavigateNextIcon fontSize="small" />}
+              aria-label="breadcrumb"
+            >
+              {breadcrumbs}
+            </Breadcrumbs>
+            
             <ColorButton color={blue} label="絞り込む" onClick={() => dispatch(changeOpendForm('ResultDetailForm'))} className='margin-button'/>
             </div>
             <Table columns={columns}/>
@@ -100,8 +114,9 @@ const Result: NextPage = (props) => {
 export async function getServerSideProps(context:any)  {
     const productId = context.query.id;
     let results:any[] = []
+    const endpoint = `api/v1/result/list?product_id=${productId}`
     try {
-      const res = await backendAxios.get(`api/v1/result/list?product_id=${productId}`)
+      const res = await backendAxios.get(endpoint)
       results = res.data?.results !== undefined ?res.data?.results:[]
     } catch(err) {
       console.log(err)
@@ -109,7 +124,8 @@ export async function getServerSideProps(context:any)  {
     return {
       props: {
         results,
-        productId
+        productId,
+        endpoint
       },
     }
   }

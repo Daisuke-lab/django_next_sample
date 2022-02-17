@@ -27,11 +27,12 @@ const columns = [
 interface Props {
   trademarks: TrademarkType[],
   domains: any[],
-  rowsCount: number
+  rowsCount: number,
+  endpoint: string
 }
 
 const DomainSetting: NextPage = (props) => {
-    const {trademarks, domains, rowsCount} = props as Props
+    const {trademarks, domains, rowsCount, endpoint} = props as Props
     const openedForm = useAppSelector(state => state.tables.openedForm)
     const currentRow = useAppSelector(state => state.tables.currentRow)
     const dispatch = useAppDispatch()
@@ -40,7 +41,7 @@ const DomainSetting: NextPage = (props) => {
       dispatch(insertRows(domains))
       dispatch(changeCurrentPage(1))
       dispatch(insertRowsCount(rowsCount))
-      dispatch(changeEndpoint("api/v1/domain/"))
+      dispatch(changeEndpoint(endpoint))
       
     }, [])
 
@@ -83,6 +84,7 @@ const DomainSetting: NextPage = (props) => {
     let trademarks:TrademarkType[] = []
     let domains:any[] = []
     let rowsCount:number = 0
+    const endpoint = `api/v1/domain/?user=${userId}`
     try {
       const res = await backendAxios.get(`api/v1/domain/trademark?user=${userId}`)
       trademarks = res.data !== undefined ?res.data:[]
@@ -90,7 +92,7 @@ const DomainSetting: NextPage = (props) => {
       console.log(err)
     }
     try {
-      const res = await backendAxios.get(`api/v1/domain/?user=${userId}`)
+      const res = await backendAxios.get(endpoint)
       domains = res.data?.results !== undefined ?res.data?.results:[]
       rowsCount = res.data?.count !== undefined ?res.data?.count:0
     } catch(err) {
@@ -99,7 +101,8 @@ const DomainSetting: NextPage = (props) => {
     console.log({
       trademarks,
       domains,
-      rowsCount
+      rowsCount,
+      endpoint
     })
 
     return {

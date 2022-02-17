@@ -35,12 +35,13 @@ interface Props {
   genres: GenreType[],
   products : any[],
   productConditions: any[],
-  rowsCount: number
+  rowsCount: number,
+  endpoint: string
 }
 
 
 const Main: NextPage = (props) => {
-  const {genres, products, productConditions, rowsCount} = props as Props
+  const {genres, products, productConditions, rowsCount,endpoint} = props as Props
   const openedForm = useAppSelector(state => state.tables.openedForm)
   const currentRow = useAppSelector(state => state.tables.currentRow)
   const dispatch = useAppDispatch()
@@ -49,7 +50,7 @@ const Main: NextPage = (props) => {
     dispatch(insertRows(products))
     dispatch(insertRowsCount(rowsCount))
     dispatch(changeCurrentPage(1))
-    dispatch(changeEndpoint("api/v1/product/"))
+    dispatch(changeEndpoint(endpoint))
 
     
   }, [])
@@ -91,6 +92,7 @@ const Main: NextPage = (props) => {
     let genres:any[] = []
     let products:any[] = []
     let rowsCount:number = 0
+    const endpoint = `api/v1/product/?user=${userId}`
     try {
       const res = await backendAxios.get(`api/v1/condition/list?user=${userId}`)
       console.log(res.data)
@@ -107,7 +109,7 @@ const Main: NextPage = (props) => {
     }
 
     try {
-      const res = await backendAxios.get(`api/v1/product/?user=${userId}`)
+      const res = await backendAxios.get(endpoint)
       products = res.data?.results !== undefined ?res.data?.results:[]
       rowsCount = res.data?.count !== undefined ?res.data?.count:0
     } catch(err) {
@@ -119,7 +121,8 @@ const Main: NextPage = (props) => {
         products,
         genres,
         productConditions,
-        rowsCount
+        rowsCount,
+        endpoint
       },
     }
   }

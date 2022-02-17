@@ -25,12 +25,14 @@ const columns = [
 
 interface Props {
   productConditions : any[],
-  rowsCount: number
+  rowsCount: number,
+  endpoint: string
 }
 
 
 const Condition: NextPage = (props) => {
-  const {productConditions, rowsCount} = props as Props 
+  console.log(props)
+  const {productConditions, rowsCount, endpoint} = props as Props 
   const openedForm = useAppSelector(state => state.tables.openedForm)
   const currentRow = useAppSelector(state => state.tables.currentRow)
   const dispatch = useAppDispatch()
@@ -39,7 +41,7 @@ const Condition: NextPage = (props) => {
     dispatch(insertRows(productConditions))
     dispatch(changeCurrentPage(1))
     dispatch(insertRowsCount(rowsCount))
-    dispatch(changeEndpoint("api/v1/condition/"))
+    dispatch(changeEndpoint(endpoint))
   }, [])
   const customizeRow = (row:any) => {
     const newRow = {...row, button: <ConditionRowButton row={row}/>}
@@ -70,8 +72,9 @@ const Condition: NextPage = (props) => {
 
     let productConditions:any[] = []
     let rowsCount:number = 0
+    const endpoint = `api/v1/condition/?user=${userId}`
     try {
-      const res = await backendAxios.get(`api/v1/condition/?user=${userId}`)
+      const res = await backendAxios.get(endpoint)
       productConditions = res.data?.results !== undefined ?res.data?.results:[]
       rowsCount = res.data?.count !== undefined ?res.data?.count:0
     } catch(err) {
@@ -80,7 +83,8 @@ const Condition: NextPage = (props) => {
     return {
       props: {
         productConditions,
-        rowsCount
+        rowsCount,
+        endpoint 
       },
     }
   }

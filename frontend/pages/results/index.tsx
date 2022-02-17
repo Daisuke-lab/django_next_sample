@@ -54,14 +54,15 @@ const columns = [
 
 interface Props {
   results: any[],
-  rowsCount: number
+  rowsCount: number,
+  endpoint: string
 }
 
 
 
 const Result: NextPage = (props) => {
 
-  const {results, rowsCount} = props as Props
+  const {results, rowsCount, endpoint} = props as Props
   const dispatch = useAppDispatch()
   const openedForm = useAppSelector(state => state.tables.openedForm)
   
@@ -72,7 +73,7 @@ const Result: NextPage = (props) => {
     dispatch(insertRows(results))
     dispatch(changeCurrentPage(1))
     dispatch(insertRowsCount(rowsCount))
-    dispatch(changeEndpoint("api/v1/result/product"))
+    dispatch(changeEndpoint(endpoint))
     
   }, [])
 
@@ -101,8 +102,9 @@ const Result: NextPage = (props) => {
 
     let results:any[] = []
     let rowsCount:number = 0
+    const endpoint = `api/v1/result/product?user=${userId}`
     try {
-      const res = await backendAxios.get(`api/v1/result/product?user=${userId}`)
+      const res = await backendAxios.get(endpoint)
       results = res.data?.results !== undefined ?res.data?.results:[]
       rowsCount = res.data?.count !== undefined ?res.data?.count:0
     } catch(err) {
@@ -111,7 +113,8 @@ const Result: NextPage = (props) => {
     return {
       props: {
         results,
-        rowsCount
+        rowsCount,
+        endpoint
       },
     }
   }
