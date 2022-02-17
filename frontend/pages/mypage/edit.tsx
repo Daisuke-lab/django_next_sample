@@ -16,18 +16,18 @@ import { useForm, Controller } from "react-hook-form";
 import backendAxios from '../../src/helpers/axios';
 import { useRouter } from 'next/router'
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
-import { updatePgId } from '../../store/reducers/userReducer';
+import { updateMcId } from '../../store/reducers/userReducer';
 
 const MyPageEdit: NextPage = () => {
 const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
 const { data: session } = useSession()
 const router = useRouter()
 const dispatch = useAppDispatch()
-const pgId = useAppSelector(state => state.users.pg_id)
+const mcId = useAppSelector(state => state.users.mc_id)
 
 useEffect(() => {
-    if (pgId !== null) {
-        setValue('pg_id', pgId)
+    if (mcId !== null) {
+        setValue('mc_id', mcId)
     }
 }, [])
 
@@ -38,7 +38,7 @@ const onSubmit = async (data:any) => {
     try {
         const res = await backendAxios.put(`api/v1/user/${session?.id}/`, data)
         console.log(res)
-        dispatch(updatePgId(res.data.pg_id))
+        dispatch(updateMcId(res.data.mc_id))
         router.push("/mypage")
     } catch(err) {
         console.log(err)
@@ -54,9 +54,9 @@ const onSubmit = async (data:any) => {
           ユーザー情報の編集
         </Typography>
         <Typography variant="body2">
-        <TextField id="standard-basic" label="プログラムID" variant="standard" 
+        <TextField id="standard-basic" label="MCID" variant="standard" 
         type="number"
-        {...register('pg_id',{
+        {...register('mc_id',{
             required: true
           })}/>
         </Typography>

@@ -14,20 +14,20 @@ import CampaignIcon from '@mui/icons-material/Campaign';
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import { useEffect } from 'react';
 import backendAxios from '../../src/helpers/axios';
-import { updatePgId } from '../../store/reducers/userReducer';
+import { updateMcId } from '../../store/reducers/userReducer';
 const MyPage: NextPage = () => {
     const { data: session, ...others } = useSession()
     const dispatch = useAppDispatch()
-    const pgId = useAppSelector(state => state.users.pg_id)
+    const mcId = useAppSelector(state => state.users.mc_id)
     useEffect(() => {
-      if (pgId === null) {
-        getPgId()
+      if (mcId === null) {
+        getMcId()
       }
     }, [])
-    const getPgId = async () => {
+    const getMcId = async () => {
       try {
         const res = await backendAxios.get(`api/v1/user/${session?.id}`)
-        dispatch(updatePgId(res.data.pg_id))
+        dispatch(updateMcId(res.data.mc_id))
       } catch (err) {
         console.log(err)
       }
@@ -42,14 +42,14 @@ const MyPage: NextPage = () => {
                 <img className={styles.icon} src={session?.user?.image !== null?session?.user?.image:undefined}/>
                     <p>{session?.user?.name}</p>
                     <p>{session?.user?.email}</p>
-                    <p>プログラムID: {pgId}</p>
+                    <p>MCID: {mcId}</p>
                 </div>
                 <div className="follow-button" style={{margin: "10px"}}>
                 <Button variant="contained" style={{float: "right"}} href="mypage/edit">編集</Button>
                 </div>
             </div>
 
-            {pgId === null?
+            {mcId === null?
             <div className={styles.cardContainer}>
             <Card sx={{ minWidth: 275 }}>
               <CardContent>
@@ -57,7 +57,7 @@ const MyPage: NextPage = () => {
                   <CampaignIcon/>注意
                 </Typography>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                  右上の編集ボタンで必ずプログラムIDを入力して使用を開始するようにしてください。
+                  右上の編集ボタンで必ずMCIDを入力して使用を開始するようにしてください。
                   入力されていない場合、結果が正しく表示されなくなる場合がございます。
                 </Typography>
               </CardContent>

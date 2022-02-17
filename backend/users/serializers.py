@@ -9,9 +9,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["pg_id"]
+        fields = ["mc_id"]
 
     def update(self, instance, validated_data):
-        instance.pg_id = validated_data.get('pg_id', instance.pg_id)
+        instance.mc_id = validated_data.get('mc_id', instance.mc_id)
         instance.save()
         return instance
