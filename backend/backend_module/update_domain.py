@@ -162,7 +162,7 @@ class UpdateDomain(Common):
 
     def job(self, product_id):
         product_instance = Product.objects.get(id=product_id)
-        trademark_kws = Trademark.objects.get(product=product_instance)
+        trademark_kws = Trademark.objects.filter(product=product_instance)
         final_results = []
         # プレスコのデータを取得できなくなってしまったためコメントアウト
         # dotai_domains = self.get_dotai_domains()
