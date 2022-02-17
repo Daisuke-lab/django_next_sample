@@ -42,6 +42,7 @@ const MyPage: NextPage = () => {
                 <img className={styles.icon} src={session?.user?.image !== null?session?.user?.image:undefined}/>
                     <p>{session?.user?.name}</p>
                     <p>{session?.user?.email}</p>
+                    <p>プログラムID: {pgId}</p>
                 </div>
                 <div className="follow-button" style={{margin: "10px"}}>
                 <Button variant="contained" style={{float: "right"}} href="mypage/edit">編集</Button>
