@@ -20,9 +20,15 @@ def test():
 def create_result(product_ids):
     try:
         for product_id in product_ids:
+            print("start to update domain")
             UpdateDomain().job(product_id=product_id)
+            print("success to update domain")
+            print("start to update url")
             UpdateTargetUrl().job(product_id=product_id)
+            print("success to update url")
+            print("start to check ng word")
             NgCheck().job(product_id=product_id)
+            print("success to check ng word")
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
