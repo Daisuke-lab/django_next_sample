@@ -11,7 +11,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemButton from '@mui/material/ListItemButton';
 import Divider from '@mui/material/Divider';
 import generateIcon from "../helpers/generateIcon"
-import { useRouter } from 'next/router'
+import { useRouter} from 'next/router'
+import Link from 'next/link'
 interface Props {
     title: string
     pages: PagesName
@@ -50,6 +51,15 @@ function SideBar(props:Props) {
               ))
               }
             </List>
+            <div className="term-of-use-container">
+            <Link href="/medipat_terms_of_use_20220218.pdf">
+                      <a  target="_blank">利用規約</a>
+            </Link>
+            <br/>
+            <Link href="/medipat_privacy_policy_20220218.pdf">
+                      <a  target="_blank">プライバシーポリシー</a>
+            </Link>
+            </div>
           </Demo>
         </Grid>
     )

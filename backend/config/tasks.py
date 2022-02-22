@@ -8,6 +8,9 @@ from backend_module.ng_check import NgCheck
 import sys
 import os
 
+headers = {'X-ChatWorkToken': '026ca999c15fbc5894d4505d157417f4'}
+
+
 @shared_task
 def test():
     headers = {'X-ChatWorkToken': '026ca999c15fbc5894d4505d157417f4'}
@@ -29,17 +32,20 @@ def create_result(product_ids):
             print("start to check ng word")
             NgCheck().job(product_id=product_id)
             print("success to check ng word")
+        success_message = f"medipatのチェックが完了しました！(dance)"
+        requests.post(
+        'https://api.chatwork.com/v2/rooms/251333253/messages',
+        data={"body": success_message},
+        headers=headers)
+
+
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         errors = [exc_type, fname, exc_tb.tb_lineno, exc_obj]
-        headers = {'X-ChatWorkToken': '026ca999c15fbc5894d4505d157417f4'}
+        error_message = f"medipatでエラーが発生しました。 \n\n{errors}"
         requests.post(
-        'https://api.chatwork.com/v2/rooms/212622201/messages',
-        data={"body": str(errors)},
-        headers=headers)
-        requests.post(
-        'https://api.chatwork.com/v2/rooms/261509414/messages',
-        data={"body": str(errors)},
+        'https://api.chatwork.com/v2/rooms/251333253/messages',
+        data={"body": error_message},
         headers=headers)
 

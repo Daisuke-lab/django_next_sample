@@ -56,3 +56,9 @@ a {
 .pagination-container ul {
   justify-content: center;
 }
+
+.term-of-use-container {
+  margin-top: 50px;
+  margin-left: 10px;
+  margin-bottom: 30px;
+}

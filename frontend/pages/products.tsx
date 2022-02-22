@@ -71,7 +71,7 @@ const Main: NextPage = (props) => {
       <Container>
         <div  className='header-button-container'>
         <ColorButton color={blue} label="商品登録" onClick={onCreate} className='margin-button'/>
-        <ColorButton color={red} label="一括削除" onClick={() => {console.log('clicked')}} className='margin-button'/>
+        {/* <ColorButton color={red} label="一括削除" onClick={() => {console.log('clicked')}} className='margin-button'/> */}
         </div>
         <Table columns={columns} customizeRow={customizeRow}/>
         <Footer/>
