@@ -11,6 +11,15 @@ from products.models import Product
 from results.models import Check_Result
 
 class NgCheck(Common):
+    def update_check_result_table(self, url, priority):
+        try:
+            result = Check_Result.objects.get(url=url)
+            result.priority = priority
+            result.confirmed = False
+            result.save()
+        except:
+            Check_Result.objects.create(url=url, priority=priority, confirmed=False)
+
     def ng_check(self, middle_kws, target_urls):
         for target_url in target_urls:
             # self.driver.get(target_url.url)
@@ -48,7 +57,12 @@ class NgCheck(Common):
                         if  front_result != -1 and back_result != -1:
                             priority = 3
                             break
-                Check_Result.objects.create(url=target_url, priority=priority, confirmed=False)
+                self.update_check_result_table(url=target_url, priority=priority)
+
+    def update_checkresult_status_to_judgement(self, domain):
+        target_urls = Url.objects.filter(domain=domain)
+        for target_url in target_urls:
+            self.update_check_result_table(url=target_url, priority=4)
 
     def job(self, product_id):
         product_instance = Product.objects.get(id=product_id)
@@ -58,6 +72,9 @@ class NgCheck(Common):
             domains += Domain.objects.filter(trademark=trademark_kw, _type=2)
         # domainsは、{domain:, trademark_kw:}の辞書型リスト
         for domain in domains:
+            self.update_checkresult_status_to_judgement(domain=domain)
+        for domain in domains:
+            print(f"checking this domain: {domain}")
             client_target_urls = Url.objects.filter(domain=domain)
             middle_kws = NG_Keyword_Condition.objects.filter(product_condition=Product.objects.get(id=product_id).product_condition).exclude(status=0)
             self.ng_check(middle_kws=middle_kws, target_urls=client_target_urls)
