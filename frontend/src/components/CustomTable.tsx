@@ -40,14 +40,16 @@ export default function CustomTable(props:Props) {
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   const rowsData = useAppSelector(state => state.tables.rows)
   const checkedRows = useAppSelector(state => state.tables.checkedRows)
-  const [rows, setRows] = useState<RowType[]>(rowsData)
+  const [rows, setRows] = useState<RowType[]>([])
   
   useEffect(() => {
-    const newRowsData = rowsData.map((row:any) => {
-      const newRow = customizeRow !== undefined?customizeRow(row):row
-      return newRow
-    })
-    setRows(newRowsData)
+    if (rowsData instanceof Array) {
+      const newRowsData = rowsData.map((row:any) => {
+        const newRow = customizeRow !== undefined?customizeRow(row):row
+        return newRow
+      })
+      setRows(newRowsData)
+    }
   }, [rowsData])
 
   // useEffect(() => {

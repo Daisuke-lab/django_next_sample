@@ -34,6 +34,7 @@ const columns = [
   }
 
 const Result: NextPage = (props) => {
+  console.log(props)
   const [confirmedResult, setConfirmedResult] = useState<number[]>([])
   const {results, rowsCount, productId, endpoint} = props as Props
   const dispatch = useAppDispatch()
@@ -114,10 +115,13 @@ const Result: NextPage = (props) => {
 export async function getServerSideProps(context:any)  {
     const productId = context.query.id;
     let results:any[] = []
+    let rowsCount:number = 0
     const endpoint = `api/v1/result/list?product_id=${productId}`
     try {
       const res = await backendAxios.get(endpoint)
+      console.log("datat::",res.data)
       results = res.data?.results !== undefined ?res.data?.results:[]
+      rowsCount = res.data?.count !== undefined ?res.data?.count:0
     } catch(err) {
       console.log(err)
     }
@@ -125,7 +129,8 @@ export async function getServerSideProps(context:any)  {
       props: {
         results,
         productId,
-        endpoint
+        endpoint,
+        rowsCount
       },
     }
   }
