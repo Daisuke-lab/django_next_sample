@@ -22,13 +22,12 @@ class UpdateTargetUrl(Common):
         for target_url in target_urls:
             if target_url == "":
                 continue
-            domain_instance = Domain.objects.get(domain=domain)
-            if Url.objects.filter(domain=domain_instance, url=target_url).exists():
-                client_target_url = Url.objects.get(domain=domain_instance, url=target_url)
+            if Url.objects.filter(domain=domain, url=target_url).exists():
+                client_target_url = Url.objects.get(domain=domain, url=target_url)
                 client_target_url.updated_at = timezone.now()
                 client_target_url.save()
             else:
-                Url.objects.create(domain=domain_instance, url=target_url)
+                Url.objects.create(domain=domain, url=target_url)
         print("success to insert target url !")
 
     def get_loc_urls(self, sitemap_url):
@@ -59,7 +58,7 @@ class UpdateTargetUrl(Common):
         :return: 取得したすべての記事のURL
         """
         all_urls = []
-        sitemap_url = urllib.parse.urljoin(domain, "sitemap.xml")
+        sitemap_url = urllib.parse.urljoin(domain.domain, "sitemap.xml")
         urls = self.get_loc_urls(sitemap_url)
         count = 0
         for url in urls:
@@ -103,7 +102,7 @@ class UpdateTargetUrl(Common):
         :return:
         """
         result_url_lists = []
-        keyword = f"site:{domain} intext:'{trademark_kw}'"
+        keyword = f"site:{domain.domain} intext:'{trademark_kw}'"
         GOOGLE_API_KEY = config.GOOGLE_API_KEY
         CUSTOM_SEARCH_ENGINE_ID = config.CUSTOM_SEARCH_ENGINE_KEY
         service = build("customsearch", "v1", developerKey=GOOGLE_API_KEY)
@@ -157,7 +156,7 @@ class UpdateTargetUrl(Common):
         domains = []
         for trademark_kw in trademark_kws:
             tmp_domains = Domain.objects.filter(trademark=trademark_kw, _type=2)
-            [domains.append(dict(domain=data.domain, trademark_kw=trademark_kw.name)) for data in tmp_domains]
+            [domains.append(dict(domain=data, trademark_kw=trademark_kw.name)) for data in tmp_domains]
         for target_domain in domains:
             all_url_list = self.get_domain_allurl(domain=target_domain["domain"])
             if len(all_url_list) > 1000 or len(all_url_list) == 0:
