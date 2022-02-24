@@ -155,7 +155,7 @@ class UpdateTargetUrl(Common):
         trademark_kws = Trademark.objects.filter(product=product_instance)
         domains = []
         for trademark_kw in trademark_kws:
-            tmp_domains = Domain.objects.filter(trademark=trademark_kw, _type=2)
+            tmp_domains = Domain.objects.filter(trademark=trademark_kw).exclude(_type=1)
             [domains.append(dict(domain=data, trademark_kw=trademark_kw.name)) for data in tmp_domains]
         for target_domain in domains:
             print(f"target_domain: {target_domain['domain'].domain}")
