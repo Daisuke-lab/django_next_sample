@@ -18,7 +18,7 @@ import Input from '@mui/material/Input';
 import FormControl from '@mui/material/FormControl';
 import { useRouter } from 'next/router'
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
-import {addRow, closeForm, insertRows} from '../../store/reducers/tableReducer'
+import {addRow, closeForm, insertRows, changeCurrentPage, insertRowsCount, changeEndpoint} from '../../store/reducers/tableReducer'
 
 
 function ResultDetailForm(props:FormProps) {
@@ -67,9 +67,14 @@ function ResultDetailForm(props:FormProps) {
         const query = convertObjectToQuery(data) + `&product_id=${productId}&user=${userId}`
         console.log(query)
         try {
-            const res = await backendAxios.get(`api/v1/result/list${query}`)
-            const newRows = res.data
+            const endpoint = `api/v1/result/list${query}`
+            const res = await backendAxios.get(endpoint)
+            const newRows = res.data.results
+            const rowsCount = res.data.count
             dispatch(insertRows(newRows))
+            dispatch(changeCurrentPage(1))
+            dispatch(insertRowsCount(rowsCount))
+            dispatch(changeEndpoint(endpoint))
             dispatch(closeForm())
             setPriorities([])
             setConfirmeds([])
