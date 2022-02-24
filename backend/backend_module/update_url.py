@@ -158,7 +158,11 @@ class UpdateTargetUrl(Common):
             tmp_domains = Domain.objects.filter(trademark=trademark_kw, _type=2)
             [domains.append(dict(domain=data, trademark_kw=trademark_kw.name)) for data in tmp_domains]
         for target_domain in domains:
-            all_url_list = self.get_domain_allurl(domain=target_domain["domain"])
+            print(f"target_domain: {target_domain['domain'].domain}")
+            try:
+                all_url_list = self.get_domain_allurl(domain=target_domain["domain"])
+            except:
+                all_url_list = []
             if len(all_url_list) > 1000 or len(all_url_list) == 0:
                 print("fetch more than 1000 urls or 0")
                 print("try to get url by using API...")

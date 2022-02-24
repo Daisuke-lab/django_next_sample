@@ -40,12 +40,13 @@ def create_result(product_ids):
 
 
     except Exception as e:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        errors = [exc_type, fname, exc_tb.tb_lineno, exc_obj]
-        error_message = f"medipatでエラーが発生しました。 \n\n{errors}"
-        requests.post(
-        'https://api.chatwork.com/v2/rooms/251333253/messages',
-        data={"body": error_message},
-        headers=headers)
+        print(e)
+        # exc_type, exc_obj, exc_tb = sys.exc_info()
+        # fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        # errors = [exc_type, fname, exc_tb.tb_lineno, exc_obj]
+        # error_message = f"medipatでエラーが発生しました。 \n\n{errors}"
+        # requests.post(
+        # 'https://api.chatwork.com/v2/rooms/251333253/messages',
+        # data={"body": error_message},
+        # headers=headers)
 
