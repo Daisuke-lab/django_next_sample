@@ -167,7 +167,7 @@ class UpdateDomain(Common):
         # プレスコのデータを取得できなくなってしまったためコメントアウト
         # dotai_domains = self.get_dotai_domains()
         # referrer_domains = self.get_referrer_domain()
-        print(f"success to get trademark keywords: {trademark_kws.name}")
+        print(f"success to get trademark keywords: {trademark_kws}")
         for trademark_instance in trademark_kws:
             specific_search_domains = self.get_specific_search_domains(trademark_kw=trademark_instance)
             print(f"success to get specific domains: {specific_search_domains}")
