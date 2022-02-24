@@ -18,16 +18,18 @@ from domains.models import Domain, Trademark, Url
 
 class UpdateTargetUrl(Common):
     def insert_target_urls(self, target_urls, domain):
+        print("insert target url...")
         for target_url in target_urls:
             if target_url == "":
                 continue
             domain_instance = Domain.objects.get(domain=domain)
-            try:
+            if Url.objects.filter(domain=domain_instance, url=target_url).exists():
                 client_target_url = Url.objects.get(domain=domain_instance, url=target_url)
                 client_target_url.updated_at = timezone.now()
                 client_target_url.save()
-            except:
+            else:
                 Url.objects.create(domain=domain_instance, url=target_url)
+        print("success to insert target url !")
 
     def get_loc_urls(self, sitemap_url):
         """サイトマップからURLを抽出するメソッド
@@ -59,13 +61,18 @@ class UpdateTargetUrl(Common):
         all_urls = []
         sitemap_url = urllib.parse.urljoin(domain, "sitemap.xml")
         urls = self.get_loc_urls(sitemap_url)
+        count = 0
         for url in urls:
             if ".xml" in url:
                 sub_urls = self.get_loc_urls(url)
                 for sub_url in sub_urls:
                     all_urls.append(sub_url)
+                    count += 1
             else:
                 all_urls.append(url)
+                count += 1
+            if count >= 10:
+                break
         return all_urls
 
     def filter_all_urls(self, all_url_list, trademark_kw):
@@ -160,4 +167,5 @@ class UpdateTargetUrl(Common):
                 filtered_url_list = all_url_list
             else:
                 filtered_url_list = self.filter_all_urls(all_url_list=all_url_list, trademark_kw=target_domain["trademark_kw"])
+            print(filtered_url_list)
             self.insert_target_urls(target_urls=filtered_url_list, domain=target_domain["domain"])
