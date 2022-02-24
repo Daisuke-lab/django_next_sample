@@ -167,5 +167,5 @@ class UpdateTargetUrl(Common):
                 filtered_url_list = all_url_list
             else:
                 filtered_url_list = self.filter_all_urls(all_url_list=all_url_list, trademark_kw=target_domain["trademark_kw"])
-            print(filtered_url_list)
+            print(f"success to find urls: {filtered_url_list}")
             self.insert_target_urls(target_urls=filtered_url_list, domain=target_domain["domain"])

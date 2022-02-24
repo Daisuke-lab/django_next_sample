@@ -4,7 +4,12 @@
     "containerDefinitions": [
       {
         "dnsSearchDomains": null,
-        "environmentFiles": null,
+        "environmentFiles": [
+          {
+              "value": "arn:aws:s3:::yakuji-prod-bucket/backend_production.env",
+              "type": "s3"
+          }
+      ],
         "logConfiguration": {
           "logDriver": "awslogs",
           "secretOptions": null,
@@ -25,36 +30,7 @@
         "command": null,
         "linuxParameters": null,
         "cpu": 0,
-        "environment": [
-          {
-            "name": "CUSTOM_SEARCH_ENGINE_KEY",
-            "value": "fb804a42339b323b5"
-          },
-          {
-            "name": "DATABASE_HOST",
-            "value": "yakuji-prod.cf6ivuffba0e.ap-northeast-1.rds.amazonaws.com"
-          },
-          {
-            "name": "DATABASE_NAME",
-            "value": "medicine_robo"
-          },
-          {
-            "name": "DATABASE_PASSWORD",
-            "value": "MedicineRobo_2022"
-          },
-          {
-            "name": "DATABASE_USER",
-            "value": "MEDICINEROBO"
-          },
-          {
-            "name": "ENVIRONMENT",
-            "value": "production"
-          },
-          {
-            "name": "GOOGLE_API_KEY",
-            "value": "AIzaSyDy9eVz0_t0QHD7eqVvVejmYwhesYRmllU"
-          }
-        ],
+        "environment": null,
         "resourceRequirements": null,
         "ulimits": null,
         "dnsServers": null,
@@ -87,7 +63,6 @@
       },
       {
         "dnsSearchDomains": null,
-        "environmentFiles": null,
         "logConfiguration": {
           "logDriver": "awslogs",
           "secretOptions": null,
@@ -109,36 +84,13 @@
         ],
         "linuxParameters": null,
         "cpu": 0,
-        "environment": [
-          {
-            "name": "CUSTOM_SEARCH_ENGINE_KEY",
-            "value": "fb804a42339b323b5"
-          },
-          {
-            "name": "DATABASE_HOST",
-            "value": "yakuji-prod.cf6ivuffba0e.ap-northeast-1.rds.amazonaws.com"
-          },
-          {
-            "name": "DATABASE_NAME",
-            "value": "medicine_robo"
-          },
-          {
-            "name": "DATABASE_PASSWORD",
-            "value": "MedicineRobo_2022"
-          },
-          {
-            "name": "DATABASE_USER",
-            "value": "MEDICINEROBO"
-          },
-          {
-            "name": "ENVIRONMENT",
-            "value": "production"
-          },
-          {
-            "name": "GOOGLE_API_KEY",
-            "value": "AIzaSyDy9eVz0_t0QHD7eqVvVejmYwhesYRmllU"
-          }
+        "environmentFiles": [
+            {
+                "value": "arn:aws:s3:::yakuji-prod-bucket/backend_production.env",
+                "type": "s3"
+            }
         ],
+        "environment": null,
         "resourceRequirements": null,
         "ulimits": null,
         "dnsServers": null,
