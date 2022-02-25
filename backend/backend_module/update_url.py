@@ -40,10 +40,11 @@ class UpdateTargetUrl(Common):
         urls = []
         try:
             res = requests.get(sitemap_url)
-        except:
+            soup = BeautifulSoup(res.text, "html.parser")
+            loclist = soup.select("loc")
+        except Exception as e:
+            print(e)
             return []
-        soup = BeautifulSoup(res.text, "html.parser")
-        loclist = soup.select("loc")
         for loc in loclist:
             url = re.sub("<[a-z]>", "", loc.text)
             urls.append(url)

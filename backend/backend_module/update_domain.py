@@ -153,12 +153,12 @@ class UpdateDomain(Common):
         for domain in domains:
             if domain == "":
                 continue
-            try:
+            if Domain.objects.filter(domain=domain, trademark=trademark_kw).exists():
                 client_domain = Domain.objects.get(domain=domain, trademark=trademark_kw)
                 client_domain.status = 1
                 client_domain.updated_at = timezone.now()
                 client_domain.save()
-            except:
+            else:
                 Domain.objects.create(trademark=trademark_kw, domain=domain, status=1, _type=2)
 
     def job(self, product_id):
