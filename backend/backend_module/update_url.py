@@ -36,6 +36,7 @@ class UpdateTargetUrl(Common):
         :param sitemap_url: URL一覧があるサイトマップのURL
         :return:
         """
+        print("start to get sitemap loc urls...")
         urls = []
         try:
             res = requests.get(sitemap_url)
@@ -46,6 +47,7 @@ class UpdateTargetUrl(Common):
         for loc in loclist:
             url = re.sub("<[a-z]>", "", loc.text)
             urls.append(url)
+        print("success to get sitemap loc urls !")
         return urls
 
     def get_domain_allurl(self, domain):
@@ -57,21 +59,20 @@ class UpdateTargetUrl(Common):
         :param sitemap_url: メディアサイトのサイトマップURL
         :return: 取得したすべての記事のURL
         """
+        print("start to get all urls...")
         all_urls = []
         sitemap_url = urllib.parse.urljoin(domain.domain, "sitemap.xml")
         urls = self.get_loc_urls(sitemap_url)
-        count = 0
         for url in urls:
             if ".xml" in url:
                 sub_urls = self.get_loc_urls(url)
                 for sub_url in sub_urls:
                     all_urls.append(sub_url)
-                    count += 1
             else:
                 all_urls.append(url)
-                count += 1
-            if count >= 10:
+            if len(all_urls) >= 10:
                 break
+        print("success to get all urls !")
         return all_urls
 
     def filter_all_urls(self, all_url_list, trademark_kw):
@@ -157,6 +158,7 @@ class UpdateTargetUrl(Common):
         for trademark_kw in trademark_kws:
             tmp_domains = Domain.objects.filter(trademark=trademark_kw).exclude(_type=1)
             [domains.append(dict(domain=data, trademark_kw=trademark_kw.name)) for data in tmp_domains]
+        print(f"all domains: {domains}")
         for target_domain in domains:
             print(f"target_domain: {target_domain['domain'].domain}")
             try:
