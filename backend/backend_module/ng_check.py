@@ -36,7 +36,7 @@ class NgCheck(Common):
                 print(f"サイトのテキストを取得できませんでした：{target_url.url}")
                 continue
             for middle_kw in middle_kws:
-                priority = 1
+                priority = 3
                 ng_kw = str(middle_kw.ng_keyword)
                 composite_kw = str(middle_kw.composite_keyword)
                 front_word_count = middle_kw.front_check_word_count
@@ -55,7 +55,7 @@ class NgCheck(Common):
                         front_result = text_source.find(composite_kw, front_start_index, front_end_index)
                         back_result = text_source.find(composite_kw, back_start_index, back_end_index)
                         if  front_result != -1 and back_result != -1:
-                            priority = 3
+                            priority = 1
                             break
                 self.update_check_result_table(url=target_url, priority=priority)
 
@@ -73,6 +73,7 @@ class NgCheck(Common):
         # domainsは、{domain:, trademark_kw:}の辞書型リスト
         for domain in domains:
             self.update_checkresult_status_to_judgement(domain=domain)
+        print("success to update all urls flag to judgement !")
         for domain in domains:
             print(f"checking this domain: {domain}")
             client_target_urls = Url.objects.filter(domain=domain)
