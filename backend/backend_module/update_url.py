@@ -42,12 +42,12 @@ class UpdateTargetUrl(Common):
             res = requests.get(sitemap_url)
             soup = BeautifulSoup(res.text, "html.parser")
             loclist = soup.select("loc")
+            for loc in loclist:
+                url = re.sub("<[a-z]>", "", loc.text)
+                urls.append(url)
         except Exception as e:
             print(e)
             return []
-        for loc in loclist:
-            url = re.sub("<[a-z]>", "", loc.text)
-            urls.append(url)
         print("success to get sitemap loc urls !")
         return urls
 
