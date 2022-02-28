@@ -5,6 +5,7 @@ import requests
 from backend_module.update_domain import UpdateDomain
 from backend_module.update_url import UpdateTargetUrl
 from backend_module.ng_check import NgCheck
+from products.models import Product
 import sys
 import os
 
@@ -23,21 +24,23 @@ def test():
 def create_result(product_ids):
     try:
         for product_id in product_ids:
-            print("start to update domain")
-            UpdateDomain().job(product_id=product_id)
-            print("success to update domain")
-            print("start to update url")
-            UpdateTargetUrl().job(product_id=product_id)
-            print("success to update url")
-            print("start to check ng word")
-            NgCheck().job(product_id=product_id)
-            print("success to check ng word")
-        success_message = f"medipatのチェックが完了しました！(dance)"
-        requests.post(
-        'https://api.chatwork.com/v2/rooms/251333253/messages',
-        data={"body": success_message},
-        headers=headers)
-
+            if Product.objects.filter(id=product_id).exists():
+                print("start to update domain")
+                UpdateDomain().job(product_id=product_id)
+                print("success to update domain")
+                print("start to update url")
+                UpdateTargetUrl().job(product_id=product_id)
+                print("success to update url")
+                print("start to check ng word")
+                NgCheck().job(product_id=product_id)
+                print("success to check ng word")
+                success_message = f"medipatのチェックが完了しました！(dance)"
+                requests.post(
+                'https://api.chatwork.com/v2/rooms/251333253/messages',
+                data={"body": success_message},
+                headers=headers)
+            else:
+                print("Cannnot find a product. Please check your product is exist.")
 
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()

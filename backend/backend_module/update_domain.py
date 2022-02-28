@@ -5,15 +5,12 @@ from turtle import update
 
 sys.path.append("../")
 from .common import Common
-import re
-import datetime
 import time
 from . import config
 from django.utils import timezone
 from googleapiclient.discovery import build
-from domains.models import Domain, Url, Trademark
+from domains.models import Domain, Trademark
 from products.models import Product
-from users.models import User
 import urllib.parse
 
 class UpdateDomain(Common):
