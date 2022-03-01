@@ -11,7 +11,8 @@ import Chip from '@mui/material/Chip';
 import {highColor, middleColor, lowColor, unknownColor} from "../../src/helpers/colors"
 import ResultDetailForm from '../../src/components/ResultDetailForm';
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
-import {insertRows, changeMode, changeOpendForm, changeCurrentPage, insertRowsCount, changeEndpoint} from '../../store/reducers/tableReducer'
+import {insertRows, changeMode, changeOpendForm, changeCurrentPage,
+   insertRowsCount, changeEndpoint, addConfirmedRowId} from '../../store/reducers/tableReducer'
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
@@ -35,10 +36,11 @@ const columns = [
 
 const Result: NextPage = (props) => {
   console.log(props)
-  const [confirmedResult, setConfirmedResult] = useState<number[]>([])
   const {results, rowsCount, productId, endpoint} = props as Props
   const dispatch = useAppDispatch()
   const openedForm = useAppSelector(state => state.tables.openedForm)
+  const confirmedRowIds = useAppSelector(state => state.tables.confirmedRowIds)
+  const rows = useAppSelector(state => state.tables.rows)
   useEffect(() => {
     dispatch(insertRows(results))
     dispatch(changeCurrentPage(1))
@@ -65,7 +67,7 @@ const Result: NextPage = (props) => {
     const button = (
       <div className='table-button-container'>
        <ColorButton color={blue} label="確認済"
-       disabled={row.confirmed || confirmedResult.includes(row.id)}
+       disabled={row.confirmed}
        onClick={() => {onConfirm(row)}}/>
       </div>
     )
@@ -74,9 +76,14 @@ const Result: NextPage = (props) => {
   }
   const onConfirm = async (row:any) => {
     try {
+      console.log(row.id)
       const data = {confirmed: true}
       const res = await backendAxios.put(`api/v1/result/${row.id}/`, data)
-      setConfirmedResult([...confirmedResult, row.id])
+      const newRows = [...rows]
+      const index = newRows.indexOf(row)
+      const newRow = {...row, confirmed: true}
+      newRows.splice(index, 1, newRow)
+      dispatch(insertRows(newRows))
     } catch(err) {
       console.log(err)
     }
