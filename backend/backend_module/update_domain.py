@@ -120,7 +120,7 @@ class UpdateDomain(Common):
                         )
                             .execute()
                     )
-                    if n_page == 0:
+                    if n_page == 0 and res[0].get("searchInformation") is not None and res[0].get("searchInformation").get("totalResults") is not None:
                         total_result = int(res[0].get("searchInformation").get("totalResults"))
                         print(f"検索結果：{total_result}件 intext:'{trademark_kw.name}'")
                         print(f"調査キーワード：{keyword}")
