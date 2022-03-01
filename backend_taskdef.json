@@ -1,328 +1,334 @@
 {
-    "ipcMode": null,
-    "executionRoleArn": "arn:aws:iam::381623038275:role/ecsTaskExecutionRole",
-    "containerDefinitions": [
-      {
-        "dnsSearchDomains": null,
-        "environmentFiles": [
-          {
-              "value": "arn:aws:s3:::yakuji-prod-bucket/backend_production.env",
-              "type": "s3"
-          }
+  "ipcMode": null,
+  "executionRoleArn": "arn:aws:iam::381623038275:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "dnsSearchDomains": null,
+      "environmentFiles": [
+        {
+          "value": "arn:aws:s3:::yakuji-prod-bucket/backend_production.env",
+          "type": "s3"
+        }
       ],
-        "logConfiguration": {
-          "logDriver": "awslogs",
-          "secretOptions": null,
-          "options": {
-            "awslogs-group": "/ecs/yakuji-backend",
-            "awslogs-region": "ap-northeast-1",
-            "awslogs-stream-prefix": "ecs"
-          }
-        },
-        "entryPoint": null,
-        "portMappings": [
-          {
-            "hostPort": 8000,
-            "protocol": "tcp",
-            "containerPort": 8000
-          }
-        ],
-        "command": null,
-        "linuxParameters": null,
-        "cpu": 0,
-        "environment": null,
-        "resourceRequirements": null,
-        "ulimits": null,
-        "dnsServers": null,
-        "mountPoints": [],
-        "workingDirectory": null,
-        "secrets": null,
-        "dockerSecurityOptions": null,
-        "memory": null,
-        "memoryReservation": null,
-        "volumesFrom": [],
-        "stopTimeout": null,
-        "image": "381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_backend",
-        "startTimeout": null,
-        "firelensConfiguration": null,
-        "dependsOn": null,
-        "disableNetworking": null,
-        "interactive": null,
-        "healthCheck": null,
-        "essential": true,
-        "links": null,
-        "hostname": null,
-        "extraHosts": null,
-        "pseudoTerminal": null,
-        "user": null,
-        "readonlyRootFilesystem": null,
-        "dockerLabels": null,
-        "systemControls": null,
-        "privileged": null,
-        "name": "gunicorn"
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/yakuji-backend",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "ecs"
+        }
       },
-      {
-        "dnsSearchDomains": null,
-        "logConfiguration": {
-          "logDriver": "awslogs",
-          "secretOptions": null,
-          "options": {
-            "awslogs-group": "/ecs/yakuji-backend",
-            "awslogs-region": "ap-northeast-1",
-            "awslogs-stream-prefix": "ecs"
-          }
-        },
-        "entryPoint": null,
-        "portMappings": [],
-        "command": [
-          "celery",
-          "-A",
-          "config",
-          "worker",
-          "-l",
-          "info"
-        ],
-        "linuxParameters": null,
-        "cpu": 0,
-        "environmentFiles": [
-            {
-                "value": "arn:aws:s3:::yakuji-prod-bucket/backend_production.env",
-                "type": "s3"
-            }
-        ],
-        "environment": null,
-        "resourceRequirements": null,
-        "ulimits": null,
-        "dnsServers": null,
-        "mountPoints": [],
-        "workingDirectory": null,
-        "secrets": null,
-        "dockerSecurityOptions": null,
-        "memory": null,
-        "memoryReservation": null,
-        "volumesFrom": [],
-        "stopTimeout": null,
-        "image": "381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_backend",
-        "startTimeout": null,
-        "firelensConfiguration": null,
-        "dependsOn": [
-          {
-            "containerName": "redis",
-            "condition": "START"
-          }
-        ],
-        "disableNetworking": null,
-        "interactive": null,
-        "healthCheck": null,
-        "essential": true,
-        "links": null,
-        "hostname": null,
-        "extraHosts": null,
-        "pseudoTerminal": null,
-        "user": null,
-        "readonlyRootFilesystem": null,
-        "dockerLabels": null,
-        "systemControls": null,
-        "privileged": null,
-        "name": "celery"
-      },
-      {
-        "dnsSearchDomains": null,
-        "environmentFiles": null,
-        "logConfiguration": {
-          "logDriver": "awslogs",
-          "secretOptions": null,
-          "options": {
-            "awslogs-group": "/ecs/yakuji-backend",
-            "awslogs-region": "ap-northeast-1",
-            "awslogs-stream-prefix": "ecs"
-          }
-        },
-        "entryPoint": null,
-        "portMappings": [
-          {
-            "hostPort": 6379,
-            "protocol": "tcp",
-            "containerPort": 6379
-          }
-        ],
-        "command": null,
-        "linuxParameters": null,
-        "cpu": 0,
-        "environment": [
-          {
-            "name": "ALLOW_EMPTY_PASSWORD",
-            "value": "yes"
-          }
-        ],
-        "resourceRequirements": null,
-        "ulimits": null,
-        "dnsServers": null,
-        "mountPoints": [],
-        "workingDirectory": null,
-        "secrets": null,
-        "dockerSecurityOptions": null,
-        "memory": null,
-        "memoryReservation": null,
-        "volumesFrom": [],
-        "stopTimeout": null,
-        "image": "public.ecr.aws/bitnami/redis:latest",
-        "startTimeout": null,
-        "firelensConfiguration": null,
-        "dependsOn": null,
-        "disableNetworking": null,
-        "interactive": null,
-        "healthCheck": null,
-        "essential": true,
-        "links": null,
-        "hostname": null,
-        "extraHosts": null,
-        "pseudoTerminal": null,
-        "user": null,
-        "readonlyRootFilesystem": null,
-        "dockerLabels": null,
-        "systemControls": null,
-        "privileged": null,
-        "name": "redis"
-      },
-      {
-        "dnsSearchDomains": null,
-        "environmentFiles": null,
-        "logConfiguration": {
-          "logDriver": "awslogs",
-          "secretOptions": null,
-          "options": {
-            "awslogs-group": "/ecs/yakuji-backend",
-            "awslogs-region": "ap-northeast-1",
-            "awslogs-stream-prefix": "ecs"
-          }
-        },
-        "entryPoint": null,
-        "portMappings": [
-          {
-            "hostPort": 80,
-            "protocol": "tcp",
-            "containerPort": 80
-          }
-        ],
-        "command": null,
-        "linuxParameters": null,
-        "cpu": 0,
-        "environment": [],
-        "resourceRequirements": null,
-        "ulimits": null,
-        "dnsServers": null,
-        "mountPoints": [],
-        "workingDirectory": null,
-        "secrets": null,
-        "dockerSecurityOptions": null,
-        "memory": null,
-        "memoryReservation": null,
-        "volumesFrom": [],
-        "stopTimeout": null,
-        "image": "381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/vol10-backend-nginx",
-        "startTimeout": null,
-        "firelensConfiguration": null,
-        "dependsOn": [
-          {
-            "containerName": "gunicorn",
-            "condition": "START"
-          }
-        ],
-        "disableNetworking": null,
-        "interactive": null,
-        "healthCheck": null,
-        "essential": true,
-        "links": null,
-        "hostname": null,
-        "extraHosts": null,
-        "pseudoTerminal": null,
-        "user": null,
-        "readonlyRootFilesystem": null,
-        "dockerLabels": null,
-        "systemControls": null,
-        "privileged": null,
-        "name": "nginx"
-      }
-    ],
-    "placementConstraints": [],
-    "memory": "512",
-    "taskRoleArn": "arn:aws:iam::381623038275:role/ecsTaskExecutionRole",
-    "compatibilities": [
-      "EC2",
-      "FARGATE"
-    ],
-    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-1:381623038275:task-definition/yakuji-backend:6",
-    "family": "yakuji-backend",
-    "requiresAttributes": [
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "ecs.capability.execution-role-awslogs"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "com.amazonaws.ecs.capability.ecr-auth"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "com.amazonaws.ecs.capability.task-iam-role"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "ecs.capability.container-ordering"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "ecs.capability.execution-role-ecr-pull"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "ecs.capability.task-eni"
-      }
-    ],
-    "pidMode": null,
-    "requiresCompatibilities": [
-      "FARGATE"
-    ],
-    "networkMode": "awsvpc",
-    "runtimePlatform": {
-      "operatingSystemFamily": "LINUX",
-      "cpuArchitecture": null
+      "entryPoint": null,
+      "portMappings": [
+        {
+          "hostPort": 8000,
+          "protocol": "tcp",
+          "containerPort": 8000
+        }
+      ],
+      "command": null,
+      "linuxParameters": null,
+      "cpu": 0,
+      "environment": [],
+      "resourceRequirements": null,
+      "ulimits": null,
+      "dnsServers": null,
+      "mountPoints": [],
+      "workingDirectory": null,
+      "secrets": null,
+      "dockerSecurityOptions": null,
+      "memory": null,
+      "memoryReservation": null,
+      "volumesFrom": [],
+      "stopTimeout": null,
+      "image": "381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_backend",
+      "startTimeout": null,
+      "firelensConfiguration": null,
+      "dependsOn": null,
+      "disableNetworking": null,
+      "interactive": null,
+      "healthCheck": null,
+      "essential": true,
+      "links": null,
+      "hostname": null,
+      "extraHosts": null,
+      "pseudoTerminal": null,
+      "user": null,
+      "readonlyRootFilesystem": null,
+      "dockerLabels": null,
+      "systemControls": null,
+      "privileged": null,
+      "name": "gunicorn"
     },
-    "cpu": "256",
-    "revision": 6,
-    "status": "ACTIVE",
-    "inferenceAccelerators": null,
-    "proxyConfiguration": null,
-    "volumes": []
-  }
+    {
+      "dnsSearchDomains": null,
+      "environmentFiles": [
+        {
+          "value": "arn:aws:s3:::yakuji-prod-bucket/backend_production.env",
+          "type": "s3"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/yakuji-backend",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "entryPoint": null,
+      "portMappings": [],
+      "command": [
+        "celery",
+        "-A",
+        "config",
+        "worker",
+        "-l",
+        "info"
+      ],
+      "linuxParameters": null,
+      "cpu": 0,
+      "environment": [],
+      "resourceRequirements": null,
+      "ulimits": null,
+      "dnsServers": null,
+      "mountPoints": [],
+      "workingDirectory": null,
+      "secrets": null,
+      "dockerSecurityOptions": null,
+      "memory": null,
+      "memoryReservation": null,
+      "volumesFrom": [],
+      "stopTimeout": null,
+      "image": "381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/yakuji_backend",
+      "startTimeout": null,
+      "firelensConfiguration": null,
+      "dependsOn": [
+        {
+          "containerName": "redis",
+          "condition": "START"
+        }
+      ],
+      "disableNetworking": null,
+      "interactive": null,
+      "healthCheck": null,
+      "essential": true,
+      "links": null,
+      "hostname": null,
+      "extraHosts": null,
+      "pseudoTerminal": null,
+      "user": null,
+      "readonlyRootFilesystem": null,
+      "dockerLabels": null,
+      "systemControls": null,
+      "privileged": null,
+      "name": "celery"
+    },
+    {
+      "dnsSearchDomains": null,
+      "environmentFiles": null,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/yakuji-backend",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "entryPoint": null,
+      "portMappings": [
+        {
+          "hostPort": 6379,
+          "protocol": "tcp",
+          "containerPort": 6379
+        }
+      ],
+      "command": null,
+      "linuxParameters": null,
+      "cpu": 0,
+      "environment": [
+        {
+          "name": "ALLOW_EMPTY_PASSWORD",
+          "value": "yes"
+        }
+      ],
+      "resourceRequirements": null,
+      "ulimits": null,
+      "dnsServers": null,
+      "mountPoints": [],
+      "workingDirectory": null,
+      "secrets": null,
+      "dockerSecurityOptions": null,
+      "memory": null,
+      "memoryReservation": null,
+      "volumesFrom": [],
+      "stopTimeout": null,
+      "image": "public.ecr.aws/bitnami/redis:latest",
+      "startTimeout": null,
+      "firelensConfiguration": null,
+      "dependsOn": null,
+      "disableNetworking": null,
+      "interactive": null,
+      "healthCheck": null,
+      "essential": true,
+      "links": null,
+      "hostname": null,
+      "extraHosts": null,
+      "pseudoTerminal": null,
+      "user": null,
+      "readonlyRootFilesystem": null,
+      "dockerLabels": null,
+      "systemControls": null,
+      "privileged": null,
+      "name": "redis"
+    },
+    {
+      "dnsSearchDomains": null,
+      "environmentFiles": null,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/yakuji-backend",
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "entryPoint": null,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "protocol": "tcp",
+          "containerPort": 80
+        }
+      ],
+      "command": null,
+      "linuxParameters": null,
+      "cpu": 0,
+      "environment": [],
+      "resourceRequirements": null,
+      "ulimits": null,
+      "dnsServers": null,
+      "mountPoints": [],
+      "workingDirectory": null,
+      "secrets": null,
+      "dockerSecurityOptions": null,
+      "memory": null,
+      "memoryReservation": null,
+      "volumesFrom": [],
+      "stopTimeout": null,
+      "image": "381623038275.dkr.ecr.ap-northeast-1.amazonaws.com/vol10-backend-nginx",
+      "startTimeout": null,
+      "firelensConfiguration": null,
+      "dependsOn": [
+        {
+          "containerName": "gunicorn",
+          "condition": "START"
+        }
+      ],
+      "disableNetworking": null,
+      "interactive": null,
+      "healthCheck": null,
+      "essential": true,
+      "links": null,
+      "hostname": null,
+      "extraHosts": null,
+      "pseudoTerminal": null,
+      "user": null,
+      "readonlyRootFilesystem": null,
+      "dockerLabels": null,
+      "systemControls": null,
+      "privileged": null,
+      "name": "nginx"
+    }
+  ],
+  "placementConstraints": [],
+  "memory": "1024",
+  "taskRoleArn": "arn:aws:iam::381623038275:role/ecsTaskExecutionRole",
+  "compatibilities": [
+    "EC2",
+    "FARGATE"
+  ],
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-1:381623038275:task-definition/yakuji-backend:35",
+  "family": "yakuji-backend",
+  "requiresAttributes": [
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.env-files.s3"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.container-ordering"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.task-eni"
+    }
+  ],
+  "pidMode": null,
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "networkMode": "awsvpc",
+  "runtimePlatform": {
+    "operatingSystemFamily": "LINUX",
+    "cpuArchitecture": null
+  },
+  "cpu": "512",
+  "revision": 35,
+  "status": "ACTIVE",
+  "inferenceAccelerators": null,
+  "proxyConfiguration": null,
+  "volumes": []
+}

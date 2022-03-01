@@ -46,7 +46,7 @@ const Result: NextPage = (props) => {
     dispatch(changeEndpoint(endpoint))
   }, [])
 
-  const custmizeRow = (row:any) => {
+  const customizeRow = (row:any) => {
     const priorities = {
       "高": highColor,
       "中": middleColor,
@@ -104,7 +104,7 @@ const Result: NextPage = (props) => {
             
             <ColorButton color={blue} label="絞り込む" onClick={() => dispatch(changeOpendForm('ResultDetailForm'))} className='margin-button'/>
             </div>
-            <Table columns={columns}/>
+            <Table columns={columns} customizeRow={customizeRow}/>
             <ResultDetailForm
             open={openedForm==="ResultDetailForm"}
             />
