@@ -12,7 +12,7 @@ import {highColor, middleColor, lowColor, unknownColor} from "../../src/helpers/
 import ResultDetailForm from '../../src/components/ResultDetailForm';
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {insertRows, changeMode, changeOpendForm, changeCurrentPage,
-   insertRowsCount, changeEndpoint, addConfirmedRowId} from '../../store/reducers/tableReducer'
+   insertRowsCount, changeEndpoint} from '../../store/reducers/tableReducer'
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
@@ -39,7 +39,6 @@ const Result: NextPage = (props) => {
   const {results, rowsCount, productId, endpoint} = props as Props
   const dispatch = useAppDispatch()
   const openedForm = useAppSelector(state => state.tables.openedForm)
-  const confirmedRowIds = useAppSelector(state => state.tables.confirmedRowIds)
   const rows = useAppSelector(state => state.tables.rows)
   useEffect(() => {
     dispatch(insertRows(results))
