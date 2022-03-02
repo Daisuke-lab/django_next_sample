@@ -71,7 +71,8 @@ const Result: NextPage = (props) => {
       </div>
     )
 
-    const url = (<a href={row.url}>{row.url.length<15?row.url:row.url.substring(0, 15) + "..."}</a>)
+    const url = typeof row.url === "string"?
+    (<a href={row.url}>{row.url.length<15?row.url:row.url.substring(0, 15) + "..."}</a>):(<></>)
     const newRow = {...row, button, priority, url}
     return newRow
   }
