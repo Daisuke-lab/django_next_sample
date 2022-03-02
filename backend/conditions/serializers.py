@@ -11,8 +11,6 @@ class NGKeywordConditionSerializer(serializers.ModelSerializer):
     back_check_word_count = serializers.IntegerField()
     ng_keyword = serializers.CharField(max_length=200)
     composite_keyword = serializers.CharField(max_length=200)
-    check_target_period = serializers.IntegerField(write_only=True)
-    period_unit = serializers.CharField(max_length=5, write_only=True)
     id = serializers.IntegerField(allow_null=True, required=False)
 
     class Meta:
@@ -31,7 +29,7 @@ class ProductConditionSerializer(serializers.ModelSerializer):
     ng_keywords = serializers.ListField(child=serializers.CharField(max_length=100), write_only=True)
     class Meta:
         model = Product_Condition
-        fields = ["ng_keyword_conditions", "title", "ng_keywords", "id", "user"]
+        fields = ["ng_keyword_conditions", "title", "ng_keywords", "id", "user", "period_unit", "check_target_period"]
         write_only_fields = ('ng_keywords',)
         read_only_fields = ["ng_keyword_conditions", "id"]
         extra_kwargs = {'ng_keyword_conditions': {'required': False}}
@@ -82,15 +80,21 @@ class ProductConditionSerializer(serializers.ModelSerializer):
         return ng_keyword_conditions
 
     def create(self, validated_data):
-        product_condition = Product_Condition.objects.create(title=validated_data["title"], user=validated_data["user"])
+        product_condition = Product_Condition.objects.create(title=validated_data["title"],
+         user=validated_data["user"],
+         check_target_period=validated_data["check_target_period"],
+         period_unit=validated_data["period_unit"])
         product_condition = self._create(validated_data, product_condition)
         return product_condition
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
+        instance.check_target_period = validated_data.get('check_target_period', instance.check_target_period)
+        instance.period_unit = validated_data.get("period_unit", instance.period_unit)
         old_ng_keyword_conditions = NG_Keyword_Condition.objects.filter(product_condition=instance)
         old_ng_keyword_conditions.delete()
         instance = self._create(validated_data, instance)
+        instance.save()
         return instance
 
     def _create(self, validated_data, product_condition):
@@ -124,9 +128,7 @@ class ProductConditionSerializer(serializers.ModelSerializer):
                 "composite_keyword": composite_keyword,
                 "front_check_word_count": ng_keyword_condition["front_check_word_count"],
                 "back_check_word_count": ng_keyword_condition["back_check_word_count"],
-                "product_condition": product_condition,
-                "check_target_period": ng_keyword_condition["check_target_period"],
-                "period_unit": ng_keyword_condition["period_unit"]
+                "product_condition": product_condition
             }
         else:
             ng_keyword_condition_data = {

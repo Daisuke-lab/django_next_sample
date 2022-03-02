@@ -18,20 +18,23 @@ import AlertTitle from '@mui/material/AlertTitle';
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {addRow, closeForm, insertRows} from '../../store/reducers/tableReducer'
 import { useSession} from "next-auth/react"
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
 
 export interface NgKeywordConditionType {
     id?: any
     ng_keyword: string,
     composite_keyword: string,
     front_check_word_count: number,
-    back_check_word_count: number,
-    check_target_period: number,
-    period_unit: 1 | 2 | 3
+    back_check_word_count: number
 }
 
 export interface ProductConditionType {
     title : string,
     id: number,
+    check_target_period: number,
+    period_unit: 1 | 2 | 3
     ng_keywords: string[]
     ng_keyword_conditions: {
         ng_keyword: string,
@@ -56,14 +59,18 @@ function ConditionForm(props:FormProps) {
     const { data: session } = useSession()
     useEffect(() => {
         if (currentRow !== null) {
-            console.log(currentRow.ng_keywords)
+            console.log(currentRow)
             setNgKeywords(currentRow.ng_keywords)
             setValue('title', currentRow.title, { shouldValidate: true })
+            setValue('check_target_period', currentRow.check_target_period, { shouldValidate: true })
+            setValue('period_unit', currentRow.period_unit, { shouldValidate: true })
             //setValue('ng_keyword_conditions', currentRow.ng_keyword_conditions)
         } else {
             setNgKeywords([])
             setValue('title', "")
             setValue('ng_keyword_conditions', [])
+            setValue("period_unit", 1)
+            setValue("check_target_period", "")
         }
         setGeneralError("")
     }, [currentRow])
@@ -121,6 +128,32 @@ function ConditionForm(props:FormProps) {
                 name="ng_keywords"
                 control={control}
                 />
+            </CustomField>
+            <CustomField label="チェック対象期間" mandatory={false}>
+            <FormControl error={errors.check_target_peirod?true:false}>
+                <Controller control={control} name={`check_target_period`}
+                 render={({ field }) => ( 
+                    <TextField
+                    className="form-modal-field"
+                    label=""
+                    type="number"
+                    InputProps={{
+                        endAdornment: (
+                            <Controller control={control} name={`period_unit`}
+                     render={({ field }) => ( 
+                        <Select {...field} defaultValue="1">
+                        <MenuItem value="1">日以内</MenuItem>
+                        <MenuItem value="2">カ月以内</MenuItem>
+                        <MenuItem value="3">年以内</MenuItem>
+                        </Select>
+                    )} />),
+                    }}
+                    variant="standard"
+                    {...field}
+                    />
+                )} />
+                <FormHelperText>{errors.check_target_period?"1以上を入力して下さい。":""}</FormHelperText>
+            </FormControl>
             </CustomField>
             <CustomField label="複合チェックキーワード" mandatory={false}>
                 <NgWordConditionsField

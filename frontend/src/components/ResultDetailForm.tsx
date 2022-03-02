@@ -29,7 +29,8 @@ function ResultDetailForm(props:FormProps) {
     const [confirmeds, setConfirmeds] = useState<boolean[]>([])
     const dispatch = useAppDispatch()
     const { data: session } = useSession()
-    const userId = session?.userId
+    console.log(session)
+    const userId = session?.id
 
     useEffect(() => {
         setPriorities([])
@@ -71,6 +72,7 @@ function ResultDetailForm(props:FormProps) {
             const res = await backendAxios.get(endpoint)
             const newRows = res.data.results
             const rowsCount = res.data.count
+            console.log(newRows)
             dispatch(insertRows(newRows))
             dispatch(changeCurrentPage(1))
             dispatch(insertRowsCount(rowsCount))

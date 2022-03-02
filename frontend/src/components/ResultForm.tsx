@@ -25,7 +25,7 @@ function ResultForm(props:FormProps) {
     const [endDate, setEndDate] = useState<Date | null>(null)
     const dispatch = useAppDispatch()
     const { data: session } = useSession()
-    const userId = session?.userId
+    const userId = session?.id
 
     const onSubmit = async (data:any) => {
         const query = convertObjectToQuery(data)
@@ -48,10 +48,16 @@ function ResultForm(props:FormProps) {
     const handleChange = (newValue: Date | null, type: string) => {
         if (type === "start") {
             setStartDate(newValue)
-            setValue("created_at__gt", newValue)
+            if (newValue !== null) {
+                setValue("latest_check_datetime__gte", newValue)
+            }
         } else {
             setEndDate(newValue)
-            setValue("created_at__lt", newValue)
+            if (newValue !== null) {
+                const newDate = new Date(newValue.getTime());
+                newDate.setDate(newDate.getDate() + 1)
+                setValue("latest_check_datetime__lte", newDate)
+            }
         }
       };
     return (

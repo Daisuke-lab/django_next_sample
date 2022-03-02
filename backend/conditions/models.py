@@ -23,7 +23,6 @@ class NG_Keyword(models.Model):
         db_table = 'ng_keyword'
 
 
-PERIOD_UNITS = ((1, 'days'), (2, 'months'), (3, 'years'))
 
 class NG_Keyword_Condition(models.Model):
     ng_keyword = models.ForeignKey(NG_Keyword, on_delete=models.CASCADE)
@@ -32,8 +31,6 @@ class NG_Keyword_Condition(models.Model):
     related_name="ng_keyword_conditions")
     front_check_word_count = models.IntegerField(null=True)
     back_check_word_count = models.IntegerField(null=True)
-    check_target_period = models.IntegerField(null=True)
-    period_unit=models.IntegerField(choices=PERIOD_UNITS, null=True)
     status = models.IntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

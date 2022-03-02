@@ -44,7 +44,7 @@ const columns = [
   {id: 2, name: "trademarks", label: "商標キーワード"},
   {id: 3, name: "genre", label:"ジャンル"},
   {id: 4, name: "small_genre", label:"ジャンル（小）"},
-  {id: 5, name: "latest_check_date", label:"チェック日"},
+  {id: 5, name: "latest_check_datetime", label:"チェック日"},
   {id: 6, name: "priority", label: priority()},
   {id: 7, name: "button", display: false},
 ] as ColumnType[]

@@ -4,13 +4,26 @@ from products.models import Product
 from .models import Check_Result
 
 
+class LatestCheckDatetimeFilter(filters.Filter):
+
+    def filter(self, qs, value):
+        if value:
+            print("value::", value)
+            product_ids = Check_Result.objects.filter(
+                **{f'created_at__{self.lookup_expr}': value}
+                ).values_list('url__domain__trademark__product__id', flat=True)
+            print("product_ids::", product_ids)
+            return qs.filter(id__in=product_ids)
+        return qs
+
 class ProductResultFilter(filters.FilterSet):
-    created_at__gt = filters.DateTimeFilter(field_name='created_at', lookup_expr='gt')
-    created_at__lt = filters.DateTimeFilter(field_name='created_at', lookup_expr='lt')
+    #domains__0__urls__0__check_results__0__created_at
+    latest_check_datetime__gte = LatestCheckDatetimeFilter(lookup_expr='gte')
+    latest_check_datetime__lte = LatestCheckDatetimeFilter(lookup_expr='lte')
     user = filters.CharFilter(field_name="user__id")
     class Meta:
         model = Product
-        fields = ["created_at__gt", "created_at__lt", "user"]
+        fields = ["latest_check_datetime__gte", "latest_check_datetime__lte", "user"]
 
 
 class InListFilter(filters.Filter):
@@ -19,6 +32,9 @@ class InListFilter(filters.Filter):
         if value:
             return qs.filter(**{self.field_name+'__in': value.split(',')})
         return qs
+
+
+
 
 
 class CheckResultFilter(filters.FilterSet):

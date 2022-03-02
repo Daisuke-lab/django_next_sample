@@ -10,20 +10,20 @@ from config.helper import get_object_or_404
 
 class ProductResultSerializer(serializers.ModelSerializer):
     trademarks = serializers.SerializerMethodField()
-    latest_check_date = serializers.SerializerMethodField()
+    latest_check_datetime = serializers.SerializerMethodField()
     priorities = serializers.SerializerMethodField()
     genre = serializers.CharField(max_length=2000, source="small_genre.genre.name")
     small_genre = serializers.CharField(max_length=2000, source="small_genre.name")
     product_name = serializers.CharField(max_length=200, source="name")
     class Meta:
         model = Product
-        fields = ["id", "product_name", "latest_check_date", "genre", "small_genre", "priorities", "trademarks"]
+        fields = ["id", "product_name", "latest_check_datetime", "genre", "small_genre", "priorities", "trademarks"]
 
 
     def get_trademarks(self, obj):
         trademarks = Trademark.objects.filter(product=obj.id).values_list('name', flat=True)
         return trademarks
-    def get_latest_check_date(self, obj):
+    def get_latest_check_datetime(self, obj):
         results = Check_Result.objects.filter(url__domain__trademark__product__id=obj.pk)
 
         if len(results) > 0:

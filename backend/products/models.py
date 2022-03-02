@@ -22,11 +22,14 @@ class Small_Genre(models.Model):
     def __str__(self):
         return self.name
 
+PERIOD_UNITS = ((1, 'days'), (2, 'months'), (3, 'years'))
 
 class Product_Condition(models.Model):
     title = models.CharField(unique=True, max_length=500)
     status = models.IntegerField(default=1)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    check_target_period = models.IntegerField(null=True)
+    period_unit=models.IntegerField(choices=PERIOD_UNITS, null=True)
 
     class Meta:
         db_table = 'product_condition'

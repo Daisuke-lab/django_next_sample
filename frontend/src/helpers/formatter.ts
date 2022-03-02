@@ -3,7 +3,8 @@ import { ConsoleLogger } from "@aws-amplify/core"
 const formatter = (data:any) => {
   const newDate = new Date(data)
   var newData:any = data
-  if ("Invalid Date" !== newDate.toString() && data !== null) {
+  if (typeof data === "number") {
+  } else if ("Invalid Date" !== newDate.toString() && data !== null) {
     newData = dateFormatter(newDate)
   } else if (data instanceof Array) {
     newData = arrayFormatter(data)

@@ -7,8 +7,6 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import IconButton from '@mui/material/IconButton';
 import {NgKeywordConditionType} from './ConditionForm'
 import InputAdornment from '@mui/material/InputAdornment';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import styles from '../../styles/NgKeywordConditionsField.module.css'
 import { useForm, useFieldArray, Controller } from "react-hook-form";
@@ -113,31 +111,6 @@ function NgWordConditionsField(props:Props) {
                 variant="standard" /> 
                 )} />
                 <FormHelperText>{errors.ng_keyword_conditions?.[index]?.back_check_word_count?"1以上を入力して下さい。":""}</FormHelperText>
-            </FormControl>
-
-            <FormControl error={errors.ng_keyword_conditions?.[index]?.check_target_peirod?true:false}>
-                <Controller control={control} name={`ng_keyword_conditions.${index}.check_target_period`}
-                 render={({ field }) => ( 
-                    <TextField
-                    className="form-modal-field"
-                    label="チェック対象期間"
-                    type="number"
-                    InputProps={{
-                        endAdornment: (
-                            <Controller control={control} name={`ng_keyword_conditions.${index}.period_unit`}
-                     render={({ field }) => ( 
-                        <Select {...field} defaultValue={ngKeywordCondition?.period_unit}>
-                        <MenuItem value="1">日以内</MenuItem>
-                        <MenuItem value="2">カ月以内</MenuItem>
-                        <MenuItem value="3">年以内</MenuItem>
-                        </Select>
-                    )} />),
-                    }}
-                    variant="standard"
-                    {...field}
-                    />
-                )} />
-                <FormHelperText>{errors.ng_keyword_conditions?.[index]?.check_target_period?"1以上を入力して下さい。":""}</FormHelperText>
             </FormControl>
             <IconButton onClick={() => onDelete(index)}>
                 <CancelIcon/>

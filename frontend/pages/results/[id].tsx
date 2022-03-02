@@ -65,12 +65,14 @@ const Result: NextPage = (props) => {
 
     const button = (
       <div className='table-button-container'>
-       <ColorButton color={blue} label="確認済"
+       <ColorButton color={blue} label={row.confirmed?"確認済み":"確認"}
        disabled={row.confirmed}
        onClick={() => {onConfirm(row)}}/>
       </div>
     )
-    const newRow = {...row, button, priority}
+
+    const url = (<a href={row.url}>{row.url.length<15?row.url:row.url.substring(0, 15) + "..."}</a>)
+    const newRow = {...row, button, priority, url}
     return newRow
   }
   const onConfirm = async (row:any) => {
