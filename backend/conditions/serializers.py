@@ -16,7 +16,7 @@ class NGKeywordConditionSerializer(serializers.ModelSerializer):
     class Meta:
         model = NG_Keyword_Condition
         fields = ["front_check_word_count", "back_check_word_count", "ng_keyword",
-        "composite_keyword", "check_target_period", "period_unit", "id"]
+        "composite_keyword", "id"]
         extra_kwargs = {'id': {'required': False}}
 
 
