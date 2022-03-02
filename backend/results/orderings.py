@@ -29,15 +29,13 @@ class ProductResultOrdering(OrderingFilter):
 
         ordering = self.get_ordering(request, queryset, view)
         print(ordering)
-        if ordering:
+        print("latest_check_datetime" in ordering)
+        if ordering == []:
             # implement a custom ordering here
             ordering = ['-id']
 
         if ordering:
             if "latest_check_datetime" in ordering or "-latest_check_datetime" in ordering:
-                check_result = Check_Result.objects.all().values(
-                    "url__domain__trademark__product__id").order_by('latest_check_datetime').distinct()
-                print("check_result::",check_result)
                 return queryset
             else:
                 return queryset.order_by(*ordering)

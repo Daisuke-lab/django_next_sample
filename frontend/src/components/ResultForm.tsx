@@ -33,13 +33,15 @@ function ResultForm(props:FormProps) {
     const userId = session?.id
 
     const onSubmit = async (data:any) => {
+        const ordering = orderBy==="asc"?""  + order:"-" + order
+        data.ordering = ordering
         const query = convertObjectToQuery(data)
         try {
             const endpoint = `api/v1/result/product${query}&user=${userId}`
+            console.log(endpoint)
             const res = await backendAxios.get(endpoint)
             const newRows = res.data.results
             const rowsCount = res.data.count
-            console.log(res.data)
             dispatch(insertRows(newRows))
             dispatch(changeCurrentPage(1))
             dispatch(insertRowsCount(rowsCount))
@@ -68,6 +70,9 @@ function ResultForm(props:FormProps) {
     const handleOrderChange = (event: SelectChangeEvent) => {
         setOrder(event.target.value as string);
       };
+    const handleOrderByChange = (event: SelectChangeEvent) => {
+        setOrderBy(event.target.value as "asc" | "desc");
+      };
     return (
         <FormModal {...formModalProps}>
             <form  onSubmit={handleSubmit(onSubmit)}>
@@ -90,9 +95,9 @@ function ResultForm(props:FormProps) {
                 />
             </LocalizationProvider>
             </div>
-            {/* <div>
-            <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Age</InputLabel>
+            <div  className={styles.datepickersContainer}>
+            <FormControl>
+                <InputLabel id="demo-simple-select-label">並べ替え</InputLabel>
                 <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -100,12 +105,27 @@ function ResultForm(props:FormProps) {
                 label="並べ替え"
                 onChange={handleOrderChange}
                 >
+                <MenuItem value="created_at">商品作成日</MenuItem>
                 <MenuItem value="name">商品名</MenuItem>
-                <MenuItem value="trademarks">チェック日</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+                <MenuItem value="small_genre__name">ジャンル（小）</MenuItem>
+                <MenuItem value="small_genre__genre__name">ジャンル</MenuItem>
                 </Select>
             </FormControl>
-            </div> */}
+
+            <FormControl>
+                <InputLabel id="demo-simple-select-label">順序</InputLabel>
+                <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={orderBy}
+                label="順序"
+                onChange={handleOrderByChange}
+                >
+                <MenuItem value="asc">昇順</MenuItem>
+                <MenuItem value="desc">降順</MenuItem>
+                </Select>
+            </FormControl>
+            </div>
 
             <div className="form-modal-button-container">
             <Button variant="outlined" onClick={() => dispatch(closeForm())}>キャンセル</Button>

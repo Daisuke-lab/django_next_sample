@@ -16,8 +16,8 @@ class ListProductResult(generics.ListAPIView):
     serializer_class = ProductResultSerializer
     filterset_class = ProductResultFilter
     pagination_class = PageNumberPagination
-    filter_backends = [ProductResultOrdering, django_filters.rest_framework.DjangoFilterBackend]
-    ordering_fields = ["id","small_genre__name", "small_genre__genre__name"]
+    filter_backends = [filters.OrderingFilter, django_filters.rest_framework.DjangoFilterBackend]
+    ordering_fields = ["created_at","small_genre__name", "small_genre__genre__name", "name"]
 
 class ListCheckResult(generics.ListAPIView):
     queryset = Check_Result.objects.all()
@@ -25,6 +25,8 @@ class ListCheckResult(generics.ListAPIView):
     serializer_class = CheckResultSerializer
     filterset_class = CheckResultFilter
     pagination_class = PageNumberPagination
+    filter_backends = [filters.OrderingFilter, django_filters.rest_framework.DjangoFilterBackend]
+    ordering_fields = ["created_at","url__domain__domain", "url__url", "priority", "confirmed"]
 
 
 class RetrieveUpdateDestroyCheckResult(generics.RetrieveUpdateDestroyAPIView):

@@ -19,6 +19,9 @@ import FormControl from '@mui/material/FormControl';
 import { useRouter } from 'next/router'
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {addRow, closeForm, insertRows, changeCurrentPage, insertRowsCount, changeEndpoint} from '../../store/reducers/tableReducer'
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
 
 
 function ResultDetailForm(props:FormProps) {
@@ -27,6 +30,8 @@ function ResultDetailForm(props:FormProps) {
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
     const [priorities, setPriorities] = useState<number[]>([])
     const [confirmeds, setConfirmeds] = useState<boolean[]>([])
+    const [order, setOrder] = useState<string>("created_at")
+    const [orderBy, setOrderBy] = useState<"asc" | "desc">("asc")
     const dispatch = useAppDispatch()
     const { data: session } = useSession()
     console.log(session)
@@ -64,9 +69,9 @@ function ResultDetailForm(props:FormProps) {
         }
       }
     const onSubmit = async (data:any) => {
-        console.log(data)
+        const ordering = orderBy==="asc"?""  + order:"-" + order
+        data.ordering = ordering
         const query = convertObjectToQuery(data) + `&product_id=${productId}&user=${userId}`
-        console.log(query)
         try {
             const endpoint = `api/v1/result/list${query}`
             const res = await backendAxios.get(endpoint)
@@ -84,6 +89,13 @@ function ResultDetailForm(props:FormProps) {
             console.log(err)
         }
     }
+    const handleOrderChange = (event: SelectChangeEvent) => {
+        setOrder(event.target.value as string);
+      };
+    const handleOrderByChange = (event: SelectChangeEvent) => {
+        setOrderBy(event.target.value as "asc" | "desc");
+      };
+
     return (
         <FormModal {...formModalProps}>
             <form  onSubmit={handleSubmit(onSubmit)}>
@@ -120,6 +132,39 @@ function ResultDetailForm(props:FormProps) {
                 <CustomField label="ドメイン" mandatory={false}>
                 <Input {...register('domain')}/>
                 </CustomField>
+
+                <div  className={styles.datepickersContainer}>
+            <FormControl>
+                <InputLabel id="demo-simple-select-label">並べ替え</InputLabel>
+                <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={order}
+                label="並べ替え"
+                onChange={handleOrderChange}
+                >
+                <MenuItem value="created_at">チェック結果作成日</MenuItem>
+                <MenuItem value="url__domain__domain">ドメイン</MenuItem>
+                <MenuItem value="url__url">URL</MenuItem>
+                <MenuItem value="priority">優先度</MenuItem>
+                <MenuItem value="confirmed">確認状況</MenuItem>
+                </Select>
+            </FormControl>
+
+            <FormControl>
+                <InputLabel id="demo-simple-select-label">順序</InputLabel>
+                <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={orderBy}
+                label="順序"
+                onChange={handleOrderByChange}
+                >
+                <MenuItem value="asc">昇順</MenuItem>
+                <MenuItem value="desc">降順</MenuItem>
+                </Select>
+            </FormControl>
+            </div>
 
                     <div className="form-modal-button-container">
                     <Button variant="outlined" onClick={() => dispatch(closeForm())}>キャンセル</Button>
