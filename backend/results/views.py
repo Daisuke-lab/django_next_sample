@@ -14,6 +14,7 @@ class ListProductResult(generics.ListAPIView):
     serializer_class = ProductResultSerializer
     filterset_class = ProductResultFilter
     pagination_class = PageNumberPagination
+    #ordering_fields = ['trademarks__id', "genre.name"]
 
 class ListCheckResult(generics.ListAPIView):
     queryset = Check_Result.objects.all()

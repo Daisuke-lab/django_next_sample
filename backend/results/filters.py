@@ -8,16 +8,13 @@ class LatestCheckDatetimeFilter(filters.Filter):
 
     def filter(self, qs, value):
         if value:
-            print("value::", value)
             product_ids = Check_Result.objects.filter(
                 **{f'created_at__{self.lookup_expr}': value}
                 ).values_list('url__domain__trademark__product__id', flat=True)
-            print("product_ids::", product_ids)
             return qs.filter(id__in=product_ids)
         return qs
 
 class ProductResultFilter(filters.FilterSet):
-    #domains__0__urls__0__check_results__0__created_at
     latest_check_datetime__gte = LatestCheckDatetimeFilter(lookup_expr='gte')
     latest_check_datetime__lte = LatestCheckDatetimeFilter(lookup_expr='lte')
     user = filters.CharFilter(field_name="user__id")

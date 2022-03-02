@@ -66,24 +66,24 @@ const Result: NextPage = (props) => {
     const button = (
       <div className='table-button-container'>
        <ColorButton color={blue} label={row.confirmed?"確認済み":"確認"}
-       disabled={row.confirmed}
+       style={row.confirmed?{color:"white", backgroundColor:"grey"}:{}}
        onClick={() => {onConfirm(row)}}/>
       </div>
     )
 
     const url = typeof row.url === "string"?
-    (<a href={row.url}>{row.url.length<15?row.url:row.url.substring(0, 15) + "..."}</a>):(<></>)
+    (<a href={row.url} target="_blank">{row.url.length<15?row.url:row.url.substring(0, 15) + "..."}</a>):(<></>)
     const newRow = {...row, button, priority, url}
     return newRow
   }
   const onConfirm = async (row:any) => {
     try {
       console.log(row.id)
-      const data = {confirmed: true}
+      const data = {confirmed: !row.confirmed}
       const res = await backendAxios.put(`api/v1/result/${row.id}/`, data)
       const newRows = [...rows]
       const index = newRows.indexOf(row)
-      const newRow = {...row, confirmed: true}
+      const newRow = {...row, confirmed: !row.confirmed}
       newRows.splice(index, 1, newRow)
       dispatch(insertRows(newRows))
     } catch(err) {

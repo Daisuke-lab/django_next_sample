@@ -14,7 +14,10 @@ import {convertObjectToQuery} from '../../src/helpers/convertObjectToQuery'
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import {addRow, closeForm, insertRows, changeCurrentPage, insertRowsCount, changeEndpoint} from '../../store/reducers/tableReducer'
 import { useSession} from "next-auth/react"
-
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
 
 function ResultForm(props:FormProps) {
     const title = "チェック結果を絞り込む"
@@ -23,6 +26,8 @@ function ResultForm(props:FormProps) {
     const { register, handleSubmit, control, formState:{ errors }, setValue } = useForm();
     const [startDate, setStartDate] = useState<Date | null>(null)
     const [endDate, setEndDate] = useState<Date | null>(null)
+    const [order, setOrder] = useState<string>("created_at")
+    const [orderBy, setOrderBy] = useState<"asc" | "desc">("asc")
     const dispatch = useAppDispatch()
     const { data: session } = useSession()
     const userId = session?.id
@@ -60,6 +65,9 @@ function ResultForm(props:FormProps) {
             }
         }
       };
+    const handleOrderChange = (event: SelectChangeEvent) => {
+        setOrder(event.target.value as string);
+      };
     return (
         <FormModal {...formModalProps}>
             <form  onSubmit={handleSubmit(onSubmit)}>
@@ -82,6 +90,23 @@ function ResultForm(props:FormProps) {
                 />
             </LocalizationProvider>
             </div>
+            <div>
+            <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={order}
+                label="並べ替え"
+                onChange={handleOrderChange}
+                >
+                <MenuItem value="name">商品名</MenuItem>
+                <MenuItem value="trademarks">チェック日</MenuItem>
+                <MenuItem value={30}>Thirty</MenuItem>
+                </Select>
+            </FormControl>
+            </div>
+
             <div className="form-modal-button-container">
             <Button variant="outlined" onClick={() => dispatch(closeForm())}>キャンセル</Button>
             <Button variant="contained" type="submit">絞り込む</Button>
