@@ -90,7 +90,7 @@ function ResultForm(props:FormProps) {
                 />
             </LocalizationProvider>
             </div>
-            <div>
+            {/* <div>
             <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Age</InputLabel>
                 <Select
@@ -105,7 +105,7 @@ function ResultForm(props:FormProps) {
                 <MenuItem value={30}>Thirty</MenuItem>
                 </Select>
             </FormControl>
-            </div>
+            </div> */}
 
             <div className="form-modal-button-container">
             <Button variant="outlined" onClick={() => dispatch(closeForm())}>キャンセル</Button>
