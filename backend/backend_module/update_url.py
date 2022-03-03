@@ -46,7 +46,7 @@ class UpdateTargetUrl(Common):
                 url = re.sub("<[a-z]>", "", loc.text)
                 urls.append(url)
         except Exception as e:
-            print(e)
+            print("faild to get sitemap loc urls.")
             return []
         print("success to get sitemap loc urls !")
         return urls
@@ -71,8 +71,6 @@ class UpdateTargetUrl(Common):
                     all_urls.append(sub_url)
             else:
                 all_urls.append(url)
-            if len(all_urls) >= 10:
-                break
         print("success to get all urls !")
         return all_urls
 
